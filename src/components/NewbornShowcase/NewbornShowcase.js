@@ -24,7 +24,7 @@ const NewbornShowcase = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const openQuickView = (product) => { setSelectedProduct(product); };
+
 
   useEffect(() => {
     const fetchProducts = async () => {
