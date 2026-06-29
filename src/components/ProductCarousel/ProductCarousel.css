@@ -158,7 +158,7 @@
 }
 
 .carousel-name {
-  font-size: 16px;
+  font-size: 18px;
   color: #333;
   margin: 0 0 8px 0;
   line-height: 1.4;
@@ -172,7 +172,7 @@
 }
 
 .carousel-price {
-  font-size: 12px;
+  font-size: 15px;
   color: #333;
   margin-bottom: 15px;
   font-family: 'Times New Roman', Times, serif;
@@ -185,7 +185,7 @@
   border: 1px solid #1a365d;
   /* Dark blue border */
   padding: 10px 0;
-  font-size: 14px;
+  font-size: 16px;
   cursor: pointer;
   width: 100%;
   transition: all 0.2s;
@@ -232,7 +232,7 @@
   }
 
   .carousel-title {
-    font-size: 26px;
+    font-size: 30px;
   }
 
   .carousel-arrow {

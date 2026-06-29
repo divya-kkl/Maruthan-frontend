@@ -11,10 +11,10 @@
 }
 
 .customer-favorites-title {
-  font-size: 32px;
-  color: #000;
+  font-size: 30px;
+  color: #333;
   margin-bottom: 20px;
-  font-weight: normal;
+  font-weight: 700;
 }
 
 .customer-favorites-insta-btn {
@@ -99,7 +99,7 @@
 }
 
 .cf-desc {
-  font-size: 14px;
+  font-size: 18px;
   color: #333;
   line-height: 1.4;
   margin: 0 0 15px 0;

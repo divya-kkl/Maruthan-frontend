@@ -12,18 +12,19 @@
 
 .cotton-frock-title {
   text-align: center;
-  font-size: 26px;
-  font-weight: bold;
-  color: #1a365d;
+  font-size: 30px;
+  font-weight: 700;
+  color: #333;
   margin-bottom: 15px;
 }
 
 .cotton-frock-subtitle {
   text-align: center;
-  font-size: 16px;
-  color: #1a365d;
+  font-size: 15px;
+  color: #333;
   margin-bottom: 40px;
-  font-family: sans-serif;
+  font-family: 'Time New Roman';
+  font-weight: 400;
 }
 
 .cotton-frock-grid {
@@ -80,7 +81,7 @@
 }
 
 .cotton-frock-name {
-  font-size: 14px;
+  font-size: 18px;
   color: #1a365d;
   margin: 0 0 10px 0;
   line-height: 1.4;
@@ -92,7 +93,7 @@
 }
 
 .cotton-frock-price {
-  font-size: 13px;
+  font-size: 15px;
   color: #1a365d;
   margin-bottom: 20px;
 }
@@ -102,7 +103,7 @@
   color: #1a365d;
   border: 1px solid #1a365d;
   padding: 10px 0;
-  font-size: 14px;
+  font-size: 16px;
   cursor: pointer;
   transition: all 0.2s;
   font-family: 'Times New Roman', Times, serif;

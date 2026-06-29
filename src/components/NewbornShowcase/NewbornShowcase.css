@@ -11,9 +11,9 @@
 
 .newborn-title {
   text-align: center;
-  font-size: 32px;
-  font-weight: 600;
-  color: #000;
+  font-size: 30px;
+  font-weight: 700;
+  color: #333;
   margin-bottom: 40px;
 }
 
@@ -61,7 +61,7 @@
 }
 
 .newborn-name {
-  font-size: 14px;
+  font-size: 18px;
   color: #333;
   margin: 0 0 5px 0;
   line-height: 1.4;
@@ -74,7 +74,7 @@
 }
 
 .newborn-price {
-  font-size: 13px;
+  font-size: 15px;
   color: #1a365d;
   font-weight: bold;
 }
@@ -87,7 +87,7 @@
   color: #0c2b5e;
   border: 1px solid #0c2b5e;
   border-radius: 4px;
-  font-size: 13px;
+  font-size: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
   font-family: inherit;
