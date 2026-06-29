@@ -201,3 +201,11 @@ select.address-input {
   background-color: #e1e1e1;
   color: #333;
 }
+
+@media (max-width: 768px) {
+  .address-modal-body .form-row, 
+  .address-modal-body .form-row.three-cols {
+    flex-direction: column;
+    gap: 15px;
+  }
+}

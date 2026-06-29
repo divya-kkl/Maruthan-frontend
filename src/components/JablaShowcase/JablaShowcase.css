@@ -128,5 +128,17 @@
 }
 
 .jabla-view-all-btn:hover {
-  background-color: #1a365d
+  background-color: #1a365d;
+}
+
+@media (max-width: 768px) {
+  .jabla-card {
+    min-width: 160px;
+  }
+  .jabla-title {
+    font-size: 24px;
+  }
+  .jabla-grid {
+    gap: 15px;
+  }
 }

@@ -62,6 +62,7 @@ const CategoryPage = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const [hasScrolled, setHasScrolled] = useState(false);
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const itemsPerPage = 12;
   const loadMoreRef = useRef(null);
 
@@ -224,7 +225,11 @@ const CategoryPage = () => {
       <div className="category-main-layout">
 
         {/* Sidebar */}
-        <aside className="category-sidebar">
+        <aside className={`category-sidebar ${isMobileFilterOpen ? 'open' : ''}`}>
+          <div className="mobile-filter-header">
+            <h3>Filters</h3>
+            <button className="close-filter-btn" onClick={() => setIsMobileFilterOpen(false)}>✕</button>
+          </div>
           <div className="filter-accordion">
 
             <div className={`filter-group ${expandedFilters.size ? 'expanded' : ''}`}>
@@ -371,6 +376,13 @@ const CategoryPage = () => {
             <div className="results-count">
               There are {filteredProducts.length} results in total
             </div>
+            <button 
+              className="mobile-filter-toggle-btn"
+              onClick={() => setIsMobileFilterOpen(true)}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+              Filter
+            </button>
             <div className="sort-by-wrapper">
               <span>Sort by:</span>
               <select className="sort-by-select" value={sort} onChange={(e) => {setSort(e.target.value); setPage(1);}}>

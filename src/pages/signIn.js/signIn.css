@@ -60,7 +60,10 @@
 }
 
 .shop-btn {
-  width: 100%;
+  width: 40%;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
   background-color: #5C2BF1;
   color: white;
   border: none;
@@ -72,6 +75,7 @@
   margin-bottom: 15px;
   transition: background-color 0.2s;
   font-family: inherit;
+  box-sizing: border-box;
 }
 
 .shop-btn:hover {
@@ -79,7 +83,9 @@
 }
 
 .google-btn {
-  width: 100%;
+  width: 40%;
+  margin-left: auto;
+  margin-right: auto;
   background-color: white;
   color: #000;
   border: 1px solid #d9d9d9;
@@ -95,6 +101,7 @@
   margin-bottom: 25px;
   transition: background-color 0.2s;
   font-family: inherit;
+  box-sizing: border-box;
 }
 
 .google-btn:hover {
@@ -149,7 +156,10 @@
 }
 
 .primary-btn {
-  width: 100%;
+  width: 40%;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
   background-color: #0F2D5C;
   color: white;
   border: none;
@@ -161,6 +171,7 @@
   margin-bottom: 15px;
   transition: background-color 0.2s;
   font-family: inherit;
+  box-sizing: border-box;
 }
 
 .primary-btn:hover {
@@ -168,7 +179,10 @@
 }
 
 .guest-btn {
-  width: 100%;
+  width: 40%;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
   background-color: white;
   color: #0F2D5C;
   border: 1px solid #0F2D5C;
@@ -180,6 +194,7 @@
   margin-bottom: 25px;
   transition: background-color 0.2s;
   font-family: inherit;
+  box-sizing: border-box;
 }
 
 .guest-btn:hover {
@@ -217,12 +232,12 @@
   flex-shrink: 0;
 }
 
-.checkbox-wrapper input:checked ~ .checkmark {
+.checkbox-wrapper input:checked~.checkmark {
   background-color: #0F2D5C;
   border-color: #0F2D5C;
 }
 
-.checkbox-wrapper input:checked ~ .checkmark svg {
+.checkbox-wrapper input:checked~.checkmark svg {
   display: block;
 }
 

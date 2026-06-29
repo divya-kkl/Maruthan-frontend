@@ -143,3 +143,15 @@
 .boys-view-all-btn:hover {
   background-color: #1a365d;
 }
+
+@media (max-width: 768px) {
+  .boys-card {
+    min-width: 160px;
+  }
+  .boys-title {
+    font-size: 24px;
+  }
+  .boys-grid {
+    gap: 15px;
+  }
+}

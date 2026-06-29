@@ -170,7 +170,9 @@
 
 @media (max-width: 768px) {
   .promo-card {
-    min-width: 250px;
-    /* Slightly larger on mobile for horizontal scroll */
+    min-width: 180px;
+  }
+  .promo-grid {
+    padding: 45px 0 20px 0;
   }
 }

@@ -173,3 +173,12 @@
   line-height: 1.5;
   margin: 0;
 }
+
+@media (max-width: 768px) {
+  .store-quality-section {
+    padding: 40px 15px;
+  }
+  .store-quality-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+}
