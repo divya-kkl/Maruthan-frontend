@@ -147,7 +147,7 @@ const SignIn = ({ onBack, onSignIn, onGuest }) => {
             {isRegisterMode ? 'Create Account' : 'Welcome Back'}
           </h2>
 
-          <div className="auth-inputs-wrapper" style={{ maxHeight: isRegisterMode ? '60vh' : 'auto', overflowY: isRegisterMode ? 'auto' : 'visible', paddingRight: '10px' }}>
+          <div className="auth-inputs-wrapper" style={{ maxHeight: isRegisterMode ? '60vh' : 'auto', overflowY: isRegisterMode ? 'auto' : 'visible' }}>
 
             {isRegisterMode && (
               <input

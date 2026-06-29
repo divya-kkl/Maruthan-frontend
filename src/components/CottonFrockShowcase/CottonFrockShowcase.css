@@ -139,3 +139,15 @@
 .cotton-frock-view-all-btn:hover {
   background-color: #1a365d;
 }
+
+@media (max-width: 768px) {
+  .cotton-frock-card {
+    min-width: 160px;
+  }
+  .cotton-frock-title {
+    font-size: 24px;
+  }
+  .cotton-frock-grid {
+    gap: 15px;
+  }
+}

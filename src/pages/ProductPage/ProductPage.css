@@ -357,3 +357,13 @@
     max-width: 100%;
   }
 }
+
+@media (max-width: 768px) {
+  .product-main-image-wrapper {
+    width: 85%;
+    margin: 0 auto;
+  }
+  .product-main-image {
+    max-height: 500px;
+  }
+}

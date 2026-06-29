@@ -38,13 +38,11 @@
 }
 
 .product-image-wrapper {
-  width: 216px;
-  height: 288px;
-  aspect-ratio: 2 / 3;
+  width: 100%;
+  aspect-ratio: 3 / 4;
   overflow: hidden;
   border-radius: 4px;
   margin-bottom: 15px;
-  border-radius: 5px;
 }
 
 .product-image {
@@ -145,6 +143,14 @@
 
 @media (max-width: 480px) {
   .product-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .select-options-btn {
+    font-size: 12px;
+    padding: 8px 0;
+  }
+  .product-name {
+    font-size: 13px;
   }
 }

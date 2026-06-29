@@ -30,3 +30,19 @@
   white-space: nowrap;
   border-width: 0;
 }
+
+@media (max-width: 768px) {
+  .hero-section {
+    height: auto;
+  }
+  .hero-image {
+    height: 180px;
+    object-fit: fill;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-image {
+    height: 180px;
+  }
+}

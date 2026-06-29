@@ -163,3 +163,12 @@
     width: auto;
   }
 }
+
+@media (max-width: 768px) {
+  .order-success-container {
+    padding: 30px 15px;
+  }
+  .order-success-card {
+    padding: 30px 20px;
+  }
+}

@@ -308,9 +308,16 @@
     flex-direction: row;
     border-bottom: 1px solid #e1e1e1;
     padding-bottom: 15px;
+    overflow-x: auto;
   }
   
   .sidebar-item {
     padding: 10px 15px;
+    white-space: nowrap;
+  }
+  
+  .info-row {
+    flex-direction: column;
+    gap: 5px;
   }
 }

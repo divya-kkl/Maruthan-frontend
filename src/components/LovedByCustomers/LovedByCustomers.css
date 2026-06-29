@@ -87,7 +87,12 @@
     gap: 15px;
   }
   
+  .factory-img-wrapper {
+    width: 100%;
+  }
+
   .factory-img {
     width: 100%;
+    height: auto;
   }
 }

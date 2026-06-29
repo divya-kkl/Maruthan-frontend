@@ -141,6 +141,9 @@
   .clearance-content {
     max-width: 100%;
   }
+  .clearance-discount {
+    font-size: 40px;
+  }
   .clearance-image-wrapper {
     width: 100%;
     justify-content: center;
