@@ -11,14 +11,14 @@
 }
 
 .showcase-title {
-  font-size: 28px;
+  font-size: 30px;
   font-weight: bold;
   color: #000;
   margin-bottom: 10px;
 }
 
 .showcase-subtitle {
-  font-size: 20px;
+  font-size:15px;
   color: #333;
   margin: 0;
   font-family: 'Time New Roman';
@@ -65,7 +65,7 @@
 }
 
 .product-name {
-  font-size: 16px;
+  font-size: 18px;
   color: #333;
   margin: 0 0 10px 0;
   line-height: 1.4;
@@ -80,7 +80,7 @@
 }
 
 .showcase-price {
-  font-size: 12px;
+  font-size: 15px;
   color: #000;
   margin-bottom: 15px;
   font-family: 'Times New Roman';
@@ -93,7 +93,7 @@
   color: #1a365d;
   border: 1px solid #333;
   padding: 10px 0;
-  font-size: 14px;
+  font-size: 16px;
   cursor: pointer;
   width: 100%;
   transition: all 0.2s;

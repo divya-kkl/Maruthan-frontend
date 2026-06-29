@@ -8,10 +8,10 @@
 
 .our-stores-title {
   text-align: center;
-  font-size: 32px;
-  color: #000;
+  font-size: 30px;
+  color: #333;
   margin-bottom: 40px;
-  font-weight: bold;
+  font-weight: 700;
 }
 
 .our-stores-grid {
@@ -63,7 +63,7 @@
 }
 
 .store-address {
-  font-size: 11px;
+  font-size: 12px;
   color: #555;
   line-height: 1.5;
   margin: 0 0 10px 0;
@@ -71,7 +71,7 @@
 }
 
 .store-contact {
-  font-size: 11px;
+  font-size: 13px;
   color: #555;
   margin: 0 0 20px 0;
   font-family: sans-serif;

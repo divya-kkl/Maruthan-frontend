@@ -12,18 +12,19 @@
 
 .jabla-title {
   text-align: center;
-  font-size: 26px;
-  font-weight: bold;
-  color: #1a365d;
+  font-size: 30px;
+  font-weight: 700;
+  color: #333;
   margin-bottom: 15px;
 }
 
 .jabla-subtitle {
   text-align: center;
-  font-size: 16px;
-  color: #1a365d;
+  font-size: 15px;
+  color: #333;
   margin-bottom: 40px;
-  font-family: 'Times New Roman', Times, serif;
+font-family: 'Time New Roman';
+  font-weight: 400;
 }
 
 .jabla-grid {
@@ -77,7 +78,7 @@
 }
 
 .jabla-name {
-  font-size: 15px;
+  font-size: 18px;
   color: #1a365d;
   margin: 0 0 8px 0;
   line-height: 1.4;
@@ -90,7 +91,7 @@
 }
 
 .jabla-price {
-  font-size: 13px;
+  font-size: 15px;
   color: #1a365d;
   font-family: 'Times New Roman', Times, serif;
   margin-bottom: 0;
@@ -104,7 +105,7 @@
   color: #1a365d;
   border: 1px solid #1a365d;
   border-radius: 0;
-  font-size: 14px;
+  font-size: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
   font-family: 'Times New Roman', Times, serif;

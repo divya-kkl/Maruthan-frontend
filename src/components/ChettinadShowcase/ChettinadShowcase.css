@@ -13,8 +13,8 @@
 .chettinad-title {
   text-align: center;
   font-size: 30px;
-  font-weight: normal;
-  color: #1a365d;
+  font-weight: 700;
+  color: #333;
   margin-bottom: 30px;
 }
 
@@ -71,7 +71,7 @@
 }
 
 .chettinad-name {
-  font-size: 15px;
+  font-size: 18px;
   color: #1a365d;
   margin: 0 0 8px 0;
   line-height: 1.4;
@@ -84,7 +84,7 @@
 }
 
 .chettinad-price {
-  font-size: 13px;
+  font-size: 15px;
   color: #1a365d;
   font-family: 'Times New Roman', Times, serif;
   margin-bottom: 0;
@@ -98,7 +98,7 @@
   color: #1a365d;
   border: 1px solid #1a365d;
   border-radius: 0;
-  font-size: 14px;
+  font-size: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
   font-family: 'Times New Roman', Times, serif;

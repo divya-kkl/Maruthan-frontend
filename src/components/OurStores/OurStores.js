@@ -58,6 +58,18 @@ const OurStores = () => {
     fetchStores();
   }, []);
 
+  const handleWhatsAppClick = (contactNumber) => {
+    if (contactNumber) {
+      const cleanNumber = contactNumber.toString().replace(/\D/g, '');
+      window.open(`https://wa.me/${cleanNumber}`, '_blank');
+    }
+  };
+
+  const handleDirectionClick = (address) => {
+    const query = address ? encodeURIComponent(address) : 'Kalayarkovil';
+    window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank');
+  };
+
   return (
     <section className="our-stores-section">
       <h2 className="our-stores-title">Our Stores</h2>
@@ -77,11 +89,17 @@ const OurStores = () => {
               {store.contactNumber && <p className="store-contact">{store.contactNumber}</p>}
               
               <div className="store-actions">
-                <button className="store-btn whatsapp-btn">
+                <button 
+                  className="store-btn whatsapp-btn"
+                  onClick={() => handleWhatsAppClick(store.contactNumber)}
+                >
                   <FaWhatsapp className="store-btn-icon" />
                   WhatsApp
                 </button>
-                <button className="store-btn direction-btn">
+                <button 
+                  className="store-btn direction-btn"
+                  onClick={() => handleDirectionClick(store.address)}
+                >
                   <FaMapMarkerAlt className="store-btn-icon" />
                   Get Direction
                 </button>

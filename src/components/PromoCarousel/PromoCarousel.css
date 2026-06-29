@@ -108,7 +108,7 @@
 }
 
 .promo-desc {
-  font-size: 14px;
+  font-size: 18px;
   color: #333;
   margin: 0 0 10px 0;
   line-height: 1.4;
@@ -126,7 +126,7 @@
   color: white;
   border: none;
   padding: 8px 20px;
-  font-size: 13px;
+  font-size: 16px;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.2s;
