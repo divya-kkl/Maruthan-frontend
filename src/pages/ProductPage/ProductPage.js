@@ -91,6 +91,10 @@ const ProductPage = () => {
   if (loading) return <div className="product-page-loading">Loading product details...</div>;
   if (error || !product) return <div className="product-page-error">{error || "Product not found"}</div>;
 
+  const selectedVariant = product.variants?.find(v => v.size === selectedSize);
+  const currentStock = selectedVariant ? selectedVariant.stock : (product.variants?.[0]?.stock || 0);
+  const stockProgress = Math.min((currentStock / 50) * 100, 100);
+
   return (
     <div className="product-page-container">
       {/* Left Column: Images */}
@@ -155,16 +159,20 @@ const ProductPage = () => {
      
 
         <div className="stock-warning">
-          Hurry up! Only <span>4 item(s)</span> left in stock
+          {currentStock > 0 ? (
+            <>Hurry up! Only <span>{currentStock} item(s)</span> left in stock</>
+          ) : (
+            <span style={{ color: 'red' }}>Out of stock</span>
+          )}
         </div>
         <div className="stock-progress-bar">
-          <div className="stock-progress-fill"></div>
+          <div className="stock-progress-fill" style={{ width: `${currentStock > 0 ? stockProgress : 0}%`, backgroundColor: currentStock < 5 ? '#e74c3c' : '#111' }}></div>
         </div>
 
         <div className="size-selector-section">
           <div className="size-label">Size: <strong>{selectedSize}</strong></div>
           <div className="size-options">
-            {['1Y', '2Y', '3Y', '4Y', '5Y', '6Y', 'M', 'L', 'XL'].map(size => {
+            {product?.variants && [...new Set(product.variants.map(v => v.size))].map(size => {
           
               return (
                 <button 
