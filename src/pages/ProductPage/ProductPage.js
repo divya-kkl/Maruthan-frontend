@@ -109,8 +109,6 @@ const ProductPage = () => {
   const handleAskSubmit = async (e) => {
     e.preventDefault();
     setAskSending(true);
-    const subject = encodeURIComponent(`Question about ${product?.name || 'a product'}`);
-    const body = encodeURIComponent(`Name: ${askForm.name}\nPhone: ${askForm.phone}\nEmail: ${askForm.email}\n\nMessage:\n${askForm.message}`);
     window.open(`https://wa.me/919786221122?text=${encodeURIComponent(`Hi, I have a question!\nName: ${askForm.name}\nPhone: ${askForm.phone}\nEmail: ${askForm.email}\nMessage: ${askForm.message}`)}`, '_blank');
     setAskSent(true);
     setAskSending(false);
