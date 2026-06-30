@@ -7,13 +7,11 @@ const Footer = ({ onNavigate }) => {
       <div className="footer-container">
 
         {/* Column 1 */}
-        <div className="footer-subscribe">
-          <h3 className="footer-heading">Subscribe to our emails</h3>
-          <p>Sign up for 10% off your first purchase and free shipping. Updates information on Sales and Offers.</p>
-          <form className="footer-form" onSubmit={(e) => e.preventDefault()}>
-            <input type="email" placeholder="E-mail" required />
-            <button type="submit">Sign up</button>
-          </form>
+        <div className="footer-brand">
+          <img src="/images/log1.png" alt="Little RR" className="footer-logo" style={{ maxWidth: '110px', marginTop: '-20px', marginBottom: '10px' }} />
+          <p className="footer-description" style={{ fontSize: '14px', lineHeight: '1.5', color: '#fff', margin: 0 }}>
+            Little RR (Prince 'N' Princess) offers the finest and most comfortable ethnic and traditional wear for your little ones, blending timeless traditions with modern comfort.
+          </p>
         </div>
 
         {/* Column 2 */}
