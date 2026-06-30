@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Footer.css';
 
 const Footer = ({ onNavigate }) => {
@@ -20,11 +21,11 @@ const Footer = ({ onNavigate }) => {
         <div className="footer-column">
           <h3 className="footer-heading">Info</h3>
           <ul className="footer-links">
-            <li><a href="#order-status" onClick={(e) => { e.preventDefault(); onNavigate && onNavigate('order-status'); }}>Order Status</a></li>
-            <li><a href="#payment" onClick={(e) => { e.preventDefault(); onNavigate && onNavigate('payment'); }}>Payment</a></li>
-            <li><a href="#exchange" onClick={(e) => { e.preventDefault(); onNavigate && onNavigate('exchange'); }}>Exchange</a></li>
-            <li><a href="#shipping" onClick={(e) => { e.preventDefault(); onNavigate && onNavigate('shipping'); }}>Local & Global Shipping</a></li>
-            <li><a href="#cancellation" onClick={(e) => { e.preventDefault(); onNavigate && onNavigate('cancellation'); }}>Cancellation & Refund</a></li>
+            <li><Link to="/order-status">Order Status</Link></li>
+            <li><Link to="/payment">Payment</Link></li>
+            <li><Link to="/exchange">Exchange</Link></li>
+            <li><Link to="/shipping">Local & Global Shipping</Link></li>
+            <li><Link to="/cancellation">Cancellation & Refund</Link></li>
           </ul>
         </div>
 
@@ -32,10 +33,10 @@ const Footer = ({ onNavigate }) => {
         <div className="footer-column">
           <h3 className="footer-heading">Quick links</h3>
           <ul className="footer-links">
-            <li><a href="/about-us">About us</a></li>
-            <li><a href="#contact" onClick={(e) => { e.preventDefault(); onNavigate && onNavigate('contact'); }}>Contact Us</a></li>
-            <li><a href="#privacy" onClick={(e) => { e.preventDefault(); onNavigate && onNavigate('privacy'); }}>Privacy Policy</a></li>
-            <li><a href="#terms" onClick={(e) => { e.preventDefault(); onNavigate && onNavigate('terms'); }}>Terms & Conditions</a></li>
+            <li><Link to="/about-us">About us</Link></li>
+            <li><Link to="/contact-us">Contact Us</Link></li>
+            <li><Link to="/privacy-policy">Privacy Policy</Link></li>
+            <li><Link to="/terms">Terms & Conditions</Link></li>
           </ul>
         </div>
 
@@ -44,10 +45,10 @@ const Footer = ({ onNavigate }) => {
           <h3 className="footer-heading">Contact us</h3>
           <p>1. Velachery, Chennai: <span className="italic-phone">91-9003466189</span></p>
           <p>2. RS Puram, Coimbatore: <span className="italic-phone">91-9789388217</span></p>
-          <p>3. Singanallur, Coimbatore: <span className="italic-phone">91-8438008217</span></p>
+          <p>3. Singanallur, Coimbatore: <span className="italic-phone">91-9786221122</span></p>
           <br />
-          <p>+91-1234567890</p>
-          <p>info@shop.in</p>
+          <p>+91-9786221122</p>
+          <p>info@princenprincess.in</p>
 
           <div className="footer-socials">
             <a href="/facebook" className="social-icon">f</a>
