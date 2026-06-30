@@ -81,11 +81,26 @@ const ChettinadShowcase = () => {
   return (
     <section className="chettinad-section">
       <div className="chettinad-container">
-        <h2 className="chettinad-title">Chettinad Cotton</h2>
+        {loading ? (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '20px' }}>
+            <div className="shimmer-text title" style={{ width: '300px', height: '32px' }}></div>
+          </div>
+        ) : (
+          <h2 className="chettinad-title">Chettinad Cotton</h2>
+        )}
 
         <div className="chettinad-grid" ref={scrollRef} onScroll={handleScroll}>
           {loading ? (
-            <p style={{ textAlign: 'center', width: '100%', padding: '20px' }}>Loading products...</p>
+            [...Array(5)].map((_, index) => (
+              <div className="chettinad-card shimmer-card" key={`shimmer-${index}`}>
+                <div className="shimmer-image"></div>
+                <div className="chettinad-info" style={{ width: '100%' }}>
+                  <div className="shimmer-text title"></div>
+                  <div className="shimmer-text price"></div>
+                  <div className="shimmer-button"></div>
+                </div>
+              </div>
+            ))
           ) : products.length > 0 ? (
             products.map((product) => (
               <div className="chettinad-card" key={product.id}>
@@ -126,9 +141,13 @@ const ChettinadShowcase = () => {
         </div>
 
         <div className="chettinad-view-all-wrapper">
-          <button className="chettinad-view-all-btn" onClick={() => navigate('/categories/GIRLS')}>
-            View All
-          </button>
+          {loading ? (
+            <div className="shimmer-button" style={{ width: '150px', margin: '0 auto', borderRadius: '4px' }}></div>
+          ) : (
+            <button className="chettinad-view-all-btn" onClick={() => navigate('/categories/GIRLS')}>
+              View All
+            </button>
+          )}
         </div>
         {selectedProduct && <QuickViewModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
       </div>
