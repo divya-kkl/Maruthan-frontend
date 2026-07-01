@@ -36,13 +36,14 @@
     height: auto;
   }
   .hero-image {
-    height: 180px;
-    object-fit: fill;
+    height: auto;
+    object-fit: contain;
   }
 }
 
 @media (max-width: 480px) {
   .hero-image {
-    height: 180px;
+    height: auto;
+    object-fit: contain;
   }
 }

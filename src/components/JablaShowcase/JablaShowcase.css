@@ -134,7 +134,7 @@ font-family: 'Time New Roman';
 
 @media (max-width: 768px) {
   .jabla-card {
-    min-width: 160px;
+    min-width: calc(50% - 7.5px);
   }
   .jabla-title {
     font-size: 24px;
@@ -143,3 +143,5 @@ font-family: 'Time New Roman';
     gap: 15px;
   }
 }
+
+@media (max-width: 768px) { .jabla-section { margin-top: 20px !important; } }

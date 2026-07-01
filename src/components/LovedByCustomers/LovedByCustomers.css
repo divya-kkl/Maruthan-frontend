@@ -96,3 +96,5 @@
     height: auto;
   }
 }
+
+@media (max-width: 768px) { .loved-by-customers-section { padding: 20px 0 !important; } }

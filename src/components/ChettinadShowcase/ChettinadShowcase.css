@@ -166,7 +166,7 @@
 
 @media (max-width: 768px) {
   .chettinad-card {
-    min-width: 160px;
+    min-width: calc(50% - 7.5px);
   }
   .chettinad-title {
     font-size: 24px;

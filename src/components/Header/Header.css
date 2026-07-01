@@ -152,6 +152,10 @@
     padding: 10px 20px;
     height: 60px;
   }
+  .header-logo {
+    margin-right: auto;
+    transform: none;
+  }
   .logo-image {
     height: 40px;
   }
