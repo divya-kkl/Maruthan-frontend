@@ -27,7 +27,7 @@ import WhatsAppFloat from './components/WhatsAppFloat/WhatsAppFloat';
 import OurStoresPage from './pages/OurStoresPage/OurStoresPage';
 import ProductPage from './pages/ProductPage/ProductPage';
 import { CartProvider } from './context/CartContext';
-import FAQ from './components/FAQ/FAQ';
+
 import FAQAdmin from './pages/FAQAdmin/FAQAdmin';
 
 const ScrollToTop = () => {
