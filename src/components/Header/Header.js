@@ -91,9 +91,9 @@ const Header = () => {
             <li className="nav-item">
               <NavLink to="/stores">Our Stores</NavLink>
             </li>
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <NavLink to="/blog">Blog</NavLink>
-            </li>
+            </li> */}
           </ul>
         </nav>
 
@@ -134,9 +134,9 @@ const Header = () => {
           <li className="mobile-nav-item">
             <NavLink to="/stores" onClick={() => setIsMobileMenuOpen(false)}>Our Stores</NavLink>
           </li>
-          <li className="mobile-nav-item">
+          {/* <li className="mobile-nav-item">
             <NavLink to="/blog" onClick={() => setIsMobileMenuOpen(false)}>Blog</NavLink>
-          </li>
+          </li> */}
         </ul>
       </div>
 

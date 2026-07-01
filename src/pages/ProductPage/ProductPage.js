@@ -5,6 +5,9 @@ import { useCart } from '../../context/CartContext';
 import { FiShare2, FiHelpCircle, FiMaximize2, FiTruck, FiTag, FiBox, FiCopy } from 'react-icons/fi';
 import { AiFillStar } from 'react-icons/ai';
 import { FaFacebookF, FaTwitter, FaPinterestP } from 'react-icons/fa';
+import { FiShare2, FiHelpCircle, FiMaximize2, FiTruck, FiTag, FiBox, FiX } from 'react-icons/fi';
+import { AiFillStar } from 'react-icons/ai';
+import RelatedProducts from '../../components/RelatedProducts/RelatedProducts';
 import './ProductPage.css';
 
 const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:2000/graphql';
@@ -47,6 +50,7 @@ const ProductPage = () => {
   const [askSending, setAskSending] = useState(false);
   const [shareSent, setShareSent] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [isZoomed, setIsZoomed] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -120,6 +124,7 @@ const ProductPage = () => {
   if (error || !product) return <div className="product-page-error">{error || "Product not found"}</div>;
 
   return (
+    <>
     <div className="product-page-container">
       {/* Left Column: Images */}
       <div className="product-image-section">
@@ -140,7 +145,7 @@ const ProductPage = () => {
         </div>
         <div className="product-main-image-wrapper">
           <img src={activeImage || "/images/placeholder.png"} alt={product.name} className="product-main-image" />
-          <button className="expand-icon"><FiMaximize2 /></button>
+          <button className="expand-icon" onClick={() => setIsZoomed(true)}><FiMaximize2 /></button>
         </div>
       </div>
 
@@ -342,7 +347,26 @@ const ProductPage = () => {
           </div>
         </div>
       </div>
+      {/* Zoom Overlay */}
+      {isZoomed && (
+        <div className="image-zoom-overlay" onClick={() => setIsZoomed(false)}>
+          <button className="zoom-close-btn" onClick={() => setIsZoomed(false)}>
+            <FiX />
+          </button>
+          <img 
+            src={activeImage || "/images/placeholder.png"} 
+            alt={product.name} 
+            className="zoomed-image" 
+            onClick={(e) => e.stopPropagation()} 
+          />
+        </div>
+      )}
     </div>
+    
+    <div style={{ marginTop: '40px', paddingBottom: '40px' }}>
+      <RelatedProducts title="New Arrivals" />
+    </div>
+  </>
   );
 };
 
