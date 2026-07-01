@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { GraphQLClient, gql } from 'graphql-request';
 import { useCart } from '../../context/CartContext';
-import { FiShare2, FiHelpCircle, FiMaximize2, FiTruck, FiTag, FiBox } from 'react-icons/fi';
+import { FiShare2, FiHelpCircle, FiMaximize2, FiTruck, FiTag, FiBox, FiX } from 'react-icons/fi';
 import { AiFillStar } from 'react-icons/ai';
 import SizeChart from '../../components/SizeChart/SizeChart';
+import RelatedProducts from '../../components/RelatedProducts/RelatedProducts';
 import './ProductPage.css';
 
 const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:2000/graphql';
@@ -44,9 +45,10 @@ const ProductPage = () => {
   const [activeImage, setActiveImage] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
   const [quantity, setQuantity] = useState(1);
-  const [openAccordions, setOpenAccordions] = useState(['description']);
   const [faqs, setFaqs] = useState([]);
   const [openFaqs, setOpenFaqs] = useState({});
+  const [openAccordion, setOpenAccordion] = useState('description');
+  const [isZoomed, setIsZoomed] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -118,8 +120,8 @@ const ProductPage = () => {
 
   return (
     <>
-      <div className="product-page-container">
-        {/* Left Column: Images */}
+    <div className="product-page-container">
+      {/* Left Column: Images */}
       <div className="product-image-section">
         <div className="product-thumbnails">
           {product.images && product.images.length > 0 ? (
@@ -138,7 +140,7 @@ const ProductPage = () => {
         </div>
         <div className="product-main-image-wrapper">
           <img src={activeImage || "/images/placeholder.png"} alt={product.name} className="product-main-image" />
-          <button className="expand-icon"><FiMaximize2 /></button>
+          <button className="expand-icon" onClick={() => setIsZoomed(true)}><FiMaximize2 /></button>
         </div>
       </div>
 
@@ -259,10 +261,26 @@ const ProductPage = () => {
 
         </div>
       </div>
+      {/* Zoom Overlay */}
+      {isZoomed && (
+        <div className="image-zoom-overlay" onClick={() => setIsZoomed(false)}>
+          <button className="zoom-close-btn" onClick={() => setIsZoomed(false)}>
+            <FiX />
+          </button>
+          <img 
+            src={activeImage || "/images/placeholder.png"} 
+            alt={product.name} 
+            className="zoomed-image" 
+            onClick={(e) => e.stopPropagation()} 
+          />
+        </div>
+      )}
     </div>
-
-      {/* Standalone FAQ Section */}
-      {faqs.length > 0 && (
+    
+    <div style={{ marginTop: '40px', paddingBottom: '40px' }}>
+      <RelatedProducts title="New Arrivals" />
+    </div>
+         {faqs.length > 0 && (
         <div className="standalone-faq-container">
           <h2 className="standalone-faq-title">FAQ</h2>
           <div className="standalone-faq-list">
@@ -288,7 +306,7 @@ const ProductPage = () => {
 
       {/* Static Size Chart Component */}
       <SizeChart />
-    </>
+  </>
   );
 };
 
