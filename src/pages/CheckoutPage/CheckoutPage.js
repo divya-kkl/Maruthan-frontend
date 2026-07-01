@@ -187,8 +187,8 @@ const Checkout = ({ onNavigate }) => {
           }
 
           const ADD_TO_CART = gql`
-            mutation AddToCart($userId: ID!, $shopId: ID!, $productId: ID!, $quantity: Float!) {
-              addToCart(userId: $userId, shopId: $shopId, productId: $productId, quantity: $quantity) {
+            mutation AddToCart($userId: ID!, $shopId: ID!, $productId: ID!, $quantity: Float!, $size: String!) {
+              addToCart(userId: $userId, shopId: $shopId, productId: $productId, quantity: $quantity, size: $size) {
                 id
               }
             }
@@ -198,7 +198,8 @@ const Checkout = ({ onNavigate }) => {
               userId: user.id,
               shopId: item.product.shopDetails || item.product.shopId || "default",
               productId: item.product.id || item.product._id,
-              quantity: parseFloat(item.quantity)
+              quantity: parseFloat(item.quantity),
+              size: item.size || "Default"
             });
           }
         }
