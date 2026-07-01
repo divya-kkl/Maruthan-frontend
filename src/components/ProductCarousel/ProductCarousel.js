@@ -126,11 +126,17 @@ const ProductCarousel = () => {
       <section className="product-carousel-section">
         <div className="carousel-container">
           <div className="carousel-header">
-            <h2 className="carousel-title">Exclusive Pattu Pavadai Collections</h2>
+            {loading ? (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '20px' }}>
+                <div className="shimmer-text title" style={{ width: '300px', height: '32px' }}></div>
+              </div>
+            ) : (
+              <h2 className="carousel-title">Exclusive Pattu Pavadai Collections</h2>
+            )}
           </div>
 
           <div className="carousel-slider-wrapper">
-            {products.length > 5 && (
+            {!loading && products.length > 5 && (
               <button className="carousel-arrow left" onClick={scrollLeft}>
                 <FaChevronLeft />
               </button>
@@ -138,7 +144,16 @@ const ProductCarousel = () => {
 
             <div className="carousel-grid" ref={scrollContainerRef}>
               {loading ? (
-                <p>Loading products...</p>
+                [...Array(5)].map((_, index) => (
+                  <div className="carousel-card shimmer-card" key={`shimmer-${index}`}>
+                    <div className="shimmer-image"></div>
+                    <div className="carousel-info" style={{ width: '100%' }}>
+                      <div className="shimmer-text title"></div>
+                      <div className="shimmer-text price"></div>
+                      <div className="shimmer-button"></div>
+                    </div>
+                  </div>
+                ))
               ) : products.length > 0 ? (
                 products.map((product) => (
                   <CarouselCard key={product.id} product={product} openQuickView={openQuickView} />
@@ -148,7 +163,7 @@ const ProductCarousel = () => {
               )}
             </div>
 
-            {products.length > 5 && (
+            {!loading && products.length > 5 && (
               <button className="carousel-arrow right" onClick={scrollRight}>
                 <FaChevronRight />
               </button>
@@ -156,9 +171,13 @@ const ProductCarousel = () => {
           </div>
 
           <div className="carousel-view-all-container">
-            <button className="newborn-view-all-btn" onClick={() => navigate('/categories/GIRLS')}>
-              View All
-            </button>
+            {loading ? (
+              <div className="shimmer-button" style={{ width: '150px', margin: '0 auto', borderRadius: '4px' }}></div>
+            ) : (
+              <button className="newborn-view-all-btn" onClick={() => navigate('/categories/GIRLS')}>
+                View All
+              </button>
+            )}
           </div>
         </div>
         {selectedProduct && <QuickViewModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />}

@@ -54,12 +54,30 @@ const CottonFrockShowcase = () => {
   return (
     <section className="cotton-frock-section">
       <div className="cotton-frock-container">
-        <h2 className="cotton-frock-title">Cotton & Modern frock</h2>
-        <p className="cotton-frock-subtitle">Breathable cotton frock made for summer comfort and everyday charm!</p>
+        {loading ? (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '20px' }}>
+            <div className="shimmer-text title" style={{ width: '300px', height: '32px', marginBottom: '10px' }}></div>
+            <div className="shimmer-text" style={{ width: '400px', height: '20px' }}></div>
+          </div>
+        ) : (
+          <>
+            <h2 className="cotton-frock-title">Cotton & Modern frock</h2>
+            <p className="cotton-frock-subtitle">Breathable cotton frock made for summer comfort and everyday charm!</p>
+          </>
+        )}
         
         <div className="cotton-frock-grid">
           {loading ? (
-            <p style={{ textAlign: 'center', width: '100%', padding: '20px' }}>Loading products...</p>
+            [...Array(5)].map((_, index) => (
+              <div className="cotton-frock-card shimmer-card" key={`shimmer-${index}`}>
+                <div className="shimmer-image"></div>
+                <div className="cotton-frock-info" style={{ width: '100%' }}>
+                  <div className="shimmer-text title"></div>
+                  <div className="shimmer-text price"></div>
+                  <div className="shimmer-button"></div>
+                </div>
+              </div>
+            ))
           ) : products.length > 0 ? (
             products.map((product) => (
               <div className="cotton-frock-card" key={product.id}>
@@ -89,9 +107,13 @@ const CottonFrockShowcase = () => {
         </div>
 
         <div className="cotton-frock-view-all-wrapper">
-          <button className="cotton-frock-view-all-btn" onClick={() => navigate('/categories/GIRLS')}>
-            View All
-          </button>
+          {loading ? (
+            <div className="shimmer-button" style={{ width: '150px', margin: '0 auto', borderRadius: '4px' }}></div>
+          ) : (
+            <button className="cotton-frock-view-all-btn" onClick={() => navigate('/categories/GIRLS')}>
+              View All
+            </button>
+          )}
         </div>
         {selectedProduct && <QuickViewModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
       </div>

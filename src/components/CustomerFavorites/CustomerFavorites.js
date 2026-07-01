@@ -46,17 +46,36 @@ const CustomerFavorites = ({ title = "Loved by Our Little Customers 💛" }) => 
 
   return (
     <section className="customer-favorites-section">
-      <div className="customer-favorites-header">
-        <h2 className="customer-favorites-title">{title}</h2>
-        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="customer-favorites-insta-btn">
-          <FaInstagram className="cf-insta-icon" />
-          Follow Us on Instagram
-        </a>
-      </div>
+      {loading ? (
+        <div className="customer-favorites-header">
+          <div className="shimmer-text title" style={{ width: '300px', height: '32px' }}></div>
+          <div className="shimmer-button" style={{ width: '200px', height: '40px', marginTop: 0, borderRadius: '25px' }}></div>
+        </div>
+      ) : (
+        <div className="customer-favorites-header">
+          <h2 className="customer-favorites-title">Loved by Our Little Customers 💛</h2>
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="customer-favorites-insta-btn">
+            <FaInstagram className="cf-insta-icon" />
+            Follow Us on Instagram
+          </a>
+        </div>
+      )}
 
       <div className="cf-carousel-container">
         {loading ? (
-          <p style={{ textAlign: 'center', width: '100%', padding: '20px' }}>Loading products...</p>
+          <div className="cf-carousel-wrapper">
+            <div className="cf-track" style={{ animation: 'none', display: 'flex', gap: '20px' }}>
+              {[...Array(6)].map((_, index) => (
+                <div className="cf-card shimmer-card" key={`shimmer-${index}`}>
+                  <div className="shimmer-image"></div>
+                  <div className="cf-info" style={{ width: '100%' }}>
+                    <div className="shimmer-text title"></div>
+                    <div className="shimmer-text" style={{ width: '30%', marginTop: '10px' }}></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         ) : (
           <div className="cf-carousel-wrapper">
             <div className="cf-track">
