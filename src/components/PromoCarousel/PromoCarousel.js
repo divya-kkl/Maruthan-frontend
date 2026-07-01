@@ -66,7 +66,15 @@ const PromoCarousel = () => {
       <div className="promo-container">
         <div className="promo-grid">
           {loading ? (
-            <p style={{ textAlign: 'center', width: '100%', padding: '20px' }}>Loading products...</p>
+            [...Array(5)].map((_, index) => (
+              <div className="promo-card shimmer-card" key={`shimmer-${index}`}>
+                <div className="shimmer-image"></div>
+                <div className="promo-info" style={{ width: '100%' }}>
+                  <div className="shimmer-text" style={{ width: '80%', margin: '0 auto 10px' }}></div>
+                  <div className="shimmer-button" style={{ margin: '0 auto' }}></div>
+                </div>
+              </div>
+            ))
           ) : products.length > 0 ? (
             products.map((product) => (
               <div className="promo-card" key={product.id}>
@@ -93,9 +101,13 @@ const PromoCarousel = () => {
         </div>
         
         <div className="promo-view-all-wrapper" style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-          <button className="promo-view-all-btn" onClick={() => navigate('/CartPage')}>
-            View All
-          </button>
+          {loading ? (
+            <div className="shimmer-button" style={{ width: '150px', borderRadius: '4px' }}></div>
+          ) : (
+            <button className="promo-view-all-btn" onClick={() => navigate('/CartPage')}>
+              View All
+            </button>
+          )}
         </div>
       </div>
     </section>

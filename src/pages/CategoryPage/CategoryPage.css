@@ -407,7 +407,7 @@
 }
 
 .category-name {
-  font-size: 18px;
+  font-size: 16px;
   color: #1a365d;
   margin: 0 0 8px 0;
   line-height: 1.4;
@@ -429,7 +429,7 @@
 .category-select-btn {
   width: 100%;
   padding: 10px 0;
-  margin-top: 15px;
+  margin-top: auto;
   background-color: transparent;
   color: #1a365d;
   border: 1px solid #1a365d;

@@ -1,0 +1,58 @@
+.exchange-page {
+  background-color: #fdfdf9; /* Light cream/off-white background */
+  min-height: 80vh;
+  padding: 30px 20px 50px;
+  display: flex;
+  justify-content: center;
+}
+
+.exchange-container {
+  max-width: 1000px;
+  width: 100%;
+}
+
+.exchange-main-title {
+  text-align: center;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 32px;
+  font-weight: normal;
+  color: #333;
+  margin-top: 15px;
+  margin-bottom: 50px;
+}
+
+.exchange-subtitle {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 26px;
+  font-weight: normal;
+  color: #222;
+  margin-top: 35px;
+  margin-bottom: 25px;
+}
+
+.exchange-text {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 16px;
+  line-height: 1.8;
+  color: #444;
+  margin-bottom: 20px;
+}
+
+.exchange-list {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 16px;
+  line-height: 1.8;
+  color: #444;
+  margin-bottom: 20px;
+  padding-left: 20px;
+}
+
+.exchange-list li {
+  margin-bottom: 18px;
+}
+
+.exchange-divider {
+  border: 0;
+  border-top: 1px solid #ccc;
+  margin: 40px 0 30px;
+}

@@ -75,6 +75,10 @@ const CategoryPage = () => {
     price: { min: '', max: '' }
   });
 
+  // Local string state for price inputs (so user can clear '0' and type freely)
+  const [priceInputMin, setPriceInputMin] = useState('0');
+  const [priceInputMax, setPriceInputMax] = useState('0');
+
   // Filter accordion states
   const [expandedFilters, setExpandedFilters] = useState({
     size: false,
@@ -104,6 +108,16 @@ const CategoryPage = () => {
 
   // Serialize activeFilters to a stable string to avoid object-reference re-renders
   const activeFiltersKey = JSON.stringify(activeFilters);
+  useEffect(() => {
+    if (filterData.price.max > 0) {
+      setActiveFilters(prev => ({
+        ...prev,
+        price: { min: 0, max: filterData.price.max }
+      }));
+      setPriceInputMin('0');
+      setPriceInputMax(String(filterData.price.max));
+    }
+  }, [filterData.price.max]);
 
   useEffect(() => {
     // Parse the serialized filters inside the effect
@@ -350,20 +364,42 @@ const CategoryPage = () => {
                     <div className="price-input-box">
                       <span>₹</span>
                       <input
-                        type="number"
-                        placeholder="0"
-                        value={activeFilters.price.min}
-                        onChange={(e) => setActiveFilters(prev => ({ ...prev, price: { ...prev.price, min: e.target.value } }))}
+                        type="text"
+                        inputMode="numeric"
+                        value={priceInputMin}
+                        onChange={(e) => setPriceInputMin(e.target.value)}
+                        onFocus={(e) => e.target.select()}
+                        onBlur={() => {
+                          const val = parseInt(priceInputMin, 10);
+                          const parsed = isNaN(val) ? 0 : val;
+                          setPriceInputMin(String(parsed));
+                          setActiveFilters(prev => ({ ...prev, price: { ...prev.price, min: parsed } }));
+                          setPage(1);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') e.target.blur();
+                        }}
                       />
                     </div>
                     <span>-</span>
                     <div className="price-input-box">
                       <span>₹</span>
                       <input
-                        type="number"
-                        placeholder={filterData.price.max || "Max"}
-                        value={activeFilters.price.max}
-                        onChange={(e) => setActiveFilters(prev => ({ ...prev, price: { ...prev.price, max: e.target.value } }))}
+                        type="text"
+                        inputMode="numeric"
+                        value={priceInputMax}
+                        onChange={(e) => setPriceInputMax(e.target.value)}
+                        onFocus={(e) => e.target.select()}
+                        onBlur={() => {
+                          const val = parseInt(priceInputMax, 10);
+                          const parsed = isNaN(val) ? 0 : val;
+                          setPriceInputMax(String(parsed));
+                          setActiveFilters(prev => ({ ...prev, price: { ...prev.price, max: parsed } }));
+                          setPage(1);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') e.target.blur();
+                        }}
                       />
                     </div>
                   </div>

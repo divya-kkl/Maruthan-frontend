@@ -46,11 +46,25 @@ const NewbornShowcase = () => {
   return (
     <section className="newborn-showcase-section">
       <div className="newborn-container">
-        <h2 className="newborn-title">Newborn Pattu Frock</h2>
+        {loading ? (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '20px' }}>
+            <div className="shimmer-text title" style={{ width: '300px', height: '32px' }}></div>
+          </div>
+        ) : (
+          <h2 className="newborn-title">Newborn Pattu Frock</h2>
+        )}
 
         <div className="newborn-grid">
           {loading ? (
-            <p>Loading products...</p>
+            [...Array(8)].map((_, index) => (
+              <div className="newborn-card shimmer-card" key={`shimmer-${index}`}>
+                <div className="shimmer-image"></div>
+                <div className="newborn-info" style={{ width: '100%' }}>
+                  <div className="shimmer-text title"></div>
+                  <div className="shimmer-text price"></div>
+                </div>
+              </div>
+            ))
           ) : products.length > 0 ? (
             products.map((product) => (
               <div className="newborn-card" key={product.id}>
@@ -78,9 +92,13 @@ const NewbornShowcase = () => {
         </div>
 
         <div className="newborn-view-all-container">
-          <button className="newborn-view-all-btn" onClick={() => navigate('/categories/NEWBORN')}>
-            View All
-          </button>
+          {loading ? (
+            <div className="shimmer-button" style={{ width: '150px', margin: '0 auto', borderRadius: '4px' }}></div>
+          ) : (
+            <button className="newborn-view-all-btn" onClick={() => navigate('/categories/NEWBORN')}>
+              View All
+            </button>
+          )}
         </div>
         {selectedProduct && <QuickViewModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
       </div>

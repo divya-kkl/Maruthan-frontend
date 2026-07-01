@@ -80,12 +80,30 @@ const BoysShowcase = () => {
   return (
     <section className="boys-section">
       <div className="boys-container">
-        <h2 className="boys-title">Boys Ethnic Wear Collection</h2>
-        <p className="boys-subtitle">Let your boy stand out from the crowd in our unique ethnic wears like dhoti shirts and more. Fashion that's as playful as he is!</p>
+        {loading ? (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '20px' }}>
+            <div className="shimmer-text title" style={{ width: '300px', height: '32px', marginBottom: '10px' }}></div>
+            <div className="shimmer-text" style={{ width: '400px', height: '20px' }}></div>
+          </div>
+        ) : (
+          <>
+            <h2 className="boys-title">Boys Ethnic Wear Collection</h2>
+            <p className="boys-subtitle">Let your boy stand out from the crowd in our unique ethnic wears like dhoti shirts and more. Fashion that's as playful as he is!</p>
+          </>
+        )}
         
         <div className="boys-grid">
           {loading ? (
-            <p style={{ textAlign: 'center', width: '100%', padding: '20px' }}>Loading products...</p>
+            [...Array(5)].map((_, index) => (
+              <div className="boys-card shimmer-card" key={`shimmer-${index}`}>
+                <div className="shimmer-image"></div>
+                <div className="boys-info" style={{ width: '100%' }}>
+                  <div className="shimmer-text title"></div>
+                  <div className="shimmer-text price"></div>
+                  <div className="shimmer-button"></div>
+                </div>
+              </div>
+            ))
           ) : products.length > 0 ? (
             products.map((product) => (
               <div className="boys-card" key={product.id}>
@@ -115,9 +133,13 @@ const BoysShowcase = () => {
         </div>
 
         <div className="boys-view-all-wrapper">
-          <button className="boys-view-all-btn" onClick={() => navigate('/categories/BOYS')}>
-            View All
-          </button>
+          {loading ? (
+            <div className="shimmer-button" style={{ width: '150px', margin: '0 auto', borderRadius: '4px' }}></div>
+          ) : (
+            <button className="boys-view-all-btn" onClick={() => navigate('/categories/BOYS')}>
+              View All
+            </button>
+          )}
         </div>
         {selectedProduct && <QuickViewModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
       </div>

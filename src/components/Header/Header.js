@@ -4,7 +4,7 @@ import './Header.css';
 import { GraphQLClient, gql } from 'graphql-request';
 import { useCart } from '../../context/CartContext';
 import { MdKeyboardArrowDown } from 'react-icons/md';
-import { useNavigate, NavLink } from 'react-router-dom';
+import { useNavigate, NavLink, Link } from 'react-router-dom';
 import SearchDrawer from '../SearchDrawer/SearchDrawer';
 
 const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:2000/graphql';
@@ -70,7 +70,9 @@ const Header = () => {
         </button>
      
         <div className="header-logo">
-          <img src="/images/log1.png" alt="Prince 'N' Princess" className="logo-image" />
+          <Link to="/">
+            <img src="/images/log1.png" alt="Prince 'N' Princess" className="logo-image" />
+          </Link>
         </div>
 
         <nav className="header-nav">

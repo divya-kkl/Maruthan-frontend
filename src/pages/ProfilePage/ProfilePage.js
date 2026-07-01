@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { FiMapPin, FiChevronRight } from 'react-icons/fi';
 import { GraphQLClient, gql } from 'graphql-request';
 import AddAddressModal from '../../components/AddAddressModal/AddAddressModal';
 import './ProfilePage.css';
@@ -25,6 +26,7 @@ const GET_ORDERS = gql`
           country
           phone
         }
+        notes
         createdAt
         items {
           name
@@ -251,16 +253,37 @@ const ProfilePage = () => {
                 {user.addresses && user.addresses.length > 0 ? (
                   <div className="addresses-list">
                     {user.addresses.map((addr, idx) => (
-                      <div key={idx} className="address-item" style={{ padding: '15px', borderBottom: '1px solid #eee' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                          <strong>{addr.firstName} {addr.lastName} {addr.isDefault && <span style={{ fontSize: '12px', background: '#eee', padding: '2px 6px', borderRadius: '4px', marginLeft: '8px' }}>Default</span>}</strong>
+                      <div key={idx} className="address-item" style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        padding: '16px', 
+                        background: '#fff', 
+                        border: '1px solid #eaeaea', 
+                        borderRadius: '12px',
+                        marginBottom: '12px',
+                        cursor: 'pointer'
+                      }}>
+                        <div style={{ 
+                          background: '#f5f5f5', 
+                          padding: '12px', 
+                          borderRadius: '8px', 
+                          marginRight: '16px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}>
+                          <FiMapPin size={20} color="#000" />
                         </div>
-                        <div style={{ color: '#555', fontSize: '14px', lineHeight: '1.5' }}>
-                          <div>{addr.address} {addr.apartment && `, ${addr.apartment}`}</div>
-                          <div>{addr.city}, {addr.state} {addr.pincode}</div>
-                          <div>{addr.country}</div>
-                          <div style={{ marginTop: '8px' }}>Phone: {addr.phone}</div>
+                        <div style={{ flex: 1, paddingRight: '16px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '4px' }}>
+                            <strong style={{ fontSize: '14px', color: '#000', textTransform: 'uppercase' }}>{addr.firstName} {addr.lastName}</strong>
+                            {addr.isDefault && <span style={{ fontSize: '11px', background: '#f5f5f5', color: '#000', fontWeight: '500', padding: '2px 8px', borderRadius: '12px', marginLeft: '8px' }}>Default</span>}
+                          </div>
+                          <div style={{ color: '#333', fontSize: '13px', lineHeight: '1.4' }}>
+                            {`${addr.address}${addr.apartment ? `, ${addr.apartment}` : ''}, ${addr.pincode ? addr.pincode + ' ' : ''}${addr.city} ${addr.state}, ${addr.country}`}
+                          </div>
                         </div>
+                        <FiChevronRight size={20} color="#999" />
                       </div>
                     ))}
                   </div>
@@ -293,7 +316,6 @@ const ProfilePage = () => {
               {/* Sign Out Links */}
               <div className="signout-links">
                 <button className="signout-btn" onClick={handleSignOut}>Sign out</button>
-                <button className="signout-all-btn">Sign out of all devices</button>
               </div>
             </div>
           )}
@@ -337,6 +359,13 @@ const ProfilePage = () => {
                               <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: '#555' }}>
                                 Phone: {order.deliveryAddress.phone}
                               </p>
+                            </div>
+                          )}
+
+                          {order.notes && (
+                            <div className="order-notes-info" style={{ marginTop: '15px' }}>
+                              <h5 style={{ margin: '0 0 8px 0', fontSize: '13px', color: '#777', textTransform: 'uppercase' }}>Order Notes</h5>
+                              <p style={{ margin: 0, fontSize: '13px', color: '#555', whiteSpace: 'pre-wrap' }}>{order.notes}</p>
                             </div>
                           )}
                         </div>

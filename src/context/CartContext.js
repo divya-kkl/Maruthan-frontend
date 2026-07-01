@@ -1,11 +1,41 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import { GraphQLClient, gql } from 'graphql-request';
 
 const CartContext = createContext();
 
 export const useCart = () => useContext(CartContext);
 
+const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:2000/graphql';
+
+const GET_DELIVERY_CHARGERS = gql`
+  query GetAllDeliveryChargers {
+    getAllDeliveryChargers {
+      id
+      charge
+      status
+    }
+  }
+`;
+
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
+  const [deliveryCharge, setDeliveryCharge] = useState(0);
+
+  useEffect(() => {
+    const fetchDeliveryCharge = async () => {
+      try {
+        const client = new GraphQLClient(GRAPHQL_ENDPOINT);
+        const data = await client.request(GET_DELIVERY_CHARGERS);
+        const activeCharger = data.getAllDeliveryChargers?.find(charger => charger.status === 'ACTIVE');
+        if (activeCharger) {
+          setDeliveryCharge(activeCharger.charge);
+        }
+      } catch (err) {
+        console.error("Error fetching delivery charge:", err);
+      }
+    };
+    fetchDeliveryCharge();
+  }, []);
 
   const addToCart = (product, quantity, size) => {
     setCartItems(prevItems => {
@@ -56,7 +86,7 @@ export const CartProvider = ({ children }) => {
   }, []);
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, updateQuantity, removeFromCart, clearCart, getCartCount, getCartTotal }}>
+    <CartContext.Provider value={{ cartItems, addToCart, updateQuantity, removeFromCart, clearCart, getCartCount, getCartTotal, deliveryCharge }}>
       {children}
     </CartContext.Provider>
   );

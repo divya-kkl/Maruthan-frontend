@@ -224,6 +224,9 @@
 }
 
 @media (max-width: 768px) {
+  .product-carousel-section {
+    padding: 20px 0;
+  }
   .carousel-card {
     min-width: calc(50% - 10px);
   }
@@ -243,6 +246,12 @@
 @media (max-width: 480px) {
   .carousel-card {
     min-width: calc(50% - 10px);
+  }
+  .badge-new {
+    font-size: 9px;
+    padding: 2px 7px;
+    top: 6px;
+    left: 6px;
   }
 }
 

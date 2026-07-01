@@ -121,7 +121,17 @@ const SearchDrawer = ({ isOpen, onClose }) => {
           </h3>
           
           {loading ? (
-            <div className="search-loading">Searching...</div>
+            <div className="popular-products-list">
+              {[...Array(4)].map((_, index) => (
+                <div key={`search-shimmer-${index}`} className="popular-product-item shimmer-card" style={{ padding: '10px' }}>
+                  <div className="shimmer-image" style={{ width: '60px', height: '60px', borderRadius: '8px', flexShrink: 0, marginBottom: 0 }}></div>
+                  <div className="popular-product-details" style={{ width: '100%', marginLeft: '15px' }}>
+                    <div className="shimmer-text" style={{ width: '80%', height: '14px', marginBottom: '8px' }}></div>
+                    <div className="shimmer-text" style={{ width: '50%', height: '14px' }}></div>
+                  </div>
+                </div>
+              ))}
+            </div>
           ) : products.length > 0 ? (
             <div className="popular-products-list">
               {products.map(product => (
