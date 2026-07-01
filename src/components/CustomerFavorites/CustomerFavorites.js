@@ -17,7 +17,7 @@ const GET_PRODUCTS = gql`
   }
 }`;
 
-const CustomerFavorites = () => {
+const CustomerFavorites = ({ title = "Loved by Our Little Customers 💛" }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -47,7 +47,7 @@ const CustomerFavorites = () => {
   return (
     <section className="customer-favorites-section">
       <div className="customer-favorites-header">
-        <h2 className="customer-favorites-title">Loved by Our Little Customers 💛</h2>
+        <h2 className="customer-favorites-title">{title}</h2>
         <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="customer-favorites-insta-btn">
           <FaInstagram className="cf-insta-icon" />
           Follow Us on Instagram
