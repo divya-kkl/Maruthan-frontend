@@ -107,3 +107,5 @@
   margin-right: 5px;
   font-size: 13px;
 }
+
+@media (max-width: 768px) { .our-stores-section { padding: 20px 15px !important; } }

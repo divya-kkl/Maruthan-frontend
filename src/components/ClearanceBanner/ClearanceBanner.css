@@ -151,3 +151,5 @@
     padding-right: 0;
   }
 }
+
+@media (max-width: 768px) { .clearance-banner-container { margin: 20px 0 !important; } .clearance-banner { padding: 20px 8% !important; } }

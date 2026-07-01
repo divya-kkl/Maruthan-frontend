@@ -428,12 +428,47 @@
   }
   
   .checkout-page {
-    padding: 30px 15px;
+    padding: 20px 12px;
+  }
+  
+  .checkout-header-wrapper {
+    margin-bottom: 20px;
+  }
+
+  .checkout-header-wrapper h1 {
+    font-size: 26px;
   }
   
   .checkout-form-section,
   .checkout-summary-section {
-    padding: 25px 20px;
+    padding: 20px 15px;
+  }
+
+  .address-option {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .address-details {
+    width: 100%;
+  }
+
+  .address-phone {
+    margin-left: 0;
+    font-size: 13px;
+  }
+
+  .address-name {
+    font-size: 14px;
+  }
+
+  .address-type {
+    font-size: 0.75rem;
+  }
+
+  .checkout-section-title {
+    font-size: 17px;
+    margin-bottom: 15px;
   }
 }
 

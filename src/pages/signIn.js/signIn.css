@@ -168,7 +168,7 @@
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  margin-bottom: 15px;
+  margin-bottom: 5px;
   transition: background-color 0.2s;
   font-family: inherit;
   box-sizing: border-box;
@@ -275,4 +275,13 @@
 
 .signin-footer a:hover {
   text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .signin-container {
+    padding: 20px 40px 10px 40px;
+  }
+  .signin-page {
+    min-height: 0;
+  }
 }
