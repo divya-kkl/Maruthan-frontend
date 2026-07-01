@@ -1,0 +1,39 @@
+.order-status-page {
+  background-color: #fdfdf9; /* Light cream/off-white background matching screenshot */
+  min-height: 80vh;
+  padding: 30px 20px 50px;
+  display: flex;
+  justify-content: center;
+}
+
+.order-status-container {
+  max-width: 1000px;
+  width: 100%;
+}
+
+.order-status-main-title {
+  text-align: center;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 32px;
+  font-weight: normal;
+  color: #333;
+  margin-top: 15px;
+  margin-bottom: 50px;
+}
+
+.order-status-subtitle {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: #222;
+  margin-top: 35px;
+  margin-bottom: 15px;
+}
+
+.order-status-text {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #444;
+  margin-bottom: 15px;
+}
