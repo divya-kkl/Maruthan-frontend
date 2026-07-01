@@ -25,6 +25,7 @@ const GET_ORDER_BY_ID = gql`
         country
         phone
       }
+      notes
       items {
         name
         image
@@ -156,7 +157,16 @@ const OrderSuccessPage = () => {
                 </div>
               </div>
 
-              <div className="premium-shipping-card">
+              {orderDetails.notes && (
+                <div className="premium-shipping-card" style={{ marginTop: '20px' }}>
+                  <h3 className="dashboard-section-title">Order Notes</h3>
+                  <div className="payment-method-content">
+                    <p style={{ margin: 0, fontSize: '14px', color: '#555', whiteSpace: 'pre-wrap' }}>{orderDetails.notes}</p>
+                  </div>
+                </div>
+              )}
+
+              <div className="premium-shipping-card" style={{ marginTop: '20px' }}>
                 <h3 className="dashboard-section-title">Payment Method</h3>
                 <div className="payment-method-content">
                   <div className="payment-badge">{orderDetails.paymentMethod === 'COD' ? 'Cash on Delivery' : orderDetails.paymentMethod}</div>
