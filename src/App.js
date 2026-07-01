@@ -81,24 +81,6 @@ function App() {
           <TopBanner />
           <Header />
           <Routes>
-            <Route path="/" element={
-              <>
-                <Hero />
-                <ProductShowcase />
-                <ProductCarousel />
-                <NewbornShowcase />
-                <PromoCarousel />
-                <ChettinadShowcase />
-                <JablaShowcase />
-                <BoysShowcase />
-                <ClearanceBanner />
-                <CottonFrockShowcase />
-                <LovedByCustomers  />
-                <CustomerFavorites  />
-                <OurStores />
-                <FAQ />
-              </>
-            } />
             <Route path="/" element={<HomePage />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
