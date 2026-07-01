@@ -7,6 +7,7 @@ import { AiFillStar } from 'react-icons/ai';
 import { FaFacebookF, FaTwitter, FaPinterestP } from 'react-icons/fa';
 import { FiShare2, FiHelpCircle, FiMaximize2, FiTruck, FiTag, FiBox, FiX } from 'react-icons/fi';
 import { AiFillStar } from 'react-icons/ai';
+import SizeChart from '../../components/SizeChart/SizeChart';
 import RelatedProducts from '../../components/RelatedProducts/RelatedProducts';
 import './ProductPage.css';
 
@@ -32,6 +33,10 @@ const GET_PRODUCT_BY_ID = gql`
   }
 `;
 
+const GET_ALL_FAQS = gql`
+  query { getAllFAQs { id question answer category order isActive } }
+`;
+
 const ProductPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -43,6 +48,8 @@ const ProductPage = () => {
   const [activeImage, setActiveImage] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
   const [quantity, setQuantity] = useState(1);
+  const [faqs, setFaqs] = useState([]);
+  const [openFaqs, setOpenFaqs] = useState({});
   const [openAccordions, setOpenAccordions] = useState(['description']);
   const [showAskModal, setShowAskModal] = useState(false);
   const [askForm, setAskForm] = useState({ name: '', phone: '', email: '', message: '' });
@@ -78,8 +85,26 @@ const ProductPage = () => {
       }
     };
 
+    const fetchFAQs = async () => {
+      try {
+        const client = new GraphQLClient(GRAPHQL_ENDPOINT);
+        const data = await client.request(GET_ALL_FAQS);
+        const activeFaqs = (data.getAllFAQs || [])
+          .filter(f => f.isActive)
+          .sort((a, b) => a.order - b.order);
+        setFaqs(activeFaqs);
+      } catch (err) {
+        console.error("Error fetching FAQs:", err);
+      }
+    };
+
     fetchProduct();
+    fetchFAQs();
   }, [id]);
+
+  const toggleFaq = (faqId) => {
+    setOpenFaqs(prev => ({ ...prev, [faqId]: !prev[faqId] }));
+  };
 
   const handleAddToCart = () => {
     if (product && selectedSize) {
@@ -377,6 +402,7 @@ const ProductPage = () => {
               </div>
             )}
           </div>
+
         </div>
       </div>
       {/* Zoom Overlay */}
@@ -398,6 +424,32 @@ const ProductPage = () => {
     <div style={{ marginTop: '40px', paddingBottom: '40px' }}>
       <RelatedProducts title="New Arrivals" />
     </div>
+         {faqs.length > 0 && (
+        <div className="standalone-faq-container">
+          <h2 className="standalone-faq-title">FAQ</h2>
+          <div className="standalone-faq-list">
+            {faqs.map((faq) => (
+              <div key={faq.id} className="standalone-faq-item">
+                <div
+                  className={`standalone-faq-question ${openFaqs[faq.id] ? 'open' : ''}`}
+                  onClick={() => toggleFaq(faq.id)}
+                >
+                  <span>{faq.question}</span>
+                  <span className="standalone-faq-icon">{openFaqs[faq.id] ? '−' : '+'}</span>
+                </div>
+                {openFaqs[faq.id] && (
+                  <div className="standalone-faq-answer">
+                    {faq.answer}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Static Size Chart Component */}
+      <SizeChart />
   </>
   );
 };

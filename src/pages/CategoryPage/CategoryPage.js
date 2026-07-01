@@ -72,7 +72,7 @@ const CategoryPage = () => {
     brands: [],
     colors: [],
     stock: [],
-    price: { min: 0, max: 0 }
+    price: { min: '', max: '' }
   });
 
   // Local string state for price inputs (so user can clear '0' and type freely)
@@ -106,6 +106,8 @@ const CategoryPage = () => {
     });
   };
 
+  // Serialize activeFilters to a stable string to avoid object-reference re-renders
+  const activeFiltersKey = JSON.stringify(activeFilters);
   useEffect(() => {
     if (filterData.price.max > 0) {
       setActiveFilters(prev => ({
@@ -118,40 +120,47 @@ const CategoryPage = () => {
   }, [filterData.price.max]);
 
   useEffect(() => {
+    // Parse the serialized filters inside the effect
+    const filters = JSON.parse(activeFiltersKey);
+
+    let cancelled = false;
+
     const fetchCategoryProducts = async (isNewQuery = false) => {
       if (page === 1) {
         setLoading(true);
       } else {
         setLoadingMore(true);
-        // Add artificial delay so the refresh spinner is visible during scroll
         await new Promise(resolve => setTimeout(resolve, 1500));
       }
       try {
         const client = new GraphQLClient(GRAPHQL_ENDPOINT);
-        const data = await client.request(GET_PRODUCTS_BY_CATEGORY, { 
-          code: categoryCode, 
+        const data = await client.request(GET_PRODUCTS_BY_CATEGORY, {
+          code: categoryCode,
           sort: sort,
           page: page,
           limit: itemsPerPage,
           filters: {
-            sizes: activeFilters.sizes.length > 0 ? activeFilters.sizes : null,
-            brands: activeFilters.brands.length > 0 ? activeFilters.brands : null,
-            colors: activeFilters.colors.length > 0 ? activeFilters.colors : null,
-            stock: activeFilters.stock.length > 0 ? activeFilters.stock : null,
-            price: (activeFilters.price.min > 0 || activeFilters.price.max > 0) ? activeFilters.price : null
+            sizes: filters.sizes.length > 0 ? filters.sizes : null,
+            brands: filters.brands.length > 0 ? filters.brands : null,
+            colors: filters.colors.length > 0 ? filters.colors : null,
+            stock: filters.stock.length > 0 ? filters.stock : null,
+            price: (filters.price.min !== '' || filters.price.max !== '') ? {
+              min: filters.price.min !== '' ? Number(filters.price.min) : 0,
+              max: filters.price.max !== '' ? Number(filters.price.max) : 999999
+            } : null
           }
         });
+
+        if (cancelled) return;
+
         if (data.getProductsByCategoryCode) {
           const newProducts = data.getProductsByCategoryCode.products || [];
           setProducts(prev => {
             const updatedProducts = isNewQuery ? newProducts : [...prev, ...newProducts];
-            // Calculate hasMore without needing backend totalCount
             setHasMore(newProducts.length === itemsPerPage);
-            
-            // Fallback totalCount to at least show something reasonable if backend doesn't return it
-            const newTotalCount = data.getProductsByCategoryCode.totalCount || (updatedProducts.length + (newProducts.length === itemsPerPage ? 1 : 0));
+            const newTotalCount = data.getProductsByCategoryCode.totalCount ||
+              (updatedProducts.length + (newProducts.length === itemsPerPage ? 1 : 0));
             setTotalCount(newTotalCount);
-            
             return updatedProducts;
           });
           if (data.getProductsByCategoryCode.filters) {
@@ -162,17 +171,22 @@ const CategoryPage = () => {
           setTotalCount(0);
         }
       } catch (err) {
-        console.error('Error fetching category products:', err);
+        if (!cancelled) console.error('Error fetching category products:', err);
       } finally {
-        setLoading(false);
-        setLoadingMore(false);
+        if (!cancelled) {
+          setLoading(false);
+          setLoadingMore(false);
+        }
       }
     };
 
     if (categoryCode) {
       fetchCategoryProducts(page === 1);
     }
-  }, [categoryCode, sort, activeFilters, page]);
+
+    return () => { cancelled = true; };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [categoryCode, sort, activeFiltersKey, page]);
 
   // Detect first user scroll to prevent instant loading on very large monitors
   useEffect(() => {
@@ -390,7 +404,7 @@ const CategoryPage = () => {
                     </div>
                   </div>
                   <div className="price-slider-line"></div>
-                  <div className="price-range-text">Price: Rs. {activeFilters.price.min.toFixed(2)} - Rs. {activeFilters.price.max.toFixed(2)}</div>
+                  <div className="price-range-text">Price: Rs. {activeFilters.price.min || 0} - Rs. {activeFilters.price.max || filterData.price.max || 0}</div>
                 </div>
               )}
             </div>

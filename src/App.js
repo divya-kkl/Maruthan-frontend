@@ -27,6 +27,8 @@ import WhatsAppFloat from './components/WhatsAppFloat/WhatsAppFloat';
 import OurStoresPage from './pages/OurStoresPage/OurStoresPage';
 import ProductPage from './pages/ProductPage/ProductPage';
 import { CartProvider } from './context/CartContext';
+import FAQ from './components/FAQ/FAQ';
+import FAQAdmin from './pages/FAQAdmin/FAQAdmin';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -79,6 +81,24 @@ function App() {
           <TopBanner />
           <Header />
           <Routes>
+            <Route path="/" element={
+              <>
+                <Hero />
+                <ProductShowcase />
+                <ProductCarousel />
+                <NewbornShowcase />
+                <PromoCarousel />
+                <ChettinadShowcase />
+                <JablaShowcase />
+                <BoysShowcase />
+                <ClearanceBanner />
+                <CottonFrockShowcase />
+                <LovedByCustomers  />
+                <CustomerFavorites  />
+                <OurStores />
+                <FAQ />
+              </>
+            } />
             <Route path="/" element={<HomePage />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
@@ -89,6 +109,7 @@ function App() {
             <Route path="/stores" element={<OurStoresPage />} />
             <Route path="/login" element={<SignInWrapper />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/faq-admin" element={<FAQAdmin />} />
             <Route path="/order-status" element={<OrderStatusPage />} />
             <Route path="/payment" element={<PaymentPage />} />
             <Route path="/exchange" element={<ExchangePage />} />
