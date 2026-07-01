@@ -142,7 +142,7 @@
 
 @media (max-width: 768px) {
   .cotton-frock-card {
-    min-width: 160px;
+    min-width: calc(50% - 7.5px);
   }
   .cotton-frock-title {
     font-size: 24px;

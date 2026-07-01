@@ -2,8 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { GraphQLClient, gql } from 'graphql-request';
 import { useCart } from '../../context/CartContext';
-import { FiShare2, FiHelpCircle, FiMaximize2, FiTruck, FiTag, FiBox } from 'react-icons/fi';
+import { FiShare2, FiHelpCircle, FiMaximize2, FiTruck, FiTag, FiBox, FiCopy } from 'react-icons/fi';
 import { AiFillStar } from 'react-icons/ai';
+import { FaFacebookF, FaTwitter, FaPinterestP } from 'react-icons/fa';
+import { FiShare2, FiHelpCircle, FiMaximize2, FiTruck, FiTag, FiBox, FiX } from 'react-icons/fi';
+import { AiFillStar } from 'react-icons/ai';
+import RelatedProducts from '../../components/RelatedProducts/RelatedProducts';
 import './ProductPage.css';
 
 const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:2000/graphql';
@@ -40,6 +44,13 @@ const ProductPage = () => {
   const [selectedSize, setSelectedSize] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [openAccordion, setOpenAccordion] = useState('description');
+  const [showAskModal, setShowAskModal] = useState(false);
+  const [askForm, setAskForm] = useState({ name: '', phone: '', email: '', message: '' });
+  const [askSent, setAskSent] = useState(false);
+  const [askSending, setAskSending] = useState(false);
+  const [shareSent, setShareSent] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [isZoomed, setIsZoomed] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -88,10 +99,32 @@ const ProductPage = () => {
     setOpenAccordion(openAccordion === section ? '' : section);
   };
 
+  const handleShare = () => {
+    setShowShareModal(true);
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      setShareSent(true);
+      setTimeout(() => setShareSent(false), 2000);
+    });
+  };
+
+  const handleAskSubmit = async (e) => {
+    e.preventDefault();
+    setAskSending(true);
+    window.open(`https://wa.me/919786221122?text=${encodeURIComponent(`Hi, I have a question!\nName: ${askForm.name}\nPhone: ${askForm.phone}\nEmail: ${askForm.email}\nMessage: ${askForm.message}`)}`, '_blank');
+    setAskSent(true);
+    setAskSending(false);
+    setAskForm({ name: '', phone: '', email: '', message: '' });
+    setTimeout(() => { setAskSent(false); setShowAskModal(false); }, 2000);
+  };
+
   if (loading) return <div className="product-page-loading">Loading product details...</div>;
   if (error || !product) return <div className="product-page-error">{error || "Product not found"}</div>;
 
   return (
+    <>
     <div className="product-page-container">
       {/* Left Column: Images */}
       <div className="product-image-section">
@@ -112,7 +145,7 @@ const ProductPage = () => {
         </div>
         <div className="product-main-image-wrapper">
           <img src={activeImage || "/images/placeholder.png"} alt={product.name} className="product-main-image" />
-          <button className="expand-icon"><FiMaximize2 /></button>
+          <button className="expand-icon" onClick={() => setIsZoomed(true)}><FiMaximize2 /></button>
         </div>
       </div>
 
@@ -133,9 +166,91 @@ const ProductPage = () => {
         </div>
 
         <div className="product-meta-links">
-          <div className="meta-link"><FiHelpCircle /> Ask a question</div>
-          <div className="meta-link"><FiShare2 /> Share</div>
+          <div className="meta-link" onClick={() => setShowAskModal(true)} style={{ cursor: 'pointer' }}><FiHelpCircle /> Ask a question</div>
+          <div className="meta-link" onClick={handleShare} style={{ cursor: 'pointer' }}><FiShare2 /> Share</div>
         </div>
+
+        {/* Ask a Question Modal */}
+        {showAskModal && (
+          <div className="ask-modal-overlay" onClick={() => setShowAskModal(false)}>
+            <div className="ask-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="ask-modal-header">
+                <h3>Ask a Question</h3>
+                <button className="ask-modal-close" onClick={() => setShowAskModal(false)}>&#x2715;</button>
+              </div>
+              <form className="ask-modal-form" onSubmit={handleAskSubmit}>
+                <div className="ask-modal-row">
+                  <input
+                    type="text"
+                    placeholder="Your name*"
+                    value={askForm.name}
+                    onChange={(e) => setAskForm({ ...askForm, name: e.target.value })}
+                    required
+                  />
+                  <input
+                    type="tel"
+                    placeholder="Your phone number"
+                    value={askForm.phone}
+                    onChange={(e) => setAskForm({ ...askForm, phone: e.target.value })}
+                  />
+                </div>
+                <input
+                  type="email"
+                  placeholder="Your email *"
+                  value={askForm.email}
+                  onChange={(e) => setAskForm({ ...askForm, email: e.target.value })}
+                  required
+                />
+                <textarea
+                  placeholder="Your message*"
+                  rows="5"
+                  value={askForm.message}
+                  onChange={(e) => setAskForm({ ...askForm, message: e.target.value })}
+                  required
+                ></textarea>
+                <p className="ask-modal-note">* Required fields cannot be left blank.</p>
+                {askSent && <p className="ask-success">✅ Message sent!</p>}
+                <button type="submit" className="ask-modal-submit" disabled={askSending}>
+                  {askSending ? 'Sending...' : 'Send Your Message'}
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Share Modal */}
+        {showShareModal && (
+          <div className="ask-modal-overlay" onClick={() => setShowShareModal(false)}>
+            <div className="share-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="ask-modal-header">
+                <h3>Copy link</h3>
+                <button className="ask-modal-close" onClick={() => setShowShareModal(false)}>&#x2715;</button>
+              </div>
+              
+              <div className="share-link-container">
+                <div className="share-link-input">{window.location.href}</div>
+                <button className="share-copy-btn" onClick={handleCopyLink} title="Copy Link">
+                  <FiCopy />
+                </button>
+              </div>
+              {shareSent && <p className="ask-success" style={{marginTop: '-10px', marginBottom: '15px'}}>✅ Link copied!</p>}
+              
+              <p className="share-text">Share:</p>
+              <div className="share-social-buttons">
+                <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noopener noreferrer" className="social-circle">
+                  <FaFacebookF />
+                </a>
+                <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(product?.name || 'Product')}`} target="_blank" rel="noopener noreferrer" className="social-circle">
+                  <FaTwitter />
+                </a>
+                <a href={`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(window.location.href)}&media=${encodeURIComponent(product?.images?.[0] || '')}&description=${encodeURIComponent(product?.name || 'Product')}`} target="_blank" rel="noopener noreferrer" className="social-circle">
+                  <FaPinterestP />
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
+
 
         <div className="delivery-info-box">
           <div className="delivery-item">
@@ -232,7 +347,26 @@ const ProductPage = () => {
           </div>
         </div>
       </div>
+      {/* Zoom Overlay */}
+      {isZoomed && (
+        <div className="image-zoom-overlay" onClick={() => setIsZoomed(false)}>
+          <button className="zoom-close-btn" onClick={() => setIsZoomed(false)}>
+            <FiX />
+          </button>
+          <img 
+            src={activeImage || "/images/placeholder.png"} 
+            alt={product.name} 
+            className="zoomed-image" 
+            onClick={(e) => e.stopPropagation()} 
+          />
+        </div>
+      )}
     </div>
+    
+    <div style={{ marginTop: '40px', paddingBottom: '40px' }}>
+      <RelatedProducts title="New Arrivals" />
+    </div>
+  </>
   );
 };
 

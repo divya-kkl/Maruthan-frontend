@@ -11,6 +11,48 @@
 @media (max-width: 768px) {
   .premium-order-dashboard {
     grid-template-columns: 1fr;
+    gap: 15px;
+    margin-top: 20px;
+  }
+
+  .order-dashboard-left,
+  .premium-shipping-card {
+    padding: 20px 15px;
+  }
+
+  .premium-item-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .premium-item-name {
+    max-width: 100%;
+    font-size: 13px;
+  }
+
+  .premium-item-price {
+    font-size: 14px;
+  }
+
+  .premium-item-row {
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .premium-item-img {
+    width: 65px;
+    height: 65px;
+    flex-shrink: 0;
+  }
+
+  .dashboard-section-title {
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+
+  .premium-grand-total {
+    font-size: 16px;
   }
 }
 

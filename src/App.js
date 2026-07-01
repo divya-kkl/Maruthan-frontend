@@ -13,6 +13,16 @@ import ProfilePage from './pages/ProfilePage/ProfilePage';
 import OrderSuccessPage from './pages/OrderSuccessPage/OrderSuccessPage';
 import CategoryPage from './pages/CategoryPage/CategoryPage';
 import HomePage from './pages/HomePage/HomePage';
+import OrderStatusPage from './pages/OrderStatusPage/OrderStatusPage';
+import PaymentPage from './pages/PaymentPage/PaymentPage';
+import ExchangePage from './pages/ExchangePage/ExchangePage';
+import ShippingPage from './pages/ShippingPage/ShippingPage';
+import CancellationPage from './pages/CancellationPage/CancellationPage';
+import AboutUsPage from './pages/AboutUsPage/AboutUsPage';
+import ContactPage from './pages/ContactUsPage/ContactPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage/PrivacyPolicyPage';
+import TermsPage from './pages/TermsPage/TermsPage';
+import WhatsAppFloat from './components/WhatsAppFloat/WhatsAppFloat';
 
 import OurStoresPage from './pages/OurStoresPage/OurStoresPage';
 import ProductPage from './pages/ProductPage/ProductPage';
@@ -46,6 +56,20 @@ const CategoryPageWrapper = () => {
   return <CategoryPage key={categoryCode} />;
 };
 
+const BottomSections = () => {
+  const { pathname } = useLocation();
+  // Hide StoreQuality and StoreFeatures on informational pages
+  if (pathname === '/order-status' || pathname === '/payment' || pathname === '/exchange' || pathname === '/shipping' || pathname === '/cancellation' || pathname === '/about-us' || pathname === '/contact-us' || pathname === '/privacy-policy' || pathname === '/terms') {
+    return null;
+  }
+  return (
+    <>
+      <StoreQuality />
+      <StoreFeatures />
+    </>
+  );
+};
+
 function App() {
   return (
     <CartProvider>
@@ -65,10 +89,19 @@ function App() {
             <Route path="/stores" element={<OurStoresPage />} />
             <Route path="/login" element={<SignInWrapper />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/order-status" element={<OrderStatusPage />} />
+            <Route path="/payment" element={<PaymentPage />} />
+            <Route path="/exchange" element={<ExchangePage />} />
+            <Route path="/shipping" element={<ShippingPage />} />
+            <Route path="/cancellation" element={<CancellationPage />} />
+            <Route path="/about-us" element={<AboutUsPage />} />
+            <Route path="/contact-us" element={<ContactPage />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
           </Routes>
-          <StoreQuality />
-          <StoreFeatures />
+          <BottomSections />
           <Footer />
+          <WhatsAppFloat />
         </div>
       </Router>
     </CartProvider>

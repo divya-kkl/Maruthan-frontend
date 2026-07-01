@@ -1,0 +1,62 @@
+.cancellation-page {
+  background-color: #fdfdf9; /* Light cream/off-white background */
+  min-height: 80vh;
+  padding: 30px 20px 50px;
+  display: flex;
+  justify-content: center;
+}
+
+.cancellation-container {
+  max-width: 1000px;
+  width: 100%;
+}
+
+.cancellation-main-title {
+  text-align: center;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 32px;
+  font-weight: normal;
+  color: #333;
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+
+.cancellation-subtitle {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 26px;
+  font-weight: normal;
+  color: #222;
+  margin-top: 35px;
+  margin-bottom: 25px;
+}
+
+.cancellation-text {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 16px;
+  line-height: 1.8;
+  color: #444;
+  margin-bottom: 20px;
+}
+
+.cancellation-italic {
+  font-style: italic;
+}
+
+.cancellation-list {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 16px;
+  line-height: 1.8;
+  color: #444;
+  margin-bottom: 20px;
+  padding-left: 20px;
+}
+
+.cancellation-list li {
+  margin-bottom: 18px;
+}
+
+.cancellation-divider {
+  border: 0;
+  border-top: 1px solid #ccc;
+  margin: 40px 0 30px;
+}

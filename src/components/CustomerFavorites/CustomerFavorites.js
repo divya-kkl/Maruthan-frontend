@@ -17,7 +17,7 @@ const GET_PRODUCTS = gql`
   }
 }`;
 
-const CustomerFavorites = () => {
+const CustomerFavorites = ({ title = "Loved by Our Little Customers 💛" }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
