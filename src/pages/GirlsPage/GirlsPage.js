@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { GraphQLClient, gql } from 'graphql-request';
 import './GirlsPage.css';
 import QuickViewModal from '../../components/QuickViewModal/QuickViewModal';
+import { useCart } from '../../context/CartContext';
 
 const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:2000/graphql';
 
@@ -32,6 +33,7 @@ const GET_PRODUCTS_BY_CATEGORY = gql`
 
 const GirlsPage = () => {
   const navigate = useNavigate();
+  const { deliveryCharge } = useCart();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState(null);

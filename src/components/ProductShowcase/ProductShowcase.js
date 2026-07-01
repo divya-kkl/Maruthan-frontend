@@ -74,13 +74,31 @@ const ProductShowcase = () => {
   return (
     <section className="product-showcase-section">
       <div className="showcase-header">
-        <h2 className="showcase-title">Traditional gowns</h2>
-        <p className="showcase-subtitle">Loved by parents for its timeless tradition and comfort!</p>
+        {loading ? (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div className="shimmer-text title" style={{ width: '300px', height: '32px', marginBottom: '10px' }}></div>
+            <div className="shimmer-text" style={{ width: '400px', height: '20px' }}></div>
+          </div>
+        ) : (
+          <>
+            <h2 className="showcase-title">Traditional gowns</h2>
+            <p className="showcase-subtitle">Loved by parents for its timeless tradition and comfort!</p>
+          </>
+        )}
       </div>
 
       <div className="product-grid">
         {loading ? (
-          <p>Loading products...</p>
+          [...Array(5)].map((_, index) => (
+            <div className="product-card shimmer-card" key={`shimmer-${index}`}>
+              <div className="shimmer-image"></div>
+              <div className="product-info" style={{ width: '100%' }}>
+                <div className="shimmer-text title"></div>
+                <div className="shimmer-text price"></div>
+                <div className="shimmer-button"></div>
+              </div>
+            </div>
+          ))
         ) : products.length > 0 ? (
           products.map((product) => (
             <div className="product-card" key={product.id}>
@@ -108,9 +126,13 @@ const ProductShowcase = () => {
       </div>
 
       <div className="shop-more-container">
-        <button className="shop-more-btn" onClick={() => navigate('/categories/GIRLS')}>
-          View All
-        </button>
+        {loading ? (
+          <div className="shimmer-button" style={{ width: '150px', margin: '0 auto', borderRadius: '4px' }}></div>
+        ) : (
+          <button className="shop-more-btn" onClick={() => navigate('/categories/GIRLS')}>
+            View All
+          </button>
+        )}
       </div>
       
       {selectedProduct && <QuickViewModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />}

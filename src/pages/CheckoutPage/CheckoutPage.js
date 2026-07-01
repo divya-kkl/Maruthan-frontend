@@ -60,7 +60,7 @@ const PLACE_ORDER = gql`
 
 const Checkout = ({ onNavigate }) => {
   const navigate = useNavigate();
-  const { cartItems, getCartTotal, removeFromCart } = useCart();
+  const { cartItems, getCartTotal, removeFromCart, deliveryCharge } = useCart();
 
   const [loading] = useState(false);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
@@ -159,7 +159,7 @@ const Checkout = ({ onNavigate }) => {
           };
 
       const input = {
-        deliveryCharge: formData.deliveryCharge,
+        deliveryCharge: deliveryCharge || 0,
         paymentMethod: formData.paymentMethod,
         deliveryAddress,
         notes: formData.notes || undefined,
@@ -187,8 +187,8 @@ const Checkout = ({ onNavigate }) => {
           }
 
           const ADD_TO_CART = gql`
-            mutation AddToCart($userId: ID!, $shopId: ID!, $productId: ID!, $quantity: Float!) {
-              addToCart(userId: $userId, shopId: $shopId, productId: $productId, quantity: $quantity) {
+            mutation AddToCart($userId: ID!, $shopId: ID!, $productId: ID!, $quantity: Float!, $size: String!) {
+              addToCart(userId: $userId, shopId: $shopId, productId: $productId, quantity: $quantity, size: $size) {
                 id
               }
             }
@@ -198,7 +198,8 @@ const Checkout = ({ onNavigate }) => {
               userId: user.id,
               shopId: item.product.shopDetails || item.product.shopId || "default",
               productId: item.product.id || item.product._id,
-              quantity: parseFloat(item.quantity)
+              quantity: parseFloat(item.quantity),
+              size: item.size || "Default"
             });
           }
         }
@@ -488,13 +489,17 @@ const Checkout = ({ onNavigate }) => {
              </div>
              <div className="summary-row">
                <span>Delivery Charge</span>
-               <span className="free-shipping">Free</span>
+               {deliveryCharge > 0 ? (
+                 <span>Rs. {deliveryCharge.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
+               ) : (
+                 <span className="free-shipping">Free</span>
+               )}
              </div>
 
              <div className="summary-total-row">
                <span>Total to Pay</span>
                <span className="total-amount">
-                 Rs. {getCartTotal().toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                 Rs. {(getCartTotal() + (deliveryCharge || 0)).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                </span>
              </div>
           </div>

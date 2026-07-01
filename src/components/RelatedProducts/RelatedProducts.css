@@ -1,0 +1,102 @@
+.related-products-section {
+  padding: 20px 0;
+  background-color: transparent;
+  margin-top: 20px;
+}
+
+.related-products-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 195px);
+  justify-content: center;
+  gap: 20px;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.rp-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+  border: 1px solid #eaeaea;
+}
+
+.rp-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.rp-image-wrapper {
+  width: 100%;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.rp-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.rp-info {
+  padding: 12px 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  flex-grow: 1;
+}
+
+.rp-name {
+  font-size: 14px;
+  color: #333;
+  margin: 0 0 5px 0;
+}
+
+.rp-price {
+  font-size: 14px;
+  color: #0F2D5C;
+  font-weight: 600;
+  margin: 0 0 15px 0;
+}
+
+.rp-select-btn {
+  background-color: transparent;
+  color: #0F2D5C;
+  border: 1px solid #0F2D5C;
+  padding: 8px 0;
+  font-size: 13px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: auto;
+  transition: all 0.3s ease;
+}
+
+.rp-select-btn:hover {
+  background-color: #0F2D5C;
+  color: white;
+}
+
+.rp-view-all-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.rp-view-all-btn {
+  background-color: #0F2D5C;
+  color: white;
+  border: none;
+  padding: 10px 40px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.rp-view-all-btn:hover {
+  background-color: #0a1f40;
+}

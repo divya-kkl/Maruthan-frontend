@@ -367,3 +367,250 @@
     max-height: 500px;
   }
 }
+
+/* Ask a Question Modal */
+.ask-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.ask-modal {
+  background: #fff;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 560px;
+  padding: 30px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  position: relative;
+  animation: askModalIn 0.2s ease;
+}
+
+@keyframes askModalIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.ask-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.ask-modal-header h3 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 20px;
+  font-weight: normal;
+  color: #333;
+  margin: 0;
+}
+
+.ask-modal-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #666;
+  line-height: 1;
+  padding: 4px 8px;
+}
+
+.ask-modal-close:hover {
+  color: #333;
+}
+
+.ask-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ask-modal-row {
+  display: flex;
+  gap: 14px;
+}
+
+.ask-modal-row input {
+  flex: 1;
+}
+
+.ask-modal-form input,
+.ask-modal-form textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #1a365d;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: Arial, sans-serif;
+  color: #333;
+  background: transparent;
+  outline: none;
+  box-sizing: border-box;
+  transition: box-shadow 0.2s;
+}
+
+.ask-modal-form input:focus,
+.ask-modal-form textarea:focus {
+  box-shadow: 0 0 0 2px rgba(26, 54, 93, 0.2);
+}
+
+.ask-modal-form input::placeholder,
+.ask-modal-form textarea::placeholder {
+  color: #aaa;
+}
+
+.ask-modal-note {
+  font-size: 13px;
+  color: #666;
+  margin: 0;
+}
+
+.ask-success {
+  font-size: 14px;
+  color: #2e7d32;
+  margin: 0;
+}
+
+.ask-modal-submit {
+  background-color: #1a365d;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.ask-modal-submit:hover {
+  background-color: #0f2240;
+}
+
+.ask-modal-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Share Modal */
+.share-modal {
+  background: #fff;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 420px;
+  padding: 25px 30px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  position: relative;
+  animation: askModalIn 0.2s ease;
+}
+
+.share-link-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid #1a365d;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  padding: 4px;
+}
+
+.share-link-input {
+  flex: 1;
+  padding: 10px 15px;
+  font-size: 13px;
+  color: #888;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background: #fafafa;
+}
+
+.share-copy-btn {
+  background: #111;
+  color: #fff;
+  border: none;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background 0.2s;
+  border-radius: 50%;
+  margin-left: 10px;
+}
+
+.share-copy-btn:hover {
+  background: #333;
+}
+
+.share-text {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 15px;
+  color: #333;
+  margin: 0 0 15px 0;
+}
+
+.share-social-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.social-circle {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid #444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #111;
+  font-size: 18px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.social-circle:hover {
+  background: #1a365d;
+  color: #fff;
+  border-color: #1a365d;
+}
+
+.image-zoom-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.zoom-close-btn {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 36px;
+  cursor: pointer;
+  z-index: 10001;
+}
+
+.zoomed-image {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}

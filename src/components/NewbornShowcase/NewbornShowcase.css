@@ -146,3 +146,4 @@
     font-size: 13px;
   }
 }
+@media (max-width: 768px) { .newborn-showcase-section { padding: 20px 0 !important; } }

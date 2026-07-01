@@ -1,0 +1,84 @@
+.privacy-page {
+  background-color: #fdfdf9; /* Light cream/off-white background matching site */
+  min-height: 80vh;
+  padding: 30px 20px 50px;
+  display: flex;
+  justify-content: center;
+}
+
+.privacy-container {
+  max-width: 1000px;
+  width: 100%;
+}
+
+.privacy-main-title {
+  text-align: center;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 32px;
+  font-weight: normal;
+  color: #333;
+  margin-top: 15px;
+  margin-bottom: 50px;
+}
+
+.privacy-subtitle {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 26px;
+  font-weight: normal;
+  color: #222;
+  margin-top: 35px;
+  margin-bottom: 25px;
+}
+
+.privacy-intro-text {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 16px;
+  line-height: 1.8;
+  color: #444;
+  margin-bottom: 20px;
+}
+
+.privacy-intro-text a {
+  color: #1a365d;
+  text-decoration: underline;
+}
+
+.privacy-text {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 16px;
+  line-height: 1.8;
+  color: #444;
+  margin-bottom: 20px;
+}
+
+.privacy-list {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 16px;
+  line-height: 1.8;
+  color: #444;
+  margin-bottom: 20px;
+  padding-left: 20px;
+}
+
+.privacy-list li {
+  margin-bottom: 18px;
+  list-style-type: disc;
+}
+
+.privacy-divider {
+  border: 0;
+  border-top: 1px solid #ccc;
+  margin: 30px 0;
+}
+
+.privacy-contact-info {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 16px;
+  color: #444;
+  line-height: 1.8;
+}
+
+.privacy-contact-info a {
+  color: #1a365d;
+  text-decoration: underline;
+}

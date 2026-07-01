@@ -38,6 +38,7 @@
   flex-grow: 1;
 }
 
+
 .osp-city {
   font-size: 13px;
   color: #555;
@@ -67,43 +68,48 @@
 
 .osp-actions {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 15px;
   margin-top: auto;
-  max-width: 200px;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .osp-btn {
-  width: 100%;
+  flex: 1;
+  min-width: 120px;
+  max-width: 180px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 4px;
-  padding: 12px 0;
-  font-size: 14px;
+  border-radius: 2px;
+  padding: 10px 0;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
-  font-family: sans-serif;
+  font-family: inherit;
 }
 
 .osp-whatsapp-btn {
-  background-color: #fff;
-  color: #7b2cbf;
-  border: 1px solid #7b2cbf;
+  background-color: #1a365d;
+  color: #fff;
+  border: 1px solid #1a365d;
 }
 
 .osp-whatsapp-btn:hover {
-  background-color: #f3e8ff;
+  background-color: #0f2240;
 }
 
 .osp-direction-btn {
   background-color: #fff;
-  color: #7b2cbf;
-  border: none;
+  color: #1a365d;
+  border: 1px solid #1a365d;
 }
 
 .osp-direction-btn:hover {
-  background-color: #f8f9fa;
+  background-color: #1a365d;
+  color: #fff;
 }
 
 @media (max-width: 768px) {

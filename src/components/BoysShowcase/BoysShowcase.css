@@ -123,6 +123,131 @@
   color: white;
 }
 
+.boys-section {
+  width: 100%;
+  margin-bottom: 50px;
+  font-family: 'Times New Roman', Times, serif;
+  margin-top: 60px;
+}
+
+.boys-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.boys-title {
+  text-align: center;
+  font-size: 30px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.boys-subtitle {
+  text-align: center;
+  font-size: 15px;
+  color: #333;
+  margin-bottom: 40px;
+ font-family: 'Time New Roman';
+  font-weight: 400;
+}
+
+.boys-grid {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  overflow-x: auto;
+  padding-bottom: 30px;
+  /* Space before view all button */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.boys-grid::-webkit-scrollbar {
+  display: none;
+}
+
+.boys-card {
+  flex: 1;
+  min-width: 200px;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+}
+
+.boys-image-wrapper {
+  width: 100%;
+  aspect-ratio: 1 / 1.25;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  background-color: transparent;
+  /* Changed from #f0f0f0 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.boys-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.boys-card:hover .boys-image {
+  transform: scale(1.05);
+}
+
+.boys-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  flex-grow: 1;
+}
+
+.boys-name {
+  font-size: 18px;
+  color: #1a365d;
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+  font-weight: 500;
+  font-family: 'Times New Roman', Times, serif;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.boys-price {
+  font-size: 15px;
+  color: #1a365d;
+  font-family: 'Times New Roman', Times, serif;
+  margin-bottom: 0;
+}
+
+.boys-select-btn {
+  width: 100%;
+  padding: 10px 0;
+  margin-top: 15px;
+  background-color: transparent;
+  color: #1a365d;
+  border: 1px solid #1a365d;
+  border-radius: 0;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.boys-select-btn:hover {
+  background-color: #1a365d;
+  color: white;
+}
+
 .boys-view-all-wrapper {
   display: flex;
   justify-content: center;
@@ -147,7 +272,7 @@
 
 @media (max-width: 768px) {
   .boys-card {
-    min-width: 160px;
+    min-width: calc(50% - 7.5px);
   }
   .boys-title {
     font-size: 24px;
@@ -156,3 +281,4 @@
     gap: 15px;
   }
 }
+@media (max-width: 768px) { .boys-section { margin-top: 20px !important; margin-bottom: 20px !important; } }
