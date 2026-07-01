@@ -1,0 +1,281 @@
+/* ─── FAQ Section ─────────────────────────────────────────── */
+.faq-section {
+  width: 100%;
+  padding: 80px 20px;
+  background: #faf9f7;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.faq-container {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+/* Header */
+.faq-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.faq-label {
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #888;
+  margin-bottom: 12px;
+}
+
+.faq-title {
+  font-size: 32px;
+  font-weight: normal;
+  color: #1a1a1a;
+  margin: 0 0 14px 0;
+  letter-spacing: 0.5px;
+}
+
+.faq-subtitle {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.faq-contact-link {
+  color: #1a1a1a;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.faq-contact-link:hover {
+  opacity: 0.6;
+}
+
+/* Category Tabs */
+.faq-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 36px;
+}
+
+.faq-tab {
+  background: transparent;
+  border: 1px solid #ddd;
+  padding: 8px 20px;
+  font-size: 13px;
+  font-family: 'Times New Roman', Times, serif;
+  color: #555;
+  cursor: pointer;
+  border-radius: 50px;
+  transition: all 0.25s ease;
+  letter-spacing: 0.3px;
+}
+
+.faq-tab:hover {
+  border-color: #1a1a1a;
+  color: #1a1a1a;
+}
+
+.faq-tab--active {
+  background: #1a1a1a;
+  border-color: #1a1a1a;
+  color: #fff;
+}
+
+/* FAQ List */
+.faq-list {
+  border-top: 1px solid #e0e0e0;
+}
+
+.faq-item {
+  border-bottom: 1px solid #e0e0e0;
+  transition: background 0.2s ease;
+}
+
+.faq-item--open {
+  background: #fff;
+}
+
+.faq-question {
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 22px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  cursor: pointer;
+  text-align: left;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 15px;
+  color: #1a1a1a;
+  line-height: 1.5;
+  transition: color 0.2s ease;
+}
+
+.faq-question:hover {
+  color: #444;
+}
+
+.faq-q-text {
+  flex: 1;
+}
+
+.faq-icon {
+  flex-shrink: 0;
+  color: #888;
+  display: flex;
+  align-items: center;
+}
+
+.faq-chevron {
+  transition: transform 0.3s ease;
+}
+
+.faq-chevron--open {
+  transform: rotate(180deg);
+}
+
+/* Answer */
+.faq-answer-wrapper {
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+
+.faq-answer {
+  padding: 0 0 22px 0;
+}
+
+.faq-answer p {
+  margin: 0;
+  font-size: 14px;
+  color: #555;
+  line-height: 1.8;
+}
+
+/* Loading skeletons */
+.faq-loading {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.faq-skeleton {
+  height: 56px;
+  background: linear-gradient(90deg, #efefef 25%, #e0e0e0 50%, #efefef 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s infinite;
+  border-radius: 4px;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.faq-error,
+.faq-empty {
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+  padding: 40px 0;
+}
+
+/* Help Card */
+.faq-still-need-help {
+  margin-top: 50px;
+}
+
+.faq-help-card {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 36px;
+  text-align: center;
+}
+
+.faq-help-icon {
+  font-size: 28px;
+  display: block;
+  margin-bottom: 14px;
+}
+
+.faq-help-card h3 {
+  font-size: 18px;
+  font-weight: normal;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+}
+
+.faq-help-card p {
+  font-size: 13px;
+  color: #888;
+  margin: 0 0 24px 0;
+}
+
+.faq-help-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.faq-help-btn {
+  padding: 10px 28px;
+  font-size: 13px;
+  font-family: 'Times New Roman', Times, serif;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  display: inline-block;
+}
+
+.faq-help-btn--primary {
+  background: #1a1a1a;
+  color: #fff;
+  border: 1px solid #1a1a1a;
+}
+
+.faq-help-btn--primary:hover {
+  background: #333;
+}
+
+.faq-help-btn--secondary {
+  background: transparent;
+  color: #1a1a1a;
+  border: 1px solid #ccc;
+}
+
+.faq-help-btn--secondary:hover {
+  border-color: #1a1a1a;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .faq-section {
+    padding: 50px 16px;
+  }
+
+  .faq-title {
+    font-size: 24px;
+  }
+
+  .faq-question {
+    font-size: 14px;
+    padding: 18px 0;
+  }
+
+  .faq-help-card {
+    padding: 24px 16px;
+  }
+
+  .faq-help-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+}

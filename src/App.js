@@ -29,6 +29,8 @@ import CategoryPage from './pages/CategoryPage/CategoryPage';
 import OurStoresPage from './pages/OurStoresPage/OurStoresPage';
 import ProductPage from './pages/ProductPage/ProductPage';
 import { CartProvider } from './context/CartContext';
+import FAQ from './components/FAQ/FAQ';
+import FAQAdmin from './pages/FAQAdmin/FAQAdmin';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -82,8 +84,7 @@ function App() {
                 <LovedByCustomers  />
                 <CustomerFavorites  />
                 <OurStores />
-              
-                
+                <FAQ />
               </>
             } />
             <Route path="/cart" element={<CartPage />} />
@@ -95,6 +96,7 @@ function App() {
             <Route path="/stores" element={<OurStoresPage />} />
             <Route path="/login" element={<SignInWrapper />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/faq-admin" element={<FAQAdmin />} />
           </Routes>
           <StoreQuality />
           <StoreFeatures />

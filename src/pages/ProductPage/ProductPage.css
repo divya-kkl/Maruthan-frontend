@@ -331,6 +331,66 @@
   line-height: 1.6;
 }
 
+/* Standalone FAQ Section */
+.standalone-faq-container {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 0 20px 60px 20px;
+}
+
+.standalone-faq-title {
+  text-align: center;
+  font-size: 32px;
+  margin-bottom: 40px;
+  font-weight: normal;
+  color: #333;
+  font-family: Georgia, serif; /* Typical elegant serif for such headings */
+}
+
+.standalone-faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.standalone-faq-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.standalone-faq-question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 500;
+  color: #555;
+  cursor: pointer;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(26, 54, 93, 0.3);
+  transition: all 0.2s;
+}
+
+.standalone-faq-question:hover {
+  /* No text color change on hover */
+}
+
+.standalone-faq-question.open {
+  border-bottom: 2px solid #1a365d;
+}
+
+.standalone-faq-icon {
+  font-size: 20px;
+  color: #333;
+}
+
+.standalone-faq-answer {
+  padding-top: 15px;
+  font-size: 14px;
+  color: #666;
+  line-height: 1.8;
+}
+
 /* Loading/Error */
 .product-page-loading, .product-page-error {
   text-align: center;
@@ -338,6 +398,14 @@
   font-size: 18px;
 }
 
+/* Loading/Error */
+.product-page-loading, .product-page-error {
+  text-align: center;
+  padding: 100px 20px;
+  font-size: 18px;
+}
+
+/* Static Size Chart Button */
 /* Responsive */
 @media (max-width: 900px) {
   .product-page-container {
