@@ -153,12 +153,7 @@ const ContactPage = () => {
               </div>
 
               {sent && <p className="contact-success-msg">✅ Your message has been sent successfully!</p>}
-<<<<<<< HEAD
-              {formError && <p className="contact-error-msg">❌ {formError}</p>}
 
-=======
-              
->>>>>>> mail-sent
               <button type="submit" className="custom-submit-btn" disabled={sending}>
                 {sending ? 'Sending...' : 'Send'}
               </button>
