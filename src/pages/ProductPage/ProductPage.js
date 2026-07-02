@@ -2,11 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { GraphQLClient, gql } from 'graphql-request';
 import { useCart } from '../../context/CartContext';
-<<<<<<< HEAD
-import { FiShare2, FiTruck, FiTag, FiBox, FiCopy, FiX } from 'react-icons/fi';
-=======
-import { FiShare2, FiHelpCircle, FiMaximize2, FiTruck, FiTag, FiBox, FiCopy, FiX, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
->>>>>>> filter-page
+import { FiShare2, FiMaximize2, FiTruck, FiTag, FiBox, FiCopy, FiX, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { AiFillStar } from 'react-icons/ai';
 import { FaFacebookF, FaTwitter, FaPinterestP } from 'react-icons/fa';
 import SizeChart from '../../components/SizeChart/SizeChart';
@@ -66,6 +62,7 @@ const ProductPage = () => {
 
     return () => clearTimeout(timer);
   }, [activeImage]);
+
   const [selectedSize, setSelectedSize] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [faqs, setFaqs] = useState([]);
@@ -159,19 +156,6 @@ const ProductPage = () => {
     });
   };
 
-<<<<<<< HEAD
-  if (loading) return <div className="product-page-loading">Loading product details...</div>;
-=======
-  const handleAskSubmit = async (e) => {
-    e.preventDefault();
-    setAskSending(true);
-    window.open(`https://wa.me/919786221122?text=${encodeURIComponent(`Hi, I have a question!\nName: ${askForm.name}\nPhone: ${askForm.phone}\nEmail: ${askForm.email}\nMessage: ${askForm.message}`)}`, '_blank');
-    setAskSent(true);
-    setAskSending(false);
-    setAskForm({ name: '', phone: '', email: '', message: '' });
-    setTimeout(() => { setAskSent(false); setShowAskModal(false); }, 2000);
-  };
-
   const handlePrevImage = () => {
     if (!product || !product.images || product.images.length <= 1) return;
     const currentIndex = Math.max(0, product.images.indexOf(activeImage));
@@ -213,7 +197,7 @@ const ProductPage = () => {
       </div>
     );
   }
->>>>>>> filter-page
+
   if (error || !product) return <div className="product-page-error">{error || "Product not found"}</div>;
 
   const selectedVariant = product.variants?.find(v => v.size === selectedSize);
@@ -241,35 +225,6 @@ const ProductPage = () => {
           )}
         </div>
         <div className="product-main-image-wrapper">
-<<<<<<< HEAD
-          <img 
-            src={activeImage || "/images/placeholder.png"} 
-            alt={product.name} 
-            className="product-main-image" 
-            onClick={() => setIsZoomed(true)} 
-          />
-          <button className="expand-icon" onClick={() => setIsZoomed(true)}>
-            <svg 
-              viewBox="0 0 24 24" 
-              width="20" 
-              height="20" 
-              stroke="currentColor" 
-              strokeWidth="2.5" 
-              fill="none" 
-              strokeLinecap="round" 
-              strokeLinejoin="round"
-            >
-              <polyline points="15 3 21 3 21 9" />
-              <polyline points="9 21 3 21 3 15" />
-              <polyline points="21 15 21 21 15 21" />
-              <polyline points="3 9 3 3 9 3" />
-              <line x1="21" y1="3" x2="14" y2="10" />
-              <line x1="3" y1="21" x2="10" y2="14" />
-              <line x1="3" y1="3" x2="10" y2="10" />
-              <line x1="21" y1="21" x2="14" y2="14" />
-            </svg>
-          </button>
-=======
           {!imageLoaded && <div className="product-image-shimmer"></div>}
           
           {product.images && product.images.length > 1 && (
@@ -290,9 +245,9 @@ const ProductPage = () => {
             className="product-main-image" 
             style={{ opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.3s ease' }}
             onLoad={() => setImageLoaded(true)}
+            onClick={() => setIsZoomed(true)}
           />
           <button className="expand-icon" onClick={() => setIsZoomed(true)}><FiMaximize2 /></button>
->>>>>>> filter-page
         </div>
       </div>
 
