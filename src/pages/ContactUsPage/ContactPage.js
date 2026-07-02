@@ -1,45 +1,43 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import './ContactUsPage.css';
-
-// Using base64 to avoid false positive antivirus scans on UUIDs and submit endpoints
-const getEndpoint = () => window.atob('aHR0cHM6Ly9hcGkud2ViM2Zvcm1zLmNvbS9zdWJtaXQ=');
-const getKey = () => window.atob('NDZiMmQzYTQtY2RmMC00NDkwLWIzODYtNjdhNDUyZTFjOGEy');
 
 const ContactPage = () => {
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
-  const [formError, setFormError] = useState('');
+  const formRef = useRef(null);
+  const timeoutRef = useRef(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
+
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     setSending(true);
-    setFormError('');
     setSent(false);
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+  };
 
-    const formData = new FormData(e.target);
-
-    try {
-      const response = await fetch(getEndpoint(), {
-        method: 'POST',
-        body: formData,
-      });
-      const data = await response.json();
-
-      if (data.success) {
-        setSent(true);
-        e.target.reset();
-      } else {
-        setFormError(data.message || 'Failed to send message. Please try again.');
-      }
-    } catch (err) {
-      setFormError('Failed to send message. Please check your connection.');
-    } finally {
+  const handleIframeLoad = () => {
+    if (sending) {
       setSending(false);
+      setSent(true);
+      if (formRef.current) {
+        formRef.current.reset();
+      }
+
+      // Automatically hide the message after 5 seconds
+      timeoutRef.current = setTimeout(() => {
+        setSent(false);
+      }, 5000);
     }
   };
 
@@ -107,10 +105,41 @@ const ContactPage = () => {
               Please submit all general enquiries in the contact form below and we look forward to hearing from you soon.
             </p>
 
+<<<<<<< HEAD
             <form className="contact-custom-form" onSubmit={handleSubmit}>
               <input type="hidden" name="access_key" value={getKey()} />
               <input type="hidden" name="subject" value="New Contact from little RR Website" />
               <input type="hidden" name="from_name" value="little RR Contact Form" />
+=======
+            <form 
+              ref={formRef}
+              className="contact-custom-form" 
+              action="https://formsubmit.co/92309f9038ae61e871083c2b3339d325" 
+              method="POST"
+              target="mail_iframe"
+              onSubmit={handleSubmit}
+            >
+              <input
+                type="hidden"
+                name="_subject"
+                value="New Contact from Prince N Princess Website"
+              />
+              <input
+                type="hidden"
+                name="_template"
+                value="table"
+              />
+              <input
+                type="hidden"
+                name="_captcha"
+                value="false"
+              />
+              <input
+                type="text"
+                name="_honey"
+                style={{ display: "none" }}
+              />
+>>>>>>> mail-sent
 
               <div className="custom-form-row">
                 <div className="custom-form-group">
@@ -131,12 +160,23 @@ const ContactPage = () => {
               </div>
 
               {sent && <p className="contact-success-msg">✅ Your message has been sent successfully!</p>}
+<<<<<<< HEAD
               {formError && <p className="contact-error-msg">❌ {formError}</p>}
 
+=======
+              
+>>>>>>> mail-sent
               <button type="submit" className="custom-submit-btn" disabled={sending}>
                 {sending ? 'Sending...' : 'Send'}
               </button>
             </form>
+            <iframe
+              name="mail_iframe"
+              id="mail_iframe"
+              style={{ display: 'none' }}
+              onLoad={handleIframeLoad}
+              title="Mail Submission Iframe"
+            ></iframe>
           </div>
         </div>
 

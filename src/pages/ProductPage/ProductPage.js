@@ -2,11 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { GraphQLClient, gql } from 'graphql-request';
 import { useCart } from '../../context/CartContext';
-<<<<<<< HEAD
 import { FiShare2, FiMaximize2, FiTruck, FiTag, FiBox, FiCopy, FiX, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-=======
-import { FiShare2, FiHelpCircle, FiMaximize2, FiTruck, FiTag, FiBox, FiCopy, FiX, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
->>>>>>> fe4e6df (filter, store image changed, view details button)
 import { AiFillStar } from 'react-icons/ai';
 import { FaFacebookF, FaTwitter, FaPinterestP } from 'react-icons/fa';
 import SizeChart from '../../components/SizeChart/SizeChart';
