@@ -105,12 +105,6 @@ const ContactPage = () => {
               Please submit all general enquiries in the contact form below and we look forward to hearing from you soon.
             </p>
 
-<<<<<<< HEAD
-            <form className="contact-custom-form" onSubmit={handleSubmit}>
-              <input type="hidden" name="access_key" value={getKey()} />
-              <input type="hidden" name="subject" value="New Contact from little RR Website" />
-              <input type="hidden" name="from_name" value="little RR Contact Form" />
-=======
             <form 
               ref={formRef}
               className="contact-custom-form" 
@@ -122,7 +116,7 @@ const ContactPage = () => {
               <input
                 type="hidden"
                 name="_subject"
-                value="New Contact from Prince N Princess Website"
+                value="New Contact from little RR Website"
               />
               <input
                 type="hidden"
@@ -139,7 +133,6 @@ const ContactPage = () => {
                 name="_honey"
                 style={{ display: "none" }}
               />
->>>>>>> mail-sent
 
               <div className="custom-form-row">
                 <div className="custom-form-group">

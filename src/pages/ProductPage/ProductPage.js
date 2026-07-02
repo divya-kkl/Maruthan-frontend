@@ -62,10 +62,7 @@ const ProductPage = () => {
 
     return () => clearTimeout(timer);
   }, [activeImage]);
-<<<<<<< HEAD
 
-=======
->>>>>>> fe4e6df (filter, store image changed, view details button)
   const [selectedSize, setSelectedSize] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [faqs, setFaqs] = useState([]);
