@@ -2,7 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { GraphQLClient, gql } from 'graphql-request';
 import { useCart } from '../../context/CartContext';
+<<<<<<< HEAD
 import { FiShare2, FiMaximize2, FiTruck, FiTag, FiBox, FiCopy, FiX, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+=======
+import { FiShare2, FiHelpCircle, FiMaximize2, FiTruck, FiTag, FiBox, FiCopy, FiX, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+>>>>>>> fe4e6df (filter, store image changed, view details button)
 import { AiFillStar } from 'react-icons/ai';
 import { FaFacebookF, FaTwitter, FaPinterestP } from 'react-icons/fa';
 import SizeChart from '../../components/SizeChart/SizeChart';
@@ -62,7 +66,10 @@ const ProductPage = () => {
 
     return () => clearTimeout(timer);
   }, [activeImage]);
+<<<<<<< HEAD
 
+=======
+>>>>>>> fe4e6df (filter, store image changed, view details button)
   const [selectedSize, setSelectedSize] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [faqs, setFaqs] = useState([]);
@@ -162,7 +169,6 @@ const ProductPage = () => {
     const prevIndex = (currentIndex - 1 + product.images.length) % product.images.length;
     setActiveImage(product.images[prevIndex]);
   };
-
   const handleNextImage = () => {
     if (!product || !product.images || product.images.length <= 1) return;
     const currentIndex = Math.max(0, product.images.indexOf(activeImage));
