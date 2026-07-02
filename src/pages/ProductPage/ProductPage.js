@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { GraphQLClient, gql } from 'graphql-request';
 import { useCart } from '../../context/CartContext';
-import { FiShare2, FiHelpCircle, FiMaximize2, FiTruck, FiTag, FiBox, FiCopy, FiX } from 'react-icons/fi';
+import { FiShare2, FiTruck, FiTag, FiBox, FiCopy, FiX } from 'react-icons/fi';
 import { AiFillStar } from 'react-icons/ai';
 import { FaFacebookF, FaTwitter, FaPinterestP } from 'react-icons/fa';
 import SizeChart from '../../components/SizeChart/SizeChart';
@@ -49,16 +49,16 @@ const ProductPage = () => {
   const [faqs, setFaqs] = useState([]);
   const [openFaqs, setOpenFaqs] = useState({});
   const [openAccordions, setOpenAccordions] = useState(['description']);
-  const [showAskModal, setShowAskModal] = useState(false);
-  const [askForm, setAskForm] = useState({ name: '', phone: '', email: '', message: '' });
-  const [askSent, setAskSent] = useState(false);
-  const [askSending, setAskSending] = useState(false);
   const [shareSent, setShareSent] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [isZoomed, setIsZoomed] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    setLoading(true);
+    setQuantity(1);
+    setIsZoomed(false);
+    
     const fetchProduct = async () => {
       try {
         const client = new GraphQLClient(GRAPHQL_ENDPOINT);
@@ -137,16 +137,6 @@ const ProductPage = () => {
     });
   };
 
-  const handleAskSubmit = async (e) => {
-    e.preventDefault();
-    setAskSending(true);
-    window.open(`https://wa.me/919786221122?text=${encodeURIComponent(`Hi, I have a question!\nName: ${askForm.name}\nPhone: ${askForm.phone}\nEmail: ${askForm.email}\nMessage: ${askForm.message}`)}`, '_blank');
-    setAskSent(true);
-    setAskSending(false);
-    setAskForm({ name: '', phone: '', email: '', message: '' });
-    setTimeout(() => { setAskSent(false); setShowAskModal(false); }, 2000);
-  };
-
   if (loading) return <div className="product-page-loading">Loading product details...</div>;
   if (error || !product) return <div className="product-page-error">{error || "Product not found"}</div>;
 
@@ -175,8 +165,33 @@ const ProductPage = () => {
           )}
         </div>
         <div className="product-main-image-wrapper">
-          <img src={activeImage || "/images/placeholder.png"} alt={product.name} className="product-main-image" />
-          <button className="expand-icon" onClick={() => setIsZoomed(true)}><FiMaximize2 /></button>
+          <img 
+            src={activeImage || "/images/placeholder.png"} 
+            alt={product.name} 
+            className="product-main-image" 
+            onClick={() => setIsZoomed(true)} 
+          />
+          <button className="expand-icon" onClick={() => setIsZoomed(true)}>
+            <svg 
+              viewBox="0 0 24 24" 
+              width="20" 
+              height="20" 
+              stroke="currentColor" 
+              strokeWidth="2.5" 
+              fill="none" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            >
+              <polyline points="15 3 21 3 21 9" />
+              <polyline points="9 21 3 21 3 15" />
+              <polyline points="21 15 21 21 15 21" />
+              <polyline points="3 9 3 3 9 3" />
+              <line x1="21" y1="3" x2="14" y2="10" />
+              <line x1="3" y1="21" x2="10" y2="14" />
+              <line x1="3" y1="3" x2="10" y2="10" />
+              <line x1="21" y1="21" x2="14" y2="14" />
+            </svg>
+          </button>
         </div>
       </div>
 
@@ -192,62 +207,15 @@ const ProductPage = () => {
           <span>(1)</span>
         </div>
 
-        <div className="product-price">
-          Rs. {Number(product.price).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-        </div>
-
-        <div className="product-meta-links">
-          <div className="meta-link" onClick={() => setShowAskModal(true)} style={{ cursor: 'pointer' }}><FiHelpCircle /> Ask a question</div>
-          <div className="meta-link" onClick={handleShare} style={{ cursor: 'pointer' }}><FiShare2 /> Share</div>
-        </div>
-
-        {/* Ask a Question Modal */}
-        {showAskModal && (
-          <div className="ask-modal-overlay" onClick={() => setShowAskModal(false)}>
-            <div className="ask-modal" onClick={(e) => e.stopPropagation()}>
-              <div className="ask-modal-header">
-                <h3>Ask a Question</h3>
-                <button className="ask-modal-close" onClick={() => setShowAskModal(false)}>&#x2715;</button>
-              </div>
-              <form className="ask-modal-form" onSubmit={handleAskSubmit}>
-                <div className="ask-modal-row">
-                  <input
-                    type="text"
-                    placeholder="Your name*"
-                    value={askForm.name}
-                    onChange={(e) => setAskForm({ ...askForm, name: e.target.value })}
-                    required
-                  />
-                  <input
-                    type="tel"
-                    placeholder="Your phone number"
-                    value={askForm.phone}
-                    onChange={(e) => setAskForm({ ...askForm, phone: e.target.value })}
-                  />
-                </div>
-                <input
-                  type="email"
-                  placeholder="Your email *"
-                  value={askForm.email}
-                  onChange={(e) => setAskForm({ ...askForm, email: e.target.value })}
-                  required
-                />
-                <textarea
-                  placeholder="Your message*"
-                  rows="5"
-                  value={askForm.message}
-                  onChange={(e) => setAskForm({ ...askForm, message: e.target.value })}
-                  required
-                ></textarea>
-                <p className="ask-modal-note">* Required fields cannot be left blank.</p>
-                {askSent && <p className="ask-success">✅ Message sent!</p>}
-                <button type="submit" className="ask-modal-submit" disabled={askSending}>
-                  {askSending ? 'Sending...' : 'Send Your Message'}
-                </button>
-              </form>
-            </div>
+        <div className="product-price-row">
+          <div className="product-price">
+            Rs. {Number(product.price).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
           </div>
-        )}
+
+          <div className="product-meta-links">
+            <div className="meta-link" onClick={handleShare} style={{ cursor: 'pointer' }}><FiShare2 /> Share</div>
+          </div>
+        </div>
 
         {/* Share Modal */}
         {showShareModal && (
@@ -420,7 +388,7 @@ const ProductPage = () => {
     </div>
     
     <div style={{ marginTop: '40px', paddingBottom: '40px' }}>
-      <RelatedProducts title="New Arrivals" />
+      <RelatedProducts key={id} title="New Arrivals" />
     </div>
          {faqs.length > 0 && (
         <div className="standalone-faq-container">

@@ -100,7 +100,17 @@ const QuickViewModal = ({ product, onClose }) => {
               <button className="buy-now-btn" onClick={handleBuyNow}>Buy it now</button>
             </div>
 
-            <a href="#full-details" className="view-full-details" onClick={(e) => { e.preventDefault(); onClose(); }}>View Full Details &raquo;</a>
+            <a 
+              href={`/product/${product.id}`} 
+              className="view-full-details" 
+              onClick={(e) => { 
+                e.preventDefault(); 
+                onClose(); 
+                navigate(`/product/${product.id}`); 
+              }}
+            >
+              View Full Details &raquo;
+            </a>
           </div>
         </div>
       </div>
