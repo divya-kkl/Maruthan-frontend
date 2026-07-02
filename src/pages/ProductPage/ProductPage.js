@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { GraphQLClient, gql } from 'graphql-request';
 import { useCart } from '../../context/CartContext';
-import { FiShare2, FiHelpCircle, FiMaximize2, FiTruck, FiTag, FiBox, FiCopy, FiX } from 'react-icons/fi';
+import { FiShare2, FiHelpCircle, FiMaximize2, FiTruck, FiTag, FiBox, FiCopy, FiX, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { AiFillStar } from 'react-icons/ai';
 import { FaFacebookF, FaTwitter, FaPinterestP } from 'react-icons/fa';
 import SizeChart from '../../components/SizeChart/SizeChart';
@@ -44,6 +44,24 @@ const ProductPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeImage, setActiveImage] = useState('');
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const imageRef = useRef(null);
+
+  useEffect(() => {
+    if (imageRef.current && imageRef.current.complete) {
+      setImageLoaded(true);
+      return;
+    }
+    
+    setImageLoaded(false);
+
+    // Safety fallback: maximum 1.2 seconds of shimmer animation
+    const timer = setTimeout(() => {
+      setImageLoaded(true);
+    }, 1200);
+
+    return () => clearTimeout(timer);
+  }, [activeImage]);
   const [selectedSize, setSelectedSize] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [faqs, setFaqs] = useState([]);
@@ -147,7 +165,47 @@ const ProductPage = () => {
     setTimeout(() => { setAskSent(false); setShowAskModal(false); }, 2000);
   };
 
-  if (loading) return <div className="product-page-loading">Loading product details...</div>;
+  const handlePrevImage = () => {
+    if (!product || !product.images || product.images.length <= 1) return;
+    const currentIndex = Math.max(0, product.images.indexOf(activeImage));
+    const prevIndex = (currentIndex - 1 + product.images.length) % product.images.length;
+    setActiveImage(product.images[prevIndex]);
+  };
+
+  const handleNextImage = () => {
+    if (!product || !product.images || product.images.length <= 1) return;
+    const currentIndex = Math.max(0, product.images.indexOf(activeImage));
+    const nextIndex = (currentIndex + 1) % product.images.length;
+    setActiveImage(product.images[nextIndex]);
+  };
+
+  if (loading) {
+    return (
+      <div className="product-page-container skeleton-loading">
+        <div className="product-image-section">
+          <div className="product-thumbnails">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="thumbnail skeleton-shimmer" style={{ width: '70px', height: '90px' }}></div>
+            ))}
+          </div>
+          <div className="product-main-image-wrapper">
+            <div className="product-image-shimmer"></div>
+          </div>
+        </div>
+
+        <div className="product-details-section">
+          <div className="skeleton-line brand skeleton-shimmer"></div>
+          <div className="skeleton-line title skeleton-shimmer"></div>
+          <div className="skeleton-line price skeleton-shimmer"></div>
+          <div className="skeleton-line meta skeleton-shimmer"></div>
+          <div className="skeleton-block delivery skeleton-shimmer"></div>
+          <div className="skeleton-line stock skeleton-shimmer"></div>
+          <div className="skeleton-block actions skeleton-shimmer"></div>
+          <div className="skeleton-block accordion skeleton-shimmer"></div>
+        </div>
+      </div>
+    );
+  }
   if (error || !product) return <div className="product-page-error">{error || "Product not found"}</div>;
 
   const selectedVariant = product.variants?.find(v => v.size === selectedSize);
@@ -175,7 +233,27 @@ const ProductPage = () => {
           )}
         </div>
         <div className="product-main-image-wrapper">
-          <img src={activeImage || "/images/placeholder.png"} alt={product.name} className="product-main-image" />
+          {!imageLoaded && <div className="product-image-shimmer"></div>}
+          
+          {product.images && product.images.length > 1 && (
+            <>
+              <button className="nav-arrow left-arrow" onClick={handlePrevImage} aria-label="Previous image">
+                <FiChevronLeft />
+              </button>
+              <button className="nav-arrow right-arrow" onClick={handleNextImage} aria-label="Next image">
+                <FiChevronRight />
+              </button>
+            </>
+          )}
+
+          <img 
+            ref={imageRef}
+            src={activeImage || "/images/placeholder.png"} 
+            alt={product.name} 
+            className="product-main-image" 
+            style={{ opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.3s ease' }}
+            onLoad={() => setImageLoaded(true)}
+          />
           <button className="expand-icon" onClick={() => setIsZoomed(true)}><FiMaximize2 /></button>
         </div>
       </div>

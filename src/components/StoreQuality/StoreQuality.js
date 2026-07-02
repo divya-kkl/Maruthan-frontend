@@ -3,11 +3,10 @@ import './StoreQuality.css';
 
 const scorecards = [
   {
-    country: "India",
+    country: "United States",
     month: "May",
-    rating: "Exceptional",
-    ratingIndex: 4, // 0 to 4
-    showExtra: true,
+    rating: "Good",
+    ratingIndex: 2,
   },
   {
     country: "United Arab Emirates",
