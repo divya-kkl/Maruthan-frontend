@@ -96,6 +96,7 @@ const CategoryPage = () => {
   };
 
   const handleFilterChange = (type, value) => {
+    setPage(1);
     setActiveFilters(prev => {
       const currentList = prev[type];
       if (currentList.includes(value)) {
@@ -109,7 +110,7 @@ const CategoryPage = () => {
   // Serialize activeFilters to a stable string to avoid object-reference re-renders
   const activeFiltersKey = JSON.stringify(activeFilters);
   useEffect(() => {
-    if (filterData.price.max > 0) {
+    if (filterData.price.max > 0 && activeFilters.price.max === '') {
       setActiveFilters(prev => ({
         ...prev,
         price: { min: 0, max: filterData.price.max }
@@ -117,7 +118,28 @@ const CategoryPage = () => {
       setPriceInputMin('0');
       setPriceInputMax(String(filterData.price.max));
     }
-  }, [filterData.price.max]);
+  }, [filterData.price.max, activeFilters.price.max]);
+
+  const handleMinSliderChange = (e) => {
+    const value = Math.min(Number(e.target.value), (priceInputMax === '' ? (filterData.price.max || 10000) : Number(priceInputMax)) - 1);
+    setPriceInputMin(String(value));
+  };
+
+  const handleMaxSliderChange = (e) => {
+    const value = Math.max(Number(e.target.value), (priceInputMin === '' ? 0 : Number(priceInputMin)) + 1);
+    setPriceInputMax(String(value));
+  };
+
+  const handleSliderRelease = () => {
+    setActiveFilters(prev => ({
+      ...prev,
+      price: {
+        min: priceInputMin === '' ? 0 : Number(priceInputMin),
+        max: priceInputMax === '' ? (filterData.price.max || 10000) : Number(priceInputMax)
+      }
+    }));
+    setPage(1);
+  };
 
   useEffect(() => {
     // Parse the serialized filters inside the effect
@@ -228,7 +250,21 @@ const CategoryPage = () => {
 
   const formattedCategoryName = categoryCode ? categoryCode.charAt(0).toUpperCase() + categoryCode.slice(1).toLowerCase() : '';
 
+  const hasActiveFilters = 
+    activeFilters.sizes.length > 0 ||
+    activeFilters.brands.length > 0 ||
+    activeFilters.colors.length > 0 ||
+    activeFilters.stock.length > 0 ||
+    (activeFilters.price.min !== '' && Number(activeFilters.price.min) > 0) ||
+    (activeFilters.price.max !== '' && filterData.price.max > 0 && Number(activeFilters.price.max) < filterData.price.max);
+
   const filteredProducts = products;
+
+  const currentMin = priceInputMin === '' ? 0 : Number(priceInputMin);
+  const currentMax = priceInputMax === '' ? (filterData.price.max || 10000) : Number(priceInputMax);
+  const totalMax = filterData.price.max || 10000;
+  const minPercent = (currentMin / totalMax) * 100;
+  const maxPercent = (currentMax / totalMax) * 100;
 
   return (
     <div className="category-page-container">
@@ -403,8 +439,32 @@ const CategoryPage = () => {
                       />
                     </div>
                   </div>
-                  <div className="price-slider-line"></div>
-                  <div className="price-range-text">Price: Rs. {activeFilters.price.min || 0} - Rs. {activeFilters.price.max || filterData.price.max || 0}</div>
+                  <div className="price-slider-container">
+                    <div className="slider-track" style={{
+                      background: `linear-gradient(to right, #ccc ${minPercent}%, #111 ${minPercent}%, #111 ${maxPercent}%, #ccc ${maxPercent}%)`
+                    }}></div>
+                    <input
+                      type="range"
+                      min={0}
+                      max={totalMax}
+                      value={currentMin}
+                      onChange={handleMinSliderChange}
+                      onMouseUp={handleSliderRelease}
+                      onTouchEnd={handleSliderRelease}
+                      className="range-input min-range"
+                    />
+                    <input
+                      type="range"
+                      min={0}
+                      max={totalMax}
+                      value={currentMax}
+                      onChange={handleMaxSliderChange}
+                      onMouseUp={handleSliderRelease}
+                      onTouchEnd={handleSliderRelease}
+                      className="range-input max-range"
+                    />
+                  </div>
+                  <div className="price-range-text">Price: Rs. {currentMin} - Rs. {currentMax}</div>
                 </div>
               )}
             </div>
@@ -480,12 +540,39 @@ const CategoryPage = () => {
               ))
             ) : (
               <div className="category-empty-state">
-                <div className="empty-icon">🛍️</div>
-                <h2>No products found</h2>
-                <p>We are currently updating our collection for this category. Please check back later!</p>
-                <button className="continue-shopping-btn" onClick={() => navigate('/')}>Continue Shopping</button>
+                {hasActiveFilters ? (
+                  <>
+                    <div className="empty-icon">🔍</div>
+                    <h2>No products found</h2>
+                    <p>We couldn't find any products matching your selected filters. Try clearing them or adjusting your budget!</p>
+                    <button 
+                      className="continue-shopping-btn" 
+                      onClick={() => {
+                        setActiveFilters({
+                          sizes: [],
+                          brands: [],
+                          colors: [],
+                          stock: [],
+                          price: { min: 0, max: filterData.price.max }
+                        });
+                        setPriceInputMin('0');
+                        setPriceInputMax(String(filterData.price.max));
+                        setPage(1);
+                      }}
+                    >
+                      Clear Filters
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <div className="empty-icon">🛍️</div>
+                    <h2>No products found</h2>
+                    <p>We are currently updating our collection for this category. Please check back later!</p>
+                    <button className="continue-shopping-btn" onClick={() => navigate('/')}>Continue Shopping</button>
+                  </>
+                )}
               </div>
-            )}
+            ) }
 
             {/* Shimmer loading for next pages */}
             {loadingMore && [...Array(4)].map((_, index) => (
@@ -499,7 +586,7 @@ const CategoryPage = () => {
               </div>
             ))}
             
-            {/* Loading Indicator matching Prince & Princess style */}
+            {/* Loading Indicator matching Little RR style */}
             {(!loading || page > 1) && products.length > 0 && (
               <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '30px 0', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <p style={{ color: '#555', fontSize: '14px', marginBottom: '10px' }}>

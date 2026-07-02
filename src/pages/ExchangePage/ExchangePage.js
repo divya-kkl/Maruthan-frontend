@@ -10,13 +10,13 @@ const ExchangePage = () => {
     <div className="exchange-page">
       <div className="exchange-container">
         <h1 className="exchange-main-title">Exchange Policy</h1>
-        
+
         <p className="exchange-text">
           We offer easy exchanges for both domestic and international orders. Please review the terms below to ensure a smooth process.
         </p>
 
         <hr className="exchange-divider" />
-        
+
         <h2 className="exchange-subtitle">Eligibility</h2>
         <ul className="exchange-list">
           <li>Exchange requests must be initiated within 7 days of receiving your order.</li>
@@ -26,7 +26,7 @@ const ExchangePage = () => {
         </ul>
 
         <hr className="exchange-divider" />
-        
+
         <h2 className="exchange-subtitle">Exchange Shipping Charges</h2>
         <p className="exchange-text">
           If ₹50 shipping was paid at checkout:
@@ -44,7 +44,7 @@ const ExchangePage = () => {
         </ul>
 
         <hr className="exchange-divider" />
-        
+
         <h2 className="exchange-subtitle">Additional Notes</h2>
         <ul className="exchange-list">
           <li>Exchanges are processed only after we receive and inspect the returned item.</li>
@@ -56,7 +56,7 @@ const ExchangePage = () => {
 
         <h2 className="exchange-subtitle">Return Address</h2>
         <p className="exchange-text">
-          Prince N Princess<br />
+          little RR<br />
           10C, 5th Street, Vasantha Nagar,<br />
           Near Shanthi Gears, Singanallur,<br />
           Coimbatore - 641005.

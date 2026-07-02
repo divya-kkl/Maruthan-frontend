@@ -35,7 +35,7 @@ const QuickViewModal = ({ product, onClose }) => {
     <div className="quickview-overlay" onClick={onClose}>
       <div className="quickview-modal" onClick={(e) => e.stopPropagation()}>
         <button className="quickview-close" onClick={onClose}>&times;</button>
-        
+
         <div className="quickview-content">
           <div className="quickview-image-container">
             <img src={product.images && product.images.length > 0 ? product.images[0] : '/images/placeholder.png'} alt={product.name || product.title} className="quickview-image" />
@@ -52,8 +52,8 @@ const QuickViewModal = ({ product, onClose }) => {
               <p className="size-label">Size: <span>{selectedSize}</span></p>
               <div className="size-buttons">
                 {['1Y', '2Y', '3Y', '4Y', '5Y', '6Y'].map(size => (
-                  <button 
-                    key={size} 
+                  <button
+                    key={size}
                     className={`size-btn ${selectedSize === size ? 'active' : ''}`}
                     onClick={() => setSelectedSize(size)}
                   >
@@ -64,7 +64,7 @@ const QuickViewModal = ({ product, onClose }) => {
             </div>
 
             <div className="quickview-desc-text">
-              <p>{product.description || "Dress your little princess in pure elegance with this stunning dress from Prince N Princess - trusted by 10L+ happy parents across India."}</p>
+              <p>{product.description || "Dress your little princess in pure elegance with this stunning dress from little RR - trusted by 10L+ happy parents across India."}</p>
             </div>
 
             <div className="quickview-specs-section">
@@ -90,7 +90,7 @@ const QuickViewModal = ({ product, onClose }) => {
                   <span className="qty-num">{quantity}</span>
                   <button className="qty-btn" onClick={() => setQuantity(quantity + 1)}>+</button>
                 </div>
-                <button 
+                <button
                   className="add-cart-btn"
                   onClick={handleAddToCart}
                 >
@@ -100,7 +100,17 @@ const QuickViewModal = ({ product, onClose }) => {
               <button className="buy-now-btn" onClick={handleBuyNow}>Buy it now</button>
             </div>
 
-            <a href="#full-details" className="view-full-details" onClick={(e) => { e.preventDefault(); onClose(); }}>View Full Details &raquo;</a>
+            <a 
+              href={`/product/${product.id}`} 
+              className="view-full-details" 
+              onClick={(e) => { 
+                e.preventDefault(); 
+                onClose(); 
+                navigate(`/product/${product.id}`); 
+              }}
+            >
+              View Full Details &raquo;
+            </a>
           </div>
         </div>
       </div>

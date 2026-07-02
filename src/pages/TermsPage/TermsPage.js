@@ -10,11 +10,11 @@ const TermsPage = () => {
     <div className="terms-page">
       <div className="terms-container">
         <h1 className="terms-main-title">Terms and Conditions</h1>
-        
+
         <p className="terms-intro-text">
-          Welcome to <a href="https://www.princenprincess.in" target="_blank" rel="noopener noreferrer">www.princenprincess.in</a>. By accessing or using this website, you agree to comply with and be bound by the following Terms and Conditions, which, along with our Privacy Policy, govern the relationship between you and Prince N Princess Clothing regarding your use of this website.
+          Welcome to <a href="https://www.littlerr.in" target="_blank" rel="noopener noreferrer">www.littlerr.in</a>. By accessing or using this website, you agree to comply with and be bound by the following Terms and Conditions, which, along with our Privacy Policy, govern the relationship between you and little RR Clothing regarding your use of this website.
         </p>
-        
+
         <p className="terms-text">
           Please read these terms carefully. If you do not agree with any part of these terms, please refrain from using our site.
         </p>
@@ -39,7 +39,7 @@ const TermsPage = () => {
         </p>
         <ul className="terms-list">
           <li>Reproduction or redistribution of any part of this content is strictly prohibited without written consent, except as permitted by our copyright policy.</li>
-          <li>All trademarks reproduced on this site, which are not the property of or licensed to Prince N Princess, are duly acknowledged.</li>
+          <li>All trademarks reproduced on this site, which are not the property of or licensed to little RR, are duly acknowledged.</li>
         </ul>
 
         <hr className="terms-divider" />
@@ -56,7 +56,7 @@ const TermsPage = () => {
 
         <h2 className="terms-subtitle">Restrictions</h2>
         <ul className="terms-list">
-          <li>You may not create a link to this website from another website or document without prior written consent from Prince N Princess.</li>
+          <li>You may not create a link to this website from another website or document without prior written consent from little RR.</li>
           <li>Unauthorised use of this website may result in a claim for damages and/or may be treated as a criminal offense.</li>
         </ul>
 
@@ -71,7 +71,7 @@ const TermsPage = () => {
 
         <h2 className="terms-subtitle">Product Listings & Delivery</h2>
         <p className="terms-text">
-          Prince N Princess takes pride in offering accurate product listings with detailed descriptions to ensure a confident shopping experience.
+          little RR takes pride in offering accurate product listings with detailed descriptions to ensure a confident shopping experience.
         </p>
         <ul className="terms-list">
           <li>We have partnered with multiple trusted delivery providers to ensure timely order fulfilment across India.</li>

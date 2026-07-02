@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { GraphQLClient, gql } from 'graphql-request';
 import { useCart } from '../../context/CartContext';
-import { FiShare2, FiHelpCircle, FiMaximize2, FiTruck, FiTag, FiBox, FiCopy, FiX } from 'react-icons/fi';
+import { FiShare2, FiMaximize2, FiTruck, FiTag, FiBox, FiCopy, FiX, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { AiFillStar } from 'react-icons/ai';
 import { FaFacebookF, FaTwitter, FaPinterestP } from 'react-icons/fa';
 import SizeChart from '../../components/SizeChart/SizeChart';
@@ -44,21 +44,40 @@ const ProductPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeImage, setActiveImage] = useState('');
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const imageRef = useRef(null);
+
+  useEffect(() => {
+    if (imageRef.current && imageRef.current.complete) {
+      setImageLoaded(true);
+      return;
+    }
+    
+    setImageLoaded(false);
+
+    // Safety fallback: maximum 1.2 seconds of shimmer animation
+    const timer = setTimeout(() => {
+      setImageLoaded(true);
+    }, 1200);
+
+    return () => clearTimeout(timer);
+  }, [activeImage]);
+
   const [selectedSize, setSelectedSize] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [faqs, setFaqs] = useState([]);
   const [openFaqs, setOpenFaqs] = useState({});
   const [openAccordions, setOpenAccordions] = useState(['description']);
-  const [showAskModal, setShowAskModal] = useState(false);
-  const [askForm, setAskForm] = useState({ name: '', phone: '', email: '', message: '' });
-  const [askSent, setAskSent] = useState(false);
-  const [askSending, setAskSending] = useState(false);
   const [shareSent, setShareSent] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [isZoomed, setIsZoomed] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    setLoading(true);
+    setQuantity(1);
+    setIsZoomed(false);
+    
     const fetchProduct = async () => {
       try {
         const client = new GraphQLClient(GRAPHQL_ENDPOINT);
@@ -137,17 +156,47 @@ const ProductPage = () => {
     });
   };
 
-  const handleAskSubmit = async (e) => {
-    e.preventDefault();
-    setAskSending(true);
-    window.open(`https://wa.me/919786221122?text=${encodeURIComponent(`Hi, I have a question!\nName: ${askForm.name}\nPhone: ${askForm.phone}\nEmail: ${askForm.email}\nMessage: ${askForm.message}`)}`, '_blank');
-    setAskSent(true);
-    setAskSending(false);
-    setAskForm({ name: '', phone: '', email: '', message: '' });
-    setTimeout(() => { setAskSent(false); setShowAskModal(false); }, 2000);
+  const handlePrevImage = () => {
+    if (!product || !product.images || product.images.length <= 1) return;
+    const currentIndex = Math.max(0, product.images.indexOf(activeImage));
+    const prevIndex = (currentIndex - 1 + product.images.length) % product.images.length;
+    setActiveImage(product.images[prevIndex]);
+  };
+  const handleNextImage = () => {
+    if (!product || !product.images || product.images.length <= 1) return;
+    const currentIndex = Math.max(0, product.images.indexOf(activeImage));
+    const nextIndex = (currentIndex + 1) % product.images.length;
+    setActiveImage(product.images[nextIndex]);
   };
 
-  if (loading) return <div className="product-page-loading">Loading product details...</div>;
+  if (loading) {
+    return (
+      <div className="product-page-container skeleton-loading">
+        <div className="product-image-section">
+          <div className="product-thumbnails">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="thumbnail skeleton-shimmer" style={{ width: '70px', height: '90px' }}></div>
+            ))}
+          </div>
+          <div className="product-main-image-wrapper">
+            <div className="product-image-shimmer"></div>
+          </div>
+        </div>
+
+        <div className="product-details-section">
+          <div className="skeleton-line brand skeleton-shimmer"></div>
+          <div className="skeleton-line title skeleton-shimmer"></div>
+          <div className="skeleton-line price skeleton-shimmer"></div>
+          <div className="skeleton-line meta skeleton-shimmer"></div>
+          <div className="skeleton-block delivery skeleton-shimmer"></div>
+          <div className="skeleton-line stock skeleton-shimmer"></div>
+          <div className="skeleton-block actions skeleton-shimmer"></div>
+          <div className="skeleton-block accordion skeleton-shimmer"></div>
+        </div>
+      </div>
+    );
+  }
+
   if (error || !product) return <div className="product-page-error">{error || "Product not found"}</div>;
 
   const selectedVariant = product.variants?.find(v => v.size === selectedSize);
@@ -175,7 +224,28 @@ const ProductPage = () => {
           )}
         </div>
         <div className="product-main-image-wrapper">
-          <img src={activeImage || "/images/placeholder.png"} alt={product.name} className="product-main-image" />
+          {!imageLoaded && <div className="product-image-shimmer"></div>}
+          
+          {product.images && product.images.length > 1 && (
+            <>
+              <button className="nav-arrow left-arrow" onClick={handlePrevImage} aria-label="Previous image">
+                <FiChevronLeft />
+              </button>
+              <button className="nav-arrow right-arrow" onClick={handleNextImage} aria-label="Next image">
+                <FiChevronRight />
+              </button>
+            </>
+          )}
+
+          <img 
+            ref={imageRef}
+            src={activeImage || "/images/placeholder.png"} 
+            alt={product.name} 
+            className="product-main-image" 
+            style={{ opacity: imageLoaded ? 1 : 0, transition: 'opacity 0.3s ease' }}
+            onLoad={() => setImageLoaded(true)}
+            onClick={() => setIsZoomed(true)}
+          />
           <button className="expand-icon" onClick={() => setIsZoomed(true)}><FiMaximize2 /></button>
         </div>
       </div>
@@ -192,62 +262,15 @@ const ProductPage = () => {
           <span>(1)</span>
         </div>
 
-        <div className="product-price">
-          Rs. {Number(product.price).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-        </div>
-
-        <div className="product-meta-links">
-          <div className="meta-link" onClick={() => setShowAskModal(true)} style={{ cursor: 'pointer' }}><FiHelpCircle /> Ask a question</div>
-          <div className="meta-link" onClick={handleShare} style={{ cursor: 'pointer' }}><FiShare2 /> Share</div>
-        </div>
-
-        {/* Ask a Question Modal */}
-        {showAskModal && (
-          <div className="ask-modal-overlay" onClick={() => setShowAskModal(false)}>
-            <div className="ask-modal" onClick={(e) => e.stopPropagation()}>
-              <div className="ask-modal-header">
-                <h3>Ask a Question</h3>
-                <button className="ask-modal-close" onClick={() => setShowAskModal(false)}>&#x2715;</button>
-              </div>
-              <form className="ask-modal-form" onSubmit={handleAskSubmit}>
-                <div className="ask-modal-row">
-                  <input
-                    type="text"
-                    placeholder="Your name*"
-                    value={askForm.name}
-                    onChange={(e) => setAskForm({ ...askForm, name: e.target.value })}
-                    required
-                  />
-                  <input
-                    type="tel"
-                    placeholder="Your phone number"
-                    value={askForm.phone}
-                    onChange={(e) => setAskForm({ ...askForm, phone: e.target.value })}
-                  />
-                </div>
-                <input
-                  type="email"
-                  placeholder="Your email *"
-                  value={askForm.email}
-                  onChange={(e) => setAskForm({ ...askForm, email: e.target.value })}
-                  required
-                />
-                <textarea
-                  placeholder="Your message*"
-                  rows="5"
-                  value={askForm.message}
-                  onChange={(e) => setAskForm({ ...askForm, message: e.target.value })}
-                  required
-                ></textarea>
-                <p className="ask-modal-note">* Required fields cannot be left blank.</p>
-                {askSent && <p className="ask-success">✅ Message sent!</p>}
-                <button type="submit" className="ask-modal-submit" disabled={askSending}>
-                  {askSending ? 'Sending...' : 'Send Your Message'}
-                </button>
-              </form>
-            </div>
+        <div className="product-price-row">
+          <div className="product-price">
+            Rs. {Number(product.price).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
           </div>
-        )}
+
+          <div className="product-meta-links">
+            <div className="meta-link" onClick={handleShare} style={{ cursor: 'pointer' }}><FiShare2 /> Share</div>
+          </div>
+        </div>
 
         {/* Share Modal */}
         {showShareModal && (
@@ -420,7 +443,7 @@ const ProductPage = () => {
     </div>
     
     <div style={{ marginTop: '40px', paddingBottom: '40px' }}>
-      <RelatedProducts title="New Arrivals" />
+      <RelatedProducts key={id} title="New Arrivals" />
     </div>
          {faqs.length > 0 && (
         <div className="standalone-faq-container">
