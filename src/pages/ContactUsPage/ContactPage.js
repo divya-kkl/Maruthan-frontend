@@ -46,27 +46,27 @@ const ContactPage = () => {
   return (
     <div className="contact-page">
       <div className="contact-container">
-        
+
         <div className="contact-breadcrumb">
           <Link to="/">Home</Link> &middot; <span>Contact Us</span>
         </div>
-        
+
         <h1 className="contact-main-title">Contact Us</h1>
-        
+
         <p className="contact-subtitle">
           Please use the below form. You can also call service on +91-9952778217
         </p>
 
         <div className="contact-map-container">
-          <iframe 
-            src="https://maps.google.com/maps?q=Prince+N+Princess+Kids+Dress+Store+Singanallur&t=&z=14&ie=UTF8&iwloc=&output=embed" 
-            width="100%" 
-            height="450" 
-            style={{ border: 0 }} 
-            allowFullScreen="" 
-            loading="lazy" 
+          <iframe
+            src="https://maps.google.com/maps?q=Prince+N+Princess+Kids+Dress+Store+Singanallur&t=&z=14&ie=UTF8&iwloc=&output=embed"
+            width="100%"
+            height="450"
+            style={{ border: 0 }}
+            allowFullScreen=""
+            loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
-            title="Prince N Princess Location"
+            title="little RR Location"
           ></iframe>
         </div>
 
@@ -84,17 +84,17 @@ const ContactPage = () => {
                 <a href="tel:+919952778217" className="contact-link">WhatsApp / Call</a> : +91-9952778217
               </p>
               <p className="contact-info-text">
-                <a href="mailto:info@princenprincess.in" className="contact-link">Email</a>: info@princenprincess.in
+                <a href="mailto:info@littlerr.in" className="contact-link">Email</a>: info@littlerr.in
               </p>
             </div>
 
             <div className="contact-info-block" style={{ marginTop: '30px' }}>
               <h3 className="contact-info-title">Main Office:</h3>
               <p className="contact-info-text">
-                Prince N Princess<br/>
-                10C Vasantha Nagar, 5th Street<br/>
-                Behind old Jai Shanthi Theater<br/>
-                Singnallur, Coimbatore - 641005, Tamil Nadu<br/>
+                little RR<br />
+                10C Vasantha Nagar, 5th Street<br />
+                Behind old Jai Shanthi Theater<br />
+                Singnallur, Coimbatore - 641005, Tamil Nadu<br />
                 Phone: 8220954602 / 9952778217
               </p>
             </div>
@@ -109,8 +109,8 @@ const ContactPage = () => {
 
             <form className="contact-custom-form" onSubmit={handleSubmit}>
               <input type="hidden" name="access_key" value={getKey()} />
-              <input type="hidden" name="subject" value="New Contact from Prince N Princess Website" />
-              <input type="hidden" name="from_name" value="Prince N Princess Contact Form" />
+              <input type="hidden" name="subject" value="New Contact from little RR Website" />
+              <input type="hidden" name="from_name" value="little RR Contact Form" />
 
               <div className="custom-form-row">
                 <div className="custom-form-group">
@@ -120,19 +120,19 @@ const ContactPage = () => {
                   <input type="email" name="email" id="email" placeholder="E-mail" required />
                 </div>
               </div>
-              
+
               <div className="custom-form-group">
                 <textarea name="message" id="message" rows="8" placeholder="Enter Your Message" required></textarea>
               </div>
-              
+
               <div className="custom-form-checkbox">
                 <input type="checkbox" id="privacy" required />
                 <label htmlFor="privacy">I agree to the <Link to="/privacy-policy" className="contact-link">Privacy Policy</Link> of the website.</label>
               </div>
-              
+
               {sent && <p className="contact-success-msg">✅ Your message has been sent successfully!</p>}
               {formError && <p className="contact-error-msg">❌ {formError}</p>}
-              
+
               <button type="submit" className="custom-submit-btn" disabled={sending}>
                 {sending ? 'Sending...' : 'Send'}
               </button>

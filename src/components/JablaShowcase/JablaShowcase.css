@@ -1,5 +1,5 @@
 .jabla-section {
- margin-top: 60px;
+  margin-top: 60px;
   font-family: 'Times New Roman', Times, serif;
 }
 
@@ -23,7 +23,7 @@
   font-size: 15px;
   color: #333;
   margin-bottom: 40px;
-font-family: 'Time New Roman';
+  font-family: 'Time New Roman';
   font-weight: 400;
 }
 
@@ -117,7 +117,8 @@ font-family: 'Time New Roman';
 }
 
 .jabla-view-all-btn {
-  background-color: #1a365d; /* Match PrincenPrincess purple */
+  background-color: #1a365d;
+  /* Match littlerr purple */
   color: white;
   border: none;
   padding: 12px 40px;
@@ -136,12 +137,18 @@ font-family: 'Time New Roman';
   .jabla-card {
     min-width: calc(50% - 7.5px);
   }
+
   .jabla-title {
     font-size: 24px;
   }
+
   .jabla-grid {
     gap: 15px;
   }
 }
 
-@media (max-width: 768px) { .jabla-section { margin-top: 20px !important; } }
+@media (max-width: 768px) {
+  .jabla-section {
+    margin-top: 20px !important;
+  }
+}

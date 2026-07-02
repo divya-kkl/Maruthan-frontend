@@ -10,13 +10,13 @@ const PaymentPage = () => {
     <div className="payment-page">
       <div className="payment-container">
         <h1 className="payment-main-title">Payment</h1>
-        
+
         <p className="payment-text">
-          At Prince N Princess, we offer multiple secure and convenient payment options to make your shopping experience smooth and reliable whether you’re ordering within India or internationally.
+          At little RR, we offer multiple secure and convenient payment options to make your shopping experience smooth and reliable whether you’re ordering within India or internationally.
         </p>
 
         <hr className="payment-divider" />
-        
+
         <h2 className="payment-subtitle">Online Payment Options</h2>
         <p className="payment-text">
           We support all major Indian digital payment methods through trusted payment gateways:
@@ -31,7 +31,7 @@ const PaymentPage = () => {
         </p>
 
         <hr className="payment-divider" />
-        
+
         <h2 className="payment-subtitle">International Payments</h2>
         <p className="payment-text">
           We welcome international customers with flexible payment options:
@@ -46,7 +46,7 @@ const PaymentPage = () => {
         </p>
 
         <hr className="payment-divider" />
-        
+
         <h2 className="payment-subtitle">UPI / Bank Transfer</h2>
         <p className="payment-text">
           If you prefer to pay via direct UPI or bank transfer, please note:
@@ -70,14 +70,14 @@ const PaymentPage = () => {
           <li>COD is available on select serviceable pin codes</li>
           <li>Please ensure availability and accurate address details during checkout</li>
         </ul>
-        
+
         <hr className="payment-divider" />
 
         <p className="payment-text">
           If you need help choosing the right payment method or have special payment concerns, our team is here to assist.
         </p>
         <p className="payment-text">
-          📩 Email: info@princenprincess.in<br />
+          📩 Email: info@littlerr.in<br />
           📞 WhatsApp: +91-99527 78217
         </p>
       </div>
