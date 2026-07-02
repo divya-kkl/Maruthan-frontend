@@ -11,13 +11,13 @@ const CancellationPage = () => {
       <div className="cancellation-container">
         <h1 className="cancellation-main-title">Cancellation, Refund & Exchange</h1>
         <h2 className="cancellation-subtitle">Cancellation, Returns & Refund Policy</h2>
-        
+
         <p className="cancellation-text">
-          At Prince N Princess, we strive to provide a smooth and satisfying shopping experience. Please review our policies below to understand how cancellations, exchanges, and refunds are handled.
+          At little RR, we strive to provide a smooth and satisfying shopping experience. Please review our policies below to understand how cancellations, exchanges, and refunds are handled.
         </p>
 
         <hr className="cancellation-divider" />
-        
+
         <h2 className="cancellation-subtitle">🔄 Exchange Policy</h2>
         <ul className="cancellation-list">
           <li>Products are eligible for exchange after the customer receives the item.</li>
@@ -26,11 +26,11 @@ const CancellationPage = () => {
         </ul>
 
         <hr className="cancellation-divider" />
-        
+
         <h2 className="cancellation-subtitle">❌ Order Cancellation</h2>
         <ul className="cancellation-list">
           <li>Orders can be cancelled only before they are shipped.</li>
-          <li>To request a cancellation, please email us at info@princenprincess.in and WhatsApp us at +91-9952778217.</li>
+          <li>To request a cancellation, please email us at info@littlerr.in and WhatsApp us at +91-9952778217.</li>
           <li>If the order is eligible for cancellation, the refund will be processed within 4–7 working days to the same account used for payment.</li>
         </ul>
         <p className="cancellation-text cancellation-italic">
@@ -38,7 +38,7 @@ const CancellationPage = () => {
         </p>
 
         <hr className="cancellation-divider" />
-        
+
         <h2 className="cancellation-subtitle">💸 Refund Policy</h2>
         <p className="cancellation-text">
           Refunds will be issued under the following circumstances:
@@ -53,10 +53,10 @@ const CancellationPage = () => {
         </p>
 
         <hr className="cancellation-divider" />
-        
+
         <p className="cancellation-text">
           For any questions or support, feel free to reach out:<br />
-          📧 info@princenprincess.in<br />
+          📧 info@littlerr.in<br />
           📱 WhatsApp: +91-9952778217
         </p>
       </div>

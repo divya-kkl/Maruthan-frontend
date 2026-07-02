@@ -285,7 +285,7 @@ const GirlsPage = () => {
               </div>
             ))}
 
-            {/* Loading Indicator matching Prince & Princess style */}
+            {/* Loading Indicator matching Little RR style */}
             {(!loading || page > 1) && products.length > 0 && (
               <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '30px 0', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <p style={{ color: '#555', fontSize: '14px', marginBottom: '10px' }}>
