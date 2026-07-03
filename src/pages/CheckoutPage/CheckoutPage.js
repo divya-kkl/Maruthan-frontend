@@ -21,6 +21,20 @@ const GET_USER_ADDRESSES = gql`
   }
 `;
 
+const GET_PAYMENT_METHODS = gql`
+  query GetAllPaymentMethods {
+    getAllPaymentMethods {
+      id
+      name
+      value
+      description
+      icon
+      status
+      sortOrder
+    }
+  }
+`;
+
 const PLACE_ORDER = gql`
   mutation PlaceOrder($input: PlaceOrderInput!) {
     placeOrder(input: $input) {
@@ -80,12 +94,31 @@ const Checkout = ({ onNavigate }) => {
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [selectedAddressIndex, setSelectedAddressIndex] = useState('new');
   const [loadingAddresses, setLoadingAddresses] = useState(true);
+  const [paymentMethods, setPaymentMethods] = useState([]);
 
   // We no longer fetch from backend because we use CartContext
   useEffect(() => {
     window.scrollTo(0, 0);
     fetchSavedAddresses();
+    fetchPaymentMethods();
   }, []);
+
+  const fetchPaymentMethods = async () => {
+    try {
+      const client = new GraphQLClient(GRAPHQL_ENDPOINT);
+      const data = await client.request(GET_PAYMENT_METHODS);
+      const allMethods = (data.getAllPaymentMethods || [])
+        .sort((a, b) => a.sortOrder - b.sortOrder);
+      setPaymentMethods(allMethods);
+      // Set first active payment method as default
+      const firstActive = allMethods.find(m => m.status === 'ACTIVE');
+      if (firstActive) {
+        setFormData(prev => ({ ...prev, paymentMethod: firstActive.value }));
+      }
+    } catch (err) {
+      console.error('Error fetching payment methods:', err);
+    }
+  };
 
   const fetchSavedAddresses = async () => {
     try {
@@ -425,31 +458,53 @@ const Checkout = ({ onNavigate }) => {
             Payment Method
           </h2>
           <div className="payment-methods">
-            {[
-              { value: "COD", label: "💵 Cash on Delivery", desc: "Pay at your doorstep" },
-              { value: "UPI", label: "📱 UPI Payment", desc: "Google Pay, PhonePe, Paytm" },
-              { value: "ONLINE", label: "💳 Online Payment", desc: "Netbanking, Wallets" },
-              { value: "CARD", label: "🏦 Card Payment", desc: "Credit / Debit Card" },
-            ].map((method) => (
+            {paymentMethods.length > 0 ? paymentMethods.map((method) => {
+              const isActive = method.status === 'ACTIVE';
+              return (
               <label
                 key={method.value}
                 className={`payment-option ${
                   formData.paymentMethod === method.value ? "selected" : ""
-                }`}
+                } ${!isActive ? "disabled" : ""}`}
+                style={!isActive ? { opacity: 0.5, cursor: "not-allowed" } : {}}
               >
                 <input
                   type="radio"
                   name="paymentMethod"
                   value={method.value}
-                  checked={formData.paymentMethod === method.value}
+                  checked={formData.paymentMethod === method.value && isActive}
                   onChange={handleChange}
+                  disabled={!isActive}
                 />
                 <div className="payment-option-content">
-                  <span className="payment-label">{method.label}</span>
-                  <span className="payment-desc">{method.desc}</span>
+                  <span className="payment-label">
+                    {method.icon} {method.name}
+                    {!isActive && (
+                      <span style={{ fontSize: "12px", color: "#dc3545", marginLeft: "8px", fontWeight: "normal" }}>
+                        (Unavailable)
+                      </span>
+                    )}
+                  </span>
+                  {method.description && <span className="payment-desc">{method.description}</span>}
                 </div>
               </label>
-            ))}
+            )}) : (
+              // Fallback if no payment methods configured in admin
+              [
+                { value: "COD", label: "💵 Cash on Delivery", desc: "Pay at your doorstep" },
+              ].map((method) => (
+                <label
+                  key={method.value}
+                  className={`payment-option selected`}
+                >
+                  <input type="radio" name="paymentMethod" value={method.value} checked readOnly />
+                  <div className="payment-option-content">
+                    <span className="payment-label">{method.label}</span>
+                    <span className="payment-desc">{method.desc}</span>
+                  </div>
+                </label>
+              ))
+            )}
           </div>
         </div>
 
