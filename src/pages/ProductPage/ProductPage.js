@@ -67,7 +67,7 @@ const ProductPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [faqs, setFaqs] = useState([]);
   const [openFaqs, setOpenFaqs] = useState({});
-  const [openAccordions, setOpenAccordions] = useState(['description']);
+  const [openAccordions, setOpenAccordions] = useState([]);
   const [shareSent, setShareSent] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [isZoomed, setIsZoomed] = useState(false);

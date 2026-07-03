@@ -79,7 +79,7 @@
 .osp-section {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 60px 20px;
+  padding: 20px 20px;
   box-sizing: border-box;
 }
 
@@ -325,7 +325,7 @@
 .osp-features-bar-container {
   background-color: #f4f6f8;
   width: 100%;
-  padding: 50px 20px;
+  padding: 20px 20px;
   box-sizing: border-box;
   margin-top: 40px;
 }
@@ -415,7 +415,7 @@
   }
   
   .osp-header-banner {
-    padding: 70px 15px;
+    padding: 20px 15px;
   }
   
   .osp-section {
