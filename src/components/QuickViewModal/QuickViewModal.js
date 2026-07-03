@@ -2,12 +2,34 @@ import React, { useState, useEffect } from 'react';
 import './QuickViewModal.css';
 import { useCart } from '../../context/CartContext';
 import { useNavigate } from 'react-router-dom';
+import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
 const QuickViewModal = ({ product, onClose }) => {
   const [selectedSize, setSelectedSize] = useState('1Y');
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
   const navigate = useNavigate();
+  const [activeImage, setActiveImage] = useState(product?.images?.[0] || '/images/placeholder.png');
+
+  useEffect(() => {
+    if (product?.images && product.images.length > 0) {
+      setActiveImage(product.images[0]);
+    }
+  }, [product]);
+
+  const handlePrevImage = () => {
+    if (!product || !product.images || product.images.length <= 1) return;
+    const currentIndex = Math.max(0, product.images.indexOf(activeImage));
+    const prevIndex = (currentIndex - 1 + product.images.length) % product.images.length;
+    setActiveImage(product.images[prevIndex]);
+  };
+
+  const handleNextImage = () => {
+    if (!product || !product.images || product.images.length <= 1) return;
+    const currentIndex = Math.max(0, product.images.indexOf(activeImage));
+    const nextIndex = (currentIndex + 1) % product.images.length;
+    setActiveImage(product.images[nextIndex]);
+  };
 
   // Prevent background scrolling when modal is open
   useEffect(() => {
@@ -38,7 +60,25 @@ const QuickViewModal = ({ product, onClose }) => {
 
         <div className="quickview-content">
           <div className="quickview-image-container">
-            <img src={product.images && product.images.length > 0 ? product.images[0] : '/images/placeholder.png'} alt={product.name || product.title} className="quickview-image" />
+            {product.images && product.images.length > 1 && (
+              <>
+                <button 
+                  className="quickview-nav-arrow left-arrow" 
+                  onClick={handlePrevImage} 
+                  aria-label="Previous image"
+                >
+                  <FiChevronLeft />
+                </button>
+                <button 
+                  className="quickview-nav-arrow right-arrow" 
+                  onClick={handleNextImage} 
+                  aria-label="Next image"
+                >
+                  <FiChevronRight />
+                </button>
+              </>
+            )}
+            <img src={activeImage} alt={product.name || product.title} className="quickview-image" />
           </div>
 
           <div className="quickview-details">
