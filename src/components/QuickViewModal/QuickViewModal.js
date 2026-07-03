@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './QuickViewModal.css';
 import { useCart } from '../../context/CartContext';
 import { useNavigate } from 'react-router-dom';
-import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { FiChevronLeft, FiChevronRight, FiShare2 } from 'react-icons/fi';
 
 const QuickViewModal = ({ product, onClose }) => {
   const [selectedSize, setSelectedSize] = useState('1Y');
@@ -51,6 +51,24 @@ const QuickViewModal = ({ product, onClose }) => {
     navigate('/checkout');
   };
 
+  const handleShare = async () => {
+    const url = window.location.origin + '/product/' + (product.id || product._id);
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: product.name || product.title,
+          url: url
+        });
+      } catch (err) {
+        console.error("Share failed", err);
+      }
+    } else {
+      navigator.clipboard.writeText(url).then(() => {
+        alert("Product link copied to clipboard!");
+      });
+    }
+  };
+
   if (!product) return null;
 
   return (
@@ -83,13 +101,30 @@ const QuickViewModal = ({ product, onClose }) => {
 
           <div className="quickview-details">
             <h2 className="quickview-title">{product.name || product.title}</h2>
+            
             <div className="quickview-price-wrap">
               <span className="quickview-price">Rs. {product.price}</span>
               {product.originalPrice && <span className="quickview-old-price">Rs. {product.originalPrice}</span>}
             </div>
 
             <div className="quickview-size-section">
-              <p className="size-label">Size: <span>{selectedSize}</span></p>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <p className="size-label" style={{ marginBottom: 0 }}>Size: <span>{selectedSize}</span></p>
+                <div 
+                  onClick={handleShare} 
+                  style={{ 
+                    cursor: 'pointer', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '6px', 
+                    fontSize: '15px',
+                    color: '#333',
+                    marginRight: '40px'
+                  }}
+                >
+                  <FiShare2 /> Share
+                </div>
+              </div>
               <div className="size-buttons">
                 {['1Y', '2Y', '3Y', '4Y', '5Y', '6Y'].map(size => (
                   <button
