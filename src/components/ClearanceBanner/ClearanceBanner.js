@@ -1,8 +1,51 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './ClearanceBanner.css';
 import { FaArrowRight } from 'react-icons/fa';
+import { GraphQLClient, gql } from 'graphql-request';
+
+const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:2000/graphql';
+
+const GET_ACTIVE_BANNERS = gql`
+  query GetActiveBanners($bannerType: String) {
+    getActiveBanners(bannerType: $bannerType) {
+      id
+      backgroundImage
+      bannerType
+      isActive
+    }
+  }
+`;
 
 const ClearanceBanner = () => {
+  const [bannerData, setBannerData] = useState(null);
+
+  useEffect(() => {
+    const fetchBanner = async () => {
+      try {
+        const client = new GraphQLClient(GRAPHQL_ENDPOINT);
+        const data = await client.request(GET_ACTIVE_BANNERS, { bannerType: "THIRD" });
+        if (data.getActiveBanners && data.getActiveBanners.length > 0) {
+          setBannerData(data.getActiveBanners[0]);
+        }
+      } catch (err) {
+        console.error('Error fetching Third banner:', err);
+      }
+    };
+    fetchBanner();
+  }, []);
+
+  if (bannerData && bannerData.backgroundImage) {
+    return (
+      <div className="clearance-banner-container">
+        <img
+          src={bannerData.backgroundImage}
+          alt="Special Clearance Offer"
+          className="clearance-banner-dynamic-img"
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="clearance-banner-container">
       <div className="clearance-banner">
