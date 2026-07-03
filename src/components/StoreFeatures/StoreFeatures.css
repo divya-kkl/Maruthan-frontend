@@ -1,6 +1,6 @@
 .store-features-section {
   width: 100%;
-  padding: 60px 20px;
+  padding: 20px 20px;
   font-family: 'Times New Roman', Times, serif;
 }
 
@@ -13,34 +13,41 @@
   margin: 0 auto;
 }
 
-.feature-item {
+.sf-item {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: flex-start;
   text-align: left;
 }
 
-.feature-icon-wrapper {
+.sf-icon-wrapper {
   font-size: 28px;
   color: #000;
-  margin-bottom: 15px;
+  margin-right: 15px;
+  margin-bottom: 0;
+  flex-shrink: 0;
 }
 
-.feature-title {
+.sf-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.sf-title {
   font-size: 16px;
-  font-weight: normal;
+  font-weight: bold;
   color: #000;
-  margin: 0 0 10px 0;
+  margin: 0 0 8px 0;
 }
 
-.feature-desc {
+.sf-desc {
   font-size: 13px;
   color: #333;
   line-height: 1.6;
   margin: 0;
 }
 
-.feature-link {
+.sf-link {
   font-style: italic;
   cursor: pointer;
 }
