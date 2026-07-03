@@ -51,6 +51,8 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
+  height: 100%;
+  object-fit: cover;
   cursor: pointer;
 }
 
@@ -90,7 +92,7 @@
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 10;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, opacity 0.25s ease;
   color: #333333;
   padding: 0;
 }
@@ -652,6 +654,61 @@
   box-shadow: 0 4px 20px rgba(0,0,0,0.5);
 }
 
+/* Lightbox/Zoom navigation arrows styling */
+.zoom-nav-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  width: 54px;
+  height: 54px;
+  border-radius: 50% !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  font-size: 28px;
+  color: #fff;
+  z-index: 10001;
+  transition: all 0.25s ease;
+}
+
+.zoom-nav-arrow:hover {
+  background: #fff;
+  border-color: #0F2D5C;
+  color: #0F2D5C;
+  box-shadow: 0 4px 20px rgba(15, 45, 92, 0.45);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.zoom-nav-arrow:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.zoom-nav-arrow.left-arrow {
+  left: 30px;
+}
+
+.zoom-nav-arrow.right-arrow {
+  right: 30px;
+}
+
+@media (max-width: 768px) {
+  .zoom-nav-arrow {
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
+  }
+  .zoom-nav-arrow.left-arrow {
+    left: 15px;
+  }
+  .zoom-nav-arrow.right-arrow {
+    right: 15px;
+  }
+}
+
 /* Skeleton Loader Styles */
 .skeleton-loading .skeleton-shimmer {
   background: linear-gradient(90deg, #f3f3f3 25%, #e6e6e6 50%, #f3f3f3 75%);
@@ -721,16 +778,15 @@
   width: 100%;
 }
 
-/* Image Navigation Arrow Buttons styling */
 .nav-arrow {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   background: rgba(255, 255, 255, 0.85);
-  border: none;
+  border: 2px solid transparent;
   width: 44px;
   height: 44px;
-  border-radius: 50%;
+  border-radius: 50% !important;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -744,8 +800,9 @@
 
 .nav-arrow:hover {
   background: #fff;
-  color: #000;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  border-color: #0F2D5C;
+  color: #0F2D5C;
+  box-shadow: 0 4px 12px rgba(15, 45, 92, 0.25);
   transform: translateY(-50%) scale(1.08);
 }
 
@@ -759,4 +816,19 @@
 
 .right-arrow {
   right: 15px;
+}
+
+/* Hide navigation arrows and zoom icon by default, show on hover of the image wrapper */
+@media (hover: hover) {
+  .nav-arrow,
+  .expand-icon {
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  .product-main-image-wrapper:hover .nav-arrow,
+  .product-main-image-wrapper:hover .expand-icon {
+    opacity: 1;
+    pointer-events: auto;
+  }
 }

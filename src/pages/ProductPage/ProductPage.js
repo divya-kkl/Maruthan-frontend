@@ -67,7 +67,7 @@ const ProductPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [faqs, setFaqs] = useState([]);
   const [openFaqs, setOpenFaqs] = useState({});
-  const [openAccordions, setOpenAccordions] = useState(['description']);
+  const [openAccordions, setOpenAccordions] = useState([]);
   const [shareSent, setShareSent] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [isZoomed, setIsZoomed] = useState(false);
@@ -414,11 +414,11 @@ const ProductPage = () => {
             </div>
             {openAccordions.includes('store') && (
               <div className="accordion-content">
-                <p style={{ marginBottom: '15px' }}>Our Prince N Princess store is open every day, except on Diwali and Pongal Holidays. We welcome you throughout the year with the same warmth and service. Experience Quality and Craftsmanship at Our Trusted Offline Stores.</p>
+                <p style={{ marginBottom: '15px' }}>Our Little R.R is open every day, except on Diwali and Pongal Holidays. We welcome you throughout the year with the same warmth and service. Experience Quality and Craftsmanship at Our Trusted Offline Stores.</p>
                 <ol style={{ marginLeft: '20px', lineHeight: '1.8' }}>
-                  <li>Velachery, Chennai: <a href="tel:+919003466189" style={{ color: 'inherit', textDecoration: 'underline' }}>+91-9003466189</a></li>
-                  <li>RS Puram, Coimbatore: <a href="tel:+919789388217" style={{ color: 'inherit', textDecoration: 'underline' }}>+91-9789388217</a></li>
-                  <li>Singanallur, Coimbatore: <a href="tel:+918438008217" style={{ color: 'inherit', textDecoration: 'underline' }}>+91-8438008217</a></li>
+                  <li>Velachery, Chennai: <a href="tel:9786221122" style={{ color: 'inherit', textDecoration: 'underline' }}>9786221122</a></li>
+                  <li>RS Puram, Coimbatore: <a href="tel:9786221122" style={{ color: 'inherit', textDecoration: 'underline' }}>9786221122</a></li>
+                  <li>Singanallur, Coimbatore: <a href="tel:9786221122" style={{ color: 'inherit', textDecoration: 'underline' }}>9786221122</a></li>
                 </ol>
               </div>
             )}
@@ -432,6 +432,26 @@ const ProductPage = () => {
           <button className="zoom-close-btn" onClick={() => setIsZoomed(false)}>
             <FiX />
           </button>
+          
+          {product.images && product.images.length > 1 && (
+            <>
+              <button 
+                className="zoom-nav-arrow left-arrow" 
+                onClick={(e) => { e.stopPropagation(); handlePrevImage(); }} 
+                aria-label="Previous image"
+              >
+                <FiChevronLeft />
+              </button>
+              <button 
+                className="zoom-nav-arrow right-arrow" 
+                onClick={(e) => { e.stopPropagation(); handleNextImage(); }} 
+                aria-label="Next image"
+              >
+                <FiChevronRight />
+              </button>
+            </>
+          )}
+
           <img 
             src={activeImage || "/images/placeholder.png"} 
             alt={product.name} 

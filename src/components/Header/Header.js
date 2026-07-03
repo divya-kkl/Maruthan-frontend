@@ -38,6 +38,7 @@ const GET_PRODUCT_CATEGORIES = gql`
 
 const Header = () => {
   const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { getCartCount } = useCart();
   const cartCount = getCartCount();
   const navigate = useNavigate();
@@ -56,6 +57,8 @@ const Header = () => {
         setCategories(parentCategories);
       } catch (err) {
         console.error('Error fetching categories:', err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -80,16 +83,24 @@ const Header = () => {
             <li className="nav-item">
               <NavLink to="/" end>Home</NavLink>
             </li>
-            {categories.map((category) => (
-              <li className="nav-item" key={category.id}>
-                <NavLink to={`/categories/${category.code}`}>
-                  {category.name}
-                  {category.subCategories && category.subCategories.length > 0 && (
-                    <MdKeyboardArrowDown className="nav-arrow" />
-                  )}
-                </NavLink>
-              </li>
-            ))}
+            {loading ? (
+              [...Array(4)].map((_, i) => (
+                <li className="nav-item" key={`shimmer-nav-${i}`}>
+                  <div className="header-shimmer-item skeleton-shimmer"></div>
+                </li>
+              ))
+            ) : (
+              categories.map((category) => (
+                <li className="nav-item" key={category.id}>
+                  <NavLink to={`/categories/${category.code}`}>
+                    {category.name}
+                    {category.subCategories && category.subCategories.length > 0 && (
+                      <MdKeyboardArrowDown className="nav-arrow" />
+                    )}
+                  </NavLink>
+                </li>
+              ))
+            )}
             <li className="nav-item">
               <NavLink to="/stores">Our Stores</NavLink>
             </li>
@@ -126,13 +137,21 @@ const Header = () => {
           <li className="mobile-nav-item">
             <NavLink to="/" end onClick={() => setIsMobileMenuOpen(false)}>Home</NavLink>
           </li>
-          {categories.map((category) => (
-            <li className="mobile-nav-item" key={category.id}>
-              <NavLink to={`/categories/${category.code}`} onClick={() => setIsMobileMenuOpen(false)}>
-                {category.name}
-              </NavLink>
-            </li>
-          ))}
+          {loading ? (
+            [...Array(4)].map((_, i) => (
+              <li className="mobile-nav-item" key={`shimmer-mobile-nav-${i}`}>
+                <div className="header-shimmer-item skeleton-shimmer" style={{ width: '80px', height: '18px', margin: '15px 20px' }}></div>
+              </li>
+            ))
+          ) : (
+            categories.map((category) => (
+              <li className="mobile-nav-item" key={category.id}>
+                <NavLink to={`/categories/${category.code}`} onClick={() => setIsMobileMenuOpen(false)}>
+                  {category.name}
+                </NavLink>
+              </li>
+            ))
+          )}
           <li className="mobile-nav-item">
             <NavLink to="/stores" onClick={() => setIsMobileMenuOpen(false)}>Our Stores</NavLink>
           </li>

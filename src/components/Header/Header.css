@@ -232,3 +232,26 @@
     color: #0F2D5C;
   }
 }
+
+/* Shimmer loading for header links */
+.header-shimmer-item {
+  width: 70px;
+  height: 16px;
+  border-radius: 4px;
+  margin: 0 5px;
+}
+
+.header-shimmer-item.skeleton-shimmer {
+  background: linear-gradient(90deg, #f3f3f3 25%, #e6e6e6 50%, #f3f3f3 75%);
+  background-size: 200% 100%;
+  animation: headerShimmer 1.5s infinite linear;
+}
+
+@keyframes headerShimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
