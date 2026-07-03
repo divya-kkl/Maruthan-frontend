@@ -33,7 +33,7 @@ const Hero = () => {
     fetchBanner();
   }, []);
 
-  const backgroundImage = bannerData?.backgroundImage || "/images/hero_banner.png";
+  const backgroundImage = bannerData?.backgroundImage ;
 
   return (
     <section className="hero-section">
@@ -45,7 +45,7 @@ const Hero = () => {
           className="hero-image"
           onError={(e) => {
             e.target.onerror = null;
-            e.target.src = "/images/hero_banner.png";
+            // e.target.src = "/images/hero_banner.png";
           }}
         />
       </div>

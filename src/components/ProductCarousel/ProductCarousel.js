@@ -31,6 +31,17 @@ const GET_PRODUCTS = gql`
   }
 }`;
 
+const GET_ACTIVE_BANNERS = gql`
+  query GetActiveBanners($bannerType: String) {
+    getActiveBanners(bannerType: $bannerType) {
+      id
+      backgroundImage
+      bannerType
+      isActive
+    }
+  }
+`;
+
 const CarouselCard = ({ product, openQuickView }) => {
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
@@ -69,6 +80,7 @@ const ProductCarousel = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [bannerData, setBannerData] = useState(null);
   const scrollContainerRef = useRef(null);
   const navigate = useNavigate();
 
@@ -102,6 +114,21 @@ const ProductCarousel = () => {
       scrollRight();
     }, 7000);
     return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const fetchBanner = async () => {
+      try {
+        const client = new GraphQLClient(GRAPHQL_ENDPOINT);
+        const data = await client.request(GET_ACTIVE_BANNERS, { bannerType: "SECOND" });
+        if (data.getActiveBanners && data.getActiveBanners.length > 0) {
+          setBannerData(data.getActiveBanners[0]);
+        }
+      } catch (err) {
+        console.error('Error fetching Second banner:', err);
+      }
+    };
+    fetchBanner();
   }, []);
 
   useEffect(() => {
@@ -186,7 +213,7 @@ const ProductCarousel = () => {
       {/* Girls Wear Banner Section (Second Image) */}
       <section className="girls-wear-banner-section">
         <img
-          src="/images/banner1.jpg"
+          src={bannerData?.backgroundImage || "/images/banner1.jpg"}
           alt="Girls Wear Trendy & Stylish"
           className="girls-wear-banner-img"
           onError={(e) => {

@@ -16,8 +16,7 @@ const GET_ACTIVE_TOP_BANNERS = gql`
 
 const TopBanner = () => {
   const [messages, setMessages] = useState([
-    "Welcome to our store",
-    "Unlock Free Shipping on Your Order When You Spend Rs 2000 or More!"
+    
   ]);
   const [currentIndex, setCurrentIndex] = useState(0);
 

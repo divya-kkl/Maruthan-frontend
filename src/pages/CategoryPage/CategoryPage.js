@@ -110,15 +110,11 @@ const CategoryPage = () => {
   // Serialize activeFilters to a stable string to avoid object-reference re-renders
   const activeFiltersKey = JSON.stringify(activeFilters);
   useEffect(() => {
-    if (filterData.price.max > 0 && activeFilters.price.max === '') {
-      setActiveFilters(prev => ({
-        ...prev,
-        price: { min: 0, max: filterData.price.max }
-      }));
+    if (filterData.price.max > 0 && priceInputMax === '0') {
       setPriceInputMin('0');
       setPriceInputMax(String(filterData.price.max));
     }
-  }, [filterData.price.max, activeFilters.price.max]);
+  }, [filterData.price.max, priceInputMax]);
 
   const handleMinSliderChange = (e) => {
     const value = Math.min(Number(e.target.value), (priceInputMax === '' ? (filterData.price.max || 10000) : Number(priceInputMax)) - 1);
@@ -504,10 +500,16 @@ const CategoryPage = () => {
           {/* Product Grid */}
           <div className="category-product-grid">
             {loading && page === 1 ? (
-              <div className="category-loading">
-                <div className="spinner"></div>
-                <p>Loading collection...</p>
-              </div>
+              [...Array(8)].map((_, index) => (
+                <div className="category-card shimmer-card" key={`initial-shimmer-${index}`}>
+                  <div className="shimmer-image"></div>
+                  <div className="category-info" style={{ width: '100%' }}>
+                    <div className="shimmer-text title"></div>
+                    <div className="shimmer-text price"></div>
+                    <div className="shimmer-button"></div>
+                  </div>
+                </div>
+              ))
             ) : filteredProducts.length > 0 ? (
               filteredProducts.map((product) => (
                 <div className="category-card" key={product.id}>
