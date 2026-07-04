@@ -66,11 +66,32 @@ const PLACE_ORDER = gql`
         phone
       }
       notes
+      razorpayOrderId
       createdAt
       updatedAt
     }
   }
 `;
+
+const CREATE_RAZORPAY_ORDER = gql`
+  mutation CreateRazorpayOrder($amount: Float!) {
+    createRazorpayOrder(amount: $amount) {
+      success
+      orderId
+      amount
+      currency
+    }
+  }
+`;
+
+// const VERIFY_RAZORPAY_PAYMENT = gql`
+//   mutation VerifyRazorpayPayment($razorpayOrderId: String!, $razorpayPaymentId: String!, $razorpaySignature: String!) {
+//     verifyRazorpayPayment(razorpayOrderId: $razorpayOrderId, razorpayPaymentId: $razorpayPaymentId, razorpaySignature: $razorpaySignature) {
+//       id
+//       paymentStatus
+//     }
+//   }
+// `;
 
 const Checkout = ({ onNavigate }) => {
   const navigate = useNavigate();
@@ -238,7 +259,87 @@ const Checkout = ({ onNavigate }) => {
         }
       }
 
-      // Now place the order (which reads from the backend cart we just synced)
+      // Purely Frontend Razorpay Payment if UPI (Online Delivery)
+      if (formData.paymentMethod === "UPI" || formData.paymentMethod === "RAZORPAY") {
+        if (!window.Razorpay) {
+            alert("Razorpay SDK failed to load. Please check your internet connection.");
+            setIsPlacingOrder(false);
+            return;
+        }
+        if (!process.env.REACT_APP_RAZORPAY_KEY_ID) {
+            alert("Razorpay Key is missing! Please check your .env file.");
+            setIsPlacingOrder(false);
+            return;
+        }
+
+        // 1. Calculate amount (cart total + delivery charge)
+        const totalAmount = getCartTotal() + (deliveryCharge || 0);
+
+        // 2. Call backend to create Razorpay Order
+        const rzpResponse = await client.request(CREATE_RAZORPAY_ORDER, {
+          amount: totalAmount
+        });
+
+        if (!rzpResponse.createRazorpayOrder.success) {
+           alert("Failed to initialize Razorpay order. Please try again.");
+           setIsPlacingOrder(false);
+           return;
+        }
+
+        const options = {
+          key: process.env.REACT_APP_RAZORPAY_KEY_ID, 
+          amount: rzpResponse.createRazorpayOrder.amount, // Amount is in paise
+          currency: "INR",
+          name: "littleRR",
+          order_id: rzpResponse.createRazorpayOrder.orderId, 
+          description: "Purchase Order",
+          handler: async function (response) {
+            try {
+              // 3. Payment success callback from Razorpay -> Place Order on backend
+              input.paymentMethod = "RAZORPAY";
+              input.razorpayOrderId = response.razorpay_order_id;
+              input.razorpayPaymentId = response.razorpay_payment_id;
+              input.razorpaySignature = response.razorpay_signature;
+
+              const data = await client.request(PLACE_ORDER, { input });
+              
+              window.dispatchEvent(new Event("cartUpdated"));
+              if (onNavigate) {
+                 onNavigate(`order-success/${data.placeOrder.id}`);
+              } else {
+                 navigate(`/order-success/${data.placeOrder.id}`);
+              }
+            } catch (verifyErr) {
+              console.error("Payment Verification Error", verifyErr);
+              alert("Payment verification failed! Please contact support.");
+              setIsPlacingOrder(false);
+            }
+          },
+          prefill: {
+            name: deliveryAddress.name,
+            contact: deliveryAddress.phone
+          },
+          theme: {
+            color: "#8a2b8f"
+          },
+          modal: {
+            ondismiss: function() {
+              alert("Payment cancelled.");
+              setIsPlacingOrder(false);
+            }
+          }
+        };
+
+        const rzp = new window.Razorpay(options);
+        rzp.on('payment.failed', function (response){
+          alert("Payment failed: " + response.error.description);
+          setIsPlacingOrder(false);
+        });
+        rzp.open();
+        return;
+      }
+
+      // If not ONLINE (e.g. COD), proceed normally
       const data = await client.request(PLACE_ORDER, { input });
 
       window.dispatchEvent(new Event("cartUpdated"));
