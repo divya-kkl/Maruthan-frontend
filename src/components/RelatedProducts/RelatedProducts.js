@@ -1,50 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import './RelatedProducts.css';
-import { GraphQLClient, gql } from 'graphql-request';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
 import QuickViewModal from '../QuickViewModal/QuickViewModal';
 
-const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:2000/graphql';
-
-const GET_PRODUCTS = gql`
-  query GetProduct($search: String) {
-    getProduct(search: $search) {
-      products {
-      id
-      name
-      price
-      mrp
-      images
-      variants {
-        color
-        size
-        stock
-      }
-    }
-  }
-}`;
-
 const RelatedProducts = ({ title = "New Arrivals" }) => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const { product, status } = useSelector((state) => state.product);
+  
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const client = new GraphQLClient(GRAPHQL_ENDPOINT);
-        const data = await client.request(GET_PRODUCTS, { search: '' });
-        // Get 10 items to match the layout (5x2 grid)
-        const fetchedProducts = data.getProduct?.products ? data.getProduct?.products.slice(0, 10) : [];
-        setProducts(fetchedProducts);
-      } catch (err) {
-        console.error('Error fetching products:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (status === 'idle') {
+      dispatch(fetchProducts());
+    }
+  }, [status, dispatch]);
 
-    fetchProducts();
-  }, []);
+  const loading = status === 'loading' || status === 'idle';
+  const displayProducts = product ? product.slice(0, 10) : [];
 
   const openQuickView = (product) => {
     setSelectedProduct({
@@ -64,7 +37,7 @@ const RelatedProducts = ({ title = "New Arrivals" }) => {
         {loading ? (
           <p style={{ textAlign: 'center', width: '100%', padding: '20px' }}>Loading products...</p>
         ) : (
-          products.map((product) => (
+          displayProducts.map((product) => (
             <div className="rp-card" key={product.id}>
               <div className="rp-image-wrapper" onClick={() => openQuickView(product)}>
                 <img 

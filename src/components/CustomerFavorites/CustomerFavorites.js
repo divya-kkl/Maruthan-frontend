@@ -1,43 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import './CustomerFavorites.css';
-import { GraphQLClient, gql } from 'graphql-request';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
 import { FaInstagram, FaHeart } from 'react-icons/fa';
 
-const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:2000/graphql';
-
-const GET_PRODUCTS = gql`
-  query GetProduct($search: String) {
-    getProduct(search: $search) {
-      products {
-      id
-      name
-      price
-      images
-    }
-  }
-}`;
-
 const CustomerFavorites = ({ title = "Loved by Our Little Customers 💛" }) => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { product, status: productStatus } = useSelector((state) => state.product);
+  const loading = productStatus === 'loading';
+  const products = product && product.length > 0 ? [...product].reverse().slice(0, 5) : [];
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const client = new GraphQLClient(GRAPHQL_ENDPOINT);
-        const data = await client.request(GET_PRODUCTS, { search: '' });
-        // Slice to get a good number of items for the carousel
-        const fetchedProducts = data.getProduct?.products ? data.getProduct?.products.slice(0, 6) : [];
-        setProducts(fetchedProducts);
-      } catch (err) {
-        console.error('Error fetching customer favorites:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
+    dispatch(fetchProducts());
+  }, [dispatch]);
 
   // Use product name for description, limit length
   const truncate = (str, n) => {
@@ -82,10 +58,10 @@ const CustomerFavorites = ({ title = "Loved by Our Little Customers 💛" }) => 
               {products.map((product, index) => (
                 <div className="cf-card" key={`t1-${product.id}-${index}`}>
                   <div className="cf-image-wrapper">
-                    <img 
-                      src={product.images && product.images.length > 0 ? product.images[0] : '/images/placeholder.png'} 
-                      alt={product.name} 
-                      className="cf-image" 
+                    <img
+                      src={product.images && product.images.length > 0 ? product.images[0] : '/images/placeholder.png'}
+                      alt={product.name}
+                      className="cf-image"
                     />
                   </div>
                   <div className="cf-info">
@@ -105,10 +81,10 @@ const CustomerFavorites = ({ title = "Loved by Our Little Customers 💛" }) => 
               {products.map((product, index) => (
                 <div className="cf-card" key={`t2-${product.id}-${index}`}>
                   <div className="cf-image-wrapper">
-                    <img 
-                      src={product.images && product.images.length > 0 ? product.images[0] : '/images/placeholder.png'} 
-                      alt={product.name} 
-                      className="cf-image" 
+                    <img
+                      src={product.images && product.images.length > 0 ? product.images[0] : '/images/placeholder.png'}
+                      alt={product.name}
+                      className="cf-image"
                     />
                   </div>
                   <div className="cf-info">

@@ -1,31 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import './AddAddressModal.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateAddressField, resetAddressForm } from '../../redux/Slice/addressSlice';
 
 const AddAddressModal = ({ onClose, onSave }) => {
-  const [formData, setFormData] = useState({
-    country: 'India',
-    firstName: '',
-    lastName: '',
-    address: '',
-    apartment: '',
-    city: '',
-    state: 'Andaman',
-    pincode: '',
-    phone: '+91',
-    isDefault: false
-  });
+  const dispatch = useDispatch();
+  const formData = useSelector((state) => state.address.formData);
+ 
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+    dispatch (updateAddressField({
+      name,
+      value: type === 'checkbox' ? checked : value  
+    }))
+  
   };
 
   const handleSave = () => {
     if (onSave) {
       onSave(formData);
+      dispatch(resetAddressForm()); 
     }
   };
 

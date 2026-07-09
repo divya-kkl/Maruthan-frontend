@@ -1,48 +1,7 @@
-import React, { useState } from 'react';
-import { GraphQLClient, gql } from 'graphql-request';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUserThunk, registerUserThunk, resetAuthError, resetRegistrationSuccess } from '../../redux/Slice/userSlice';
 import './signIn.css';
-
-const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:2000/graphql';
-
-const LOGIN_MUTATION = gql`
-  mutation LoginUser($input: LoginInput) {
-    loginUser(input: $input) {
-      user {
-        id
-        username
-        email
-        country
-        state
-        city
-        address
-        phone_number
-        pincode
-        gender
-      }
-      token
-    }
-  }
-`;
-
-const REGISTER_MUTATION = gql`
-  mutation RegisterUser($input: RegisterInput) {
-    registerUser(input: $input) {
-      user {
-        id
-        username
-        email
-        country
-        state
-        city
-        address
-        phone_number
-        pincode
-        gender
-      }
-      token
-    }
-  }
-`;
 
 const SignIn = ({ onBack, onSignIn, onGuest }) => {
   const [isRegisterMode, setIsRegisterMode] = useState(false);
@@ -59,76 +18,44 @@ const SignIn = ({ onBack, onSignIn, onGuest }) => {
     pincode: ''
   });
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+  const { loadingAuth: loading, authError: error, registrationSuccess } = useSelector(state => state.user);
+
+  useEffect(() => {
+    dispatch(resetAuthError());
+    dispatch(resetRegistrationSuccess());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (registrationSuccess) {
+      alert("Registration successful! Please login.");
+      setIsRegisterMode(false);
+      setFormData(prev => ({ ...prev, password: '' }));
+      dispatch(resetRegistrationSuccess());
+    }
+  }, [registrationSuccess, dispatch]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (error) dispatch(resetAuthError());
   };
 
   const handleAuth = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const client = new GraphQLClient(GRAPHQL_ENDPOINT);
+    dispatch(resetAuthError());
 
-      let mutation;
-      let variables;
+    if (isRegisterMode) {
+      await dispatch(registerUserThunk(formData));
+    } else {
+      const resultAction = await dispatch(loginUserThunk({
+        email: formData.email,
+        password: formData.password
+      }));
 
-      if (isRegisterMode) {
-        mutation = REGISTER_MUTATION;
-        variables = { input: formData };
-      } else {
-        mutation = LOGIN_MUTATION;
-        variables = {
-          input: {
-            email: formData.email,
-            password: formData.password
-          }
-        };
+      if (loginUserThunk.fulfilled.match(resultAction)) {
+        onSignIn();
+      } else if (resultAction.payload && resultAction.payload.includes("Invalid email or password")) {
+         alert("Invalid email or password. If you don't have an account, please register a new one.");
       }
-
-      const data = await client.request(mutation, variables);
-
-      const token = isRegisterMode ? data?.registerUser?.token : data?.loginUser?.token;
-      const user = isRegisterMode ? data?.registerUser?.user : data?.loginUser?.user;
-
-      if (token) {
-        if (isRegisterMode) {
-          // Registration successful: switch to login mode and pre-fill email
-          alert("Registration successful! Please login.");
-          setIsRegisterMode(false);
-          setFormData(prev => ({ ...prev, password: '' }));
-        } else {
-          // Login successful: save token and navigate
-          localStorage.setItem('token', token);
-          if (user) {
-            localStorage.setItem('user', JSON.stringify(user));
-          }
-          onSignIn();
-        }
-      } else {
-        setError(new Error(isRegisterMode ? "Registration failed. No token received." : "Login failed. No token received."));
-      }
-    } catch (e) {
-      console.error("Auth Error:", e);
-
-      let errorMessage = "Authentication failed. Please try again.";
-      if (e.response && e.response.errors && e.response.errors.length > 0) {
-        errorMessage = e.response.errors[0].message;
-      } else if (e.message) {
-        errorMessage = e.message;
-      }
-
-      // If it's the specific invalid email error
-      if (errorMessage.includes("Invalid email or password")) {
-        alert("Invalid email or password. If you don't have an account, please register a new one.");
-        errorMessage = "Invalid email or password. Please register.";
-      }
-
-      setError(new Error(errorMessage));
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -239,7 +166,7 @@ const SignIn = ({ onBack, onSignIn, onGuest }) => {
             )}
           </div>
 
-          {error && <p className="error-message" style={{ color: '#ff4d4f', fontSize: '14px', marginBottom: '15px' }}>{error.message}</p>}
+          {error && <p className="error-message" style={{ color: '#ff4d4f', fontSize: '14px', marginBottom: '15px' }}>{error}</p>}
 
           <button className="primary-btn" onClick={handleAuth} disabled={loading} style={{ marginTop: '15px' }}>
             {loading ? (isRegisterMode ? 'Registering...' : 'Signing in...') : (isRegisterMode ? 'Register' : 'Sign In')}
@@ -252,7 +179,7 @@ const SignIn = ({ onBack, onSignIn, onGuest }) => {
             <span
               onClick={() => {
                 setIsRegisterMode(!isRegisterMode);
-                setError(null);
+                dispatch(resetAuthError());
               }}
               style={{ cursor: 'pointer', color: '#000', fontWeight: 'bold', textDecoration: 'underline' }}
             >

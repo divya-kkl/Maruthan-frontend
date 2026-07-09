@@ -1,104 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { GraphQLClient, gql } from "graphql-request";
 import "./CheckoutPage.css";
-import { useCart } from "../../context/CartContext";
+import { useSelector, useDispatch } from "react-redux";
+import { removeFromCart } from "../../redux/Slice/cartSlice";
+import { fetchSavedAddresses, fetchPaymentMethods, placeOrder, createRazorpayOrder, resetOrderSuccess } from "../../redux/Slice/checkoutSlice";
 
-const GRAPHQL_ENDPOINT =
-  process.env.REACT_APP_GRAPHQL_ENDPOINT || "http://localhost:2000/graphql";
 
-const GET_USER_ADDRESSES = gql`
-  query GetUserAddresses {
-    getUserAddresses {
-      addressType
-      name
-      street
-      city
-      state
-      country
-      phone
-    }
-  }
-`;
-
-const GET_PAYMENT_METHODS = gql`
-  query GetAllPaymentMethods {
-    getAllPaymentMethods {
-      id
-      name
-      value
-      description
-      icon
-      status
-      sortOrder
-    }
-  }
-`;
-
-const PLACE_ORDER = gql`
-  mutation PlaceOrder($input: PlaceOrderInput!) {
-    placeOrder(input: $input) {
-      id
-      userId
-      orderNumber
-      items {
-        productId
-        quantity
-        price
-        mrp
-        name
-        image
-        size
-      }
-      subTotal
-      deliveryCharge
-      totalAmount
-      status
-      paymentStatus
-      paymentMethod
-      deliveryAddress {
-        addressType
-        name
-        street
-        city
-        state
-        country
-        phone
-      }
-      notes
-      razorpayOrderId
-      createdAt
-      updatedAt
-    }
-  }
-`;
-
-const CREATE_RAZORPAY_ORDER = gql`
-  mutation CreateRazorpayOrder($amount: Float!) {
-    createRazorpayOrder(amount: $amount) {
-      success
-      orderId
-      amount
-      currency
-    }
-  }
-`;
-
-// const VERIFY_RAZORPAY_PAYMENT = gql`
-//   mutation VerifyRazorpayPayment($razorpayOrderId: String!, $razorpayPaymentId: String!, $razorpaySignature: String!) {
-//     verifyRazorpayPayment(razorpayOrderId: $razorpayOrderId, razorpayPaymentId: $razorpayPaymentId, razorpaySignature: $razorpaySignature) {
-//       id
-//       paymentStatus
-//     }
-//   }
-// `;
 
 const Checkout = ({ onNavigate }) => {
   const navigate = useNavigate();
-  const { cartItems, getCartTotal, removeFromCart, deliveryCharge } = useCart();
+  const dispatch = useDispatch();
+  const { cartItems, deliveryCharge } = useSelector(state => state.cart);
+  const getCartTotal = () => cartItems.reduce((total, item) => total + (item.product.price * item.quantity), 0);
 
   const [loading] = useState(false);
-  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  const { savedAddresses, loadingAddresses, paymentMethods, isPlacingOrder, orderSuccessData, error } = useSelector(state => state.checkout);
+
   const [formData, setFormData] = useState({
     addressType: "Home",
     name: "",
@@ -112,56 +29,57 @@ const Checkout = ({ onNavigate }) => {
     notes: "",
   });
 
-  const [savedAddresses, setSavedAddresses] = useState([]);
   const [selectedAddressIndex, setSelectedAddressIndex] = useState('new');
-  const [loadingAddresses, setLoadingAddresses] = useState(true);
-  const [paymentMethods, setPaymentMethods] = useState([]);
 
-  // We no longer fetch from backend because we use CartContext
+  // We no longer fetch from backend directly
   useEffect(() => {
     window.scrollTo(0, 0);
-    fetchSavedAddresses();
-    fetchPaymentMethods();
-  }, []);
+    dispatch(fetchSavedAddresses());
+    dispatch(fetchPaymentMethods());
+  }, [dispatch]);
 
-  const fetchPaymentMethods = async () => {
-    try {
-      const client = new GraphQLClient(GRAPHQL_ENDPOINT);
-      const data = await client.request(GET_PAYMENT_METHODS);
-      const allMethods = (data.getAllPaymentMethods || [])
-        .sort((a, b) => a.sortOrder - b.sortOrder);
-      setPaymentMethods(allMethods);
-      // Set first active payment method as default
-      const firstActive = allMethods.find(m => m.status === 'ACTIVE');
+  // Set default payment method and select first saved address if available
+  useEffect(() => {
+    if (paymentMethods.length > 0) {
+      const firstActive = paymentMethods.find(m => m.status === 'ACTIVE');
       if (firstActive) {
         setFormData(prev => ({ ...prev, paymentMethod: firstActive.value }));
       }
-    } catch (err) {
-      console.error('Error fetching payment methods:', err);
     }
-  };
+  }, [paymentMethods]);
 
-  const fetchSavedAddresses = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setLoadingAddresses(false);
-        return;
-      }
-      const client = new GraphQLClient(GRAPHQL_ENDPOINT, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await client.request(GET_USER_ADDRESSES);
-      if (data.getUserAddresses && data.getUserAddresses.length > 0) {
-        setSavedAddresses(data.getUserAddresses);
-        setSelectedAddressIndex(0);
-      }
-    } catch (err) {
-      console.error("Error fetching addresses:", err);
-    } finally {
-      setLoadingAddresses(false);
+  useEffect(() => {
+    if (savedAddresses.length > 0) {
+      setSelectedAddressIndex(0);
     }
-  };
+  }, [savedAddresses]);
+
+  // Navigate on successful order
+  useEffect(() => {
+    if (orderSuccessData && orderSuccessData.id) {
+      window.dispatchEvent(new Event("cartUpdated"));
+      const orderId = orderSuccessData.id;
+      dispatch(resetOrderSuccess());
+      if (onNavigate) {
+         onNavigate(`order-success/${orderId}`);
+      } else {
+         navigate(`/order-success/${orderId}`);
+      }
+    }
+  }, [orderSuccessData, navigate, onNavigate, dispatch]);
+
+  useEffect(() => {
+    if (error && error.includes("Unauthorized")) {
+      alert("Please login to place an order.");
+      if (onNavigate) {
+         onNavigate("signin");
+      } else {
+         navigate("/login");
+      }
+    } else if (error) {
+      alert("Failed to place order: " + (error || "Please try again."));
+    }
+  }, [error, navigate, onNavigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -188,29 +106,25 @@ const Checkout = ({ onNavigate }) => {
     e.preventDefault();
     if (!cartItems || cartItems.length === 0) return;
 
-    setIsPlacingOrder(true);
-    try {
-      const token = localStorage.getItem("token");
-
-      const deliveryAddress = selectedAddressIndex === 'new'
-        ? {
-            addressType: formData.addressType,
-            name: formData.name,
-            street: formData.street,
-            city: formData.city,
-            state: formData.state,
-            country: formData.country,
-            phone: formData.phone,
-          }
-        : {
-            addressType: savedAddresses[selectedAddressIndex].addressType,
-            name: savedAddresses[selectedAddressIndex].name,
-            street: savedAddresses[selectedAddressIndex].street,
-            city: savedAddresses[selectedAddressIndex].city,
-            state: savedAddresses[selectedAddressIndex].state,
-            country: savedAddresses[selectedAddressIndex].country,
-            phone: savedAddresses[selectedAddressIndex].phone,
-          };
+    const deliveryAddress = selectedAddressIndex === 'new'
+      ? {
+          addressType: formData.addressType,
+          name: formData.name,
+          street: formData.street,
+          city: formData.city,
+          state: formData.state,
+          country: formData.country,
+          phone: formData.phone,
+        }
+      : {
+          addressType: savedAddresses[selectedAddressIndex].addressType,
+          name: savedAddresses[selectedAddressIndex].name,
+          street: savedAddresses[selectedAddressIndex].street,
+          city: savedAddresses[selectedAddressIndex].city,
+          state: savedAddresses[selectedAddressIndex].state,
+          country: savedAddresses[selectedAddressIndex].country,
+          phone: savedAddresses[selectedAddressIndex].phone,
+        };
 
       const input = {
         deliveryCharge: deliveryCharge || 0,
@@ -219,100 +133,54 @@ const Checkout = ({ onNavigate }) => {
         notes: formData.notes || undefined,
       };
 
-      const client = new GraphQLClient(GRAPHQL_ENDPOINT, {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-      });
-
-      // SYNC CART: Ensure the backend cart matches our frontend cart context
-      const userStr = localStorage.getItem("user");
-      if (userStr) {
-        const user = JSON.parse(userStr);
-        if (user && user.id) {
-          const CLEAR_CART = gql`
-            mutation ClearCart($userId: ID!) {
-              clearCart(userId: $userId)
-            }
-          `;
-          try {
-            await client.request(CLEAR_CART, { userId: user.id });
-          } catch (e) {
-            // It's perfectly fine if the cart doesn't exist yet!
-            console.warn("Backend cart empty or not found. Proceeding to create one.");
-          }
-
-          const ADD_TO_CART = gql`
-            mutation AddToCart($userId: ID!, $shopId: ID!, $productId: ID!, $quantity: Float!, $size: String!) {
-              addToCart(userId: $userId, shopId: $shopId, productId: $productId, quantity: $quantity, size: $size) {
-                id
-              }
-            }
-          `;
-          for (const item of cartItems) {
-            await client.request(ADD_TO_CART, {
-              userId: user.id,
-              shopId: item.product.shopDetails || item.product.shopId || "default",
-              productId: item.product.id || item.product._id,
-              quantity: parseFloat(item.quantity),
-              size: item.size || "Default"
-            });
-          }
-        }
-      }
-
       // Purely Frontend Razorpay Payment if UPI (Online Delivery)
       if (formData.paymentMethod === "UPI" || formData.paymentMethod === "RAZORPAY") {
         if (!window.Razorpay) {
             alert("Razorpay SDK failed to load. Please check your internet connection.");
-            setIsPlacingOrder(false);
             return;
         }
         if (!process.env.REACT_APP_RAZORPAY_KEY_ID) {
             alert("Razorpay Key is missing! Please check your .env file.");
-            setIsPlacingOrder(false);
             return;
         }
 
         // 1. Calculate amount (cart total + delivery charge)
         const totalAmount = getCartTotal() + (deliveryCharge || 0);
 
-        // 2. Call backend to create Razorpay Order
-        const rzpResponse = await client.request(CREATE_RAZORPAY_ORDER, {
-          amount: totalAmount
-        });
+        // 2. Call backend to create Razorpay Order via Redux
+        let rzpResponse;
+        try {
+          rzpResponse = await dispatch(createRazorpayOrder(totalAmount)).unwrap();
+        } catch (err) {
+          alert("Failed to initialize Razorpay order. Please try again.");
+          return;
+        }
 
-        if (!rzpResponse.createRazorpayOrder.success) {
+        if (!rzpResponse.success) {
            alert("Failed to initialize Razorpay order. Please try again.");
-           setIsPlacingOrder(false);
            return;
         }
 
         const options = {
           key: process.env.REACT_APP_RAZORPAY_KEY_ID, 
-          amount: rzpResponse.createRazorpayOrder.amount, // Amount is in paise
+          amount: rzpResponse.amount, // Amount is in paise
           currency: "INR",
           name: "littleRR",
-          order_id: rzpResponse.createRazorpayOrder.orderId, 
+          order_id: rzpResponse.orderId, 
           description: "Purchase Order",
           handler: async function (response) {
             try {
-              // 3. Payment success callback from Razorpay -> Place Order on backend
+              // 3. Payment success callback from Razorpay -> Place Order on backend via Redux
               input.paymentMethod = "RAZORPAY";
               input.razorpayOrderId = response.razorpay_order_id;
               input.razorpayPaymentId = response.razorpay_payment_id;
               input.razorpaySignature = response.razorpay_signature;
 
-              const data = await client.request(PLACE_ORDER, { input });
+              dispatch(placeOrder({ input, cartItems }));
               
-              window.dispatchEvent(new Event("cartUpdated"));
-              if (onNavigate) {
-                 onNavigate(`order-success/${data.placeOrder.id}`);
-              } else {
-                 navigate(`/order-success/${data.placeOrder.id}`);
-              }
             } catch (verifyErr) {
               console.error("Payment Verification Error", verifyErr);
               alert("Payment verification failed! Please contact support.");
-              setIsPlacingOrder(false);
             }
           },
           prefill: {
@@ -325,7 +193,6 @@ const Checkout = ({ onNavigate }) => {
           modal: {
             ondismiss: function() {
               alert("Payment cancelled.");
-              setIsPlacingOrder(false);
             }
           }
         };
@@ -333,41 +200,13 @@ const Checkout = ({ onNavigate }) => {
         const rzp = new window.Razorpay(options);
         rzp.on('payment.failed', function (response){
           alert("Payment failed: " + response.error.description);
-          setIsPlacingOrder(false);
         });
         rzp.open();
         return;
       }
 
       // If not ONLINE (e.g. COD), proceed normally
-      const data = await client.request(PLACE_ORDER, { input });
-
-      window.dispatchEvent(new Event("cartUpdated"));
-
-      if (onNavigate) {
-         onNavigate(`order-success/${data.placeOrder.id}`);
-      } else {
-         navigate(`/order-success/${data.placeOrder.id}`);
-      }
-    } catch (err) {
-      console.error("Error during checkout:", err);
-
-      if (
-        err.message &&
-        err.message.includes("Unauthorized")
-      ) {
-        alert("Please login to place an order.");
-        if (onNavigate) {
-           onNavigate("signin");
-        } else {
-           navigate("/login");
-        }
-      } else {
-        alert("Failed to place order: " + (err.message || "Please try again."));
-      }
-    } finally {
-      setIsPlacingOrder(false);
-    }
+      dispatch(placeOrder({ input, cartItems }));
   };
 
   if (loading) {
@@ -627,7 +466,7 @@ const Checkout = ({ onNavigate }) => {
                 <button 
                   type="button"
                   className="remove-summary-item"
-                  onClick={() => removeFromCart(item.product.id || item.product._id, item.size)}
+                  onClick={() => dispatch(removeFromCart({ productId: item.product.id || item.product._id, size: item.size }))}
                   aria-label="Remove item"
                 >
                   &times;

@@ -1,46 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { GraphQLClient, gql } from 'graphql-request';
+import { useDispatch, useSelector } from 'react-redux';
 import './GirlsPage.css';
 import QuickViewModal from '../../components/QuickViewModal/QuickViewModal';
-import { useCart } from '../../context/CartContext';
-
-const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:2000/graphql';
-
-const GET_PRODUCTS_BY_CATEGORY = gql`
-  query GetProductsByCategoryCode($code: String!, $page: Int, $limit: Int) {
-    getProductsByCategoryCode(code: $code, page: $page, limit: $limit) {
-      products {
-      id
-      name
-      price
-      mrp
-      discountPercentage
-      images
-      brand
-      productCategoriesID
-      productCategoriesCode
-      variants {
-        color
-        size
-        stock
-      }
-    }
-    totalCount
-    hasMore
-  }
-`;
+import { fetchCategoryProducts, resetCategoryProducts } from '../../redux/Slice/categoryProductsSlice';
 
 const GirlsPage = () => {
   const navigate = useNavigate();
-  const { deliveryCharge } = useCart();
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  
+  const {
+    products,
+    loading,
+    loadingMore,
+    hasMore,
+    totalCount,
+  } = useSelector((state) => state.categoryProducts);
+
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [totalCount, setTotalCount] = useState(0);
   const [hasScrolled, setHasScrolled] = useState(false);
   const itemsPerPage = 12;
   const loadMoreRef = useRef(null);
@@ -60,43 +38,22 @@ const GirlsPage = () => {
   };
 
   useEffect(() => {
-    const fetchGirlsProducts = async () => {
-      if (page === 1) {
-        setLoading(true);
-      } else {
-        setLoadingMore(true);
-        // Add artificial delay so the refresh spinner is visible during scroll
-        await new Promise(resolve => setTimeout(resolve, 1500));
-      }
-      try {
-        const client = new GraphQLClient(GRAPHQL_ENDPOINT);
-        const data = await client.request(GET_PRODUCTS_BY_CATEGORY, { 
-          code: 'GIRLS',
-          page: page,
-          limit: itemsPerPage
-        });
-        
-        const fetchedProducts = data.getProductsByCategoryCode?.products || [];
-        
-        if (page === 1) {
-          setProducts(fetchedProducts);
-        } else {
-          setProducts(prev => [...prev, ...fetchedProducts]);
-        }
-        
-        setHasMore(data.getProductsByCategoryCode?.hasMore || false);
-        setTotalCount(data.getProductsByCategoryCode?.totalCount || 0);
-        
-      } catch (err) {
-        console.error('Error fetching girls products:', err);
-      } finally {
-        setLoading(false);
-        setLoadingMore(false);
-      }
-    };
+    dispatch(fetchCategoryProducts({
+      categoryCode: 'GIRLS',
+      sort: 'features',
+      page: page,
+      limit: itemsPerPage,
+      filters: null,
+      isNewQuery: page === 1
+    }));
+  }, [page, dispatch, itemsPerPage]);
 
-    fetchGirlsProducts();
-  }, [page]);
+  // Clean up products when leaving the page
+  useEffect(() => {
+    return () => {
+      dispatch(resetCategoryProducts());
+    };
+  }, [dispatch]);
 
   // Detect first user scroll to prevent instant loading on very large monitors
   useEffect(() => {

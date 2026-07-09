@@ -1,22 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { FiX, FiSearch } from 'react-icons/fi';
-import { GraphQLClient, gql } from 'graphql-request';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
 import './SearchDrawer.css';
-
-const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:2000/graphql';
-
-const GET_PRODUCTS = gql`
-  query GetProduct($search: String) {
-    getProduct(search: $search) {
-      products {
-      id
-      name
-      price
-      images
-    }
-  }
-}`;
 
 const TRENDING_SEARCHES = [
   "Newborn Pattu Frock",
@@ -29,42 +16,30 @@ const TRENDING_SEARCHES = [
 
 const SearchDrawer = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState('');
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const { product, status } = useSelector((state) => state.product);
 
-  // Fetch initial popular products
+  // Fetch products if not already fetched
   useEffect(() => {
-    if (isOpen && searchTerm === '') {
-      fetchProducts('');
+    if (isOpen && status === 'idle') {
+      dispatch(fetchProducts());
     }
-  }, [isOpen, searchTerm]);
+  }, [isOpen, status, dispatch]);
 
-  // Debounced search
-  useEffect(() => {
-    if (!isOpen) return;
-    
-    const timer = setTimeout(() => {
-      fetchProducts(searchTerm);
-    }, 500);
-    
-    return () => clearTimeout(timer);
-  }, [searchTerm, isOpen]);
+  const loading = status === 'loading';
 
-  const fetchProducts = async (search) => {
-    setLoading(true);
-    try {
-      const client = new GraphQLClient(GRAPHQL_ENDPOINT);
-      const data = await client.request(GET_PRODUCTS, { search });
-      // Limit to 5 results for the drawer
-      setProducts((data.getProduct?.products || []).slice(0, 5));
-    } catch (err) {
-      console.error('Error fetching search results:', err);
-      setProducts([]);
-    } finally {
-      setLoading(false);
+  // Filter products locally based on search term
+  const displayedProducts = useMemo(() => {
+    if (!product) return [];
+    if (!searchTerm) {
+      return product.slice(0, 5);
     }
-  };
+    const lowerSearch = searchTerm.toLowerCase();
+    return product
+      .filter((p) => p.name.toLowerCase().includes(lowerSearch))
+      .slice(0, 5);
+  }, [product, searchTerm]);
 
   const handleTagClick = (tag) => {
     setSearchTerm(tag);
@@ -132,9 +107,9 @@ const SearchDrawer = ({ isOpen, onClose }) => {
                 </div>
               ))}
             </div>
-          ) : products.length > 0 ? (
+          ) : displayedProducts.length > 0 ? (
             <div className="popular-products-list">
-              {products.map(product => (
+              {displayedProducts.map(product => (
                 <div 
                   key={product.id} 
                   className="popular-product-item"

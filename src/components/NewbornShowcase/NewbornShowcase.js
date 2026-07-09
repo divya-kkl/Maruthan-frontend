@@ -1,47 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import './NewbornShowcase.css';
-import { GraphQLClient, gql } from 'graphql-request';
 import { useNavigate } from 'react-router-dom';
 import QuickViewModal from '../QuickViewModal/QuickViewModal';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
 
-const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:2000/graphql';
-
-const GET_PRODUCTS = gql`
-  query GetProduct($search: String) {
-    getProduct(search: $search) {
-      products {
-        id
-        name
-        price
-        images
-      }
-    }
-  }
-`;
 
 const NewbornShowcase = () => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const  { product, status:productStatus} = useSelector ((state) => state.product);
+  const  products = product && product.length > 0 ? [...product].reverse().slice( 0,8 ) : [];
+  const loading = productStatus === 'loading';
   const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState(null);
 
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const client = new GraphQLClient(GRAPHQL_ENDPOINT);
-        const data = await client.request(GET_PRODUCTS, { search: '' });
-        const fetchedProducts = data.getProduct?.products ? data.getProduct?.products.slice(0, 8) : [];
-        setProducts(fetchedProducts);
-      } catch (err) {
-        console.error('Error fetching newborn products:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
+    dispatch(fetchProducts())
+  }, [dispatch]);
 
   return (
     <section className="newborn-showcase-section">

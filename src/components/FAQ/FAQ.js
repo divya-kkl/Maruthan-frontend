@@ -1,51 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './FAQ.css';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchFAQ } from '../../redux/Slice/FAQSlice';
 
-const GET_ACTIVE_FAQS = `
-  query GetActiveFAQs($category: String) {
-    getActiveFAQs(category: $category) {
-      id
-      question
-      answer
-      category
-      order
-    }
-  }
-`;
 
 const FAQ = () => {
-  const [faqs, setFaqs] = useState([]);
+  const dispatch = useDispatch();
+  const { FAQ: faqs, status, error } = useSelector((state) => state.FAQ);
+  const loading = status === 'loading';
+
   const [categories, setCategories] = useState([]);
   const [activeCategory, setActiveCategory] = useState('All');
   const [openIndex, setOpenIndex] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchFAQs();
-  }, []);
-
-  const fetchFAQs = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch('http://localhost:2000/graphql', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: GET_ACTIVE_FAQS })
-      });
-      const { data } = await res.json();
-      const items = data?.getActiveFAQs || [];
-      setFaqs(items);
-
-      // Extract unique categories
-      const cats = ['All', ...new Set(items.map((f) => f.category).filter(Boolean))];
-      setCategories(cats);
-    } catch (err) {
-      setError('Failed to load FAQs');
-    } finally {
-      setLoading(false);
+    if (status === 'idle') {
+      dispatch(fetchFAQ());
     }
-  };
+  }, [status, dispatch]);
+
+  useEffect(() => {
+    if (faqs && faqs.length > 0) {
+      const cats = ['All', ...new Set(faqs.map((f) => f.category).filter(Boolean))];
+      setCategories(cats);
+    }
+  }, [faqs]);
 
   const handleToggle = (index) => {
     setOpenIndex(openIndex === index ? null : index);

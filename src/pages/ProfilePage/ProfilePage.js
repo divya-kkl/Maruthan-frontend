@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FiMapPin, FiChevronRight } from 'react-icons/fi';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchUserDetails, fetchUserOrders, updateUserAddress, logout as logoutAction, setUser } from '../../redux/userSlice';
+import { fetchUserDetails, fetchUserOrders, updateUserAddress, logout as logoutAction, setUser } from '../../redux/Slice/userSlice';
 import AddAddressModal from '../../components/AddAddressModal/AddAddressModal';
 import './ProfilePage.css';
 
@@ -129,20 +129,20 @@ const ProfilePage = () => {
                 {user.addresses && user.addresses.length > 0 ? (
                   <div className="addresses-list">
                     {user.addresses.map((addr, idx) => (
-                      <div key={idx} className="address-item" style={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        padding: '16px', 
-                        background: '#fff', 
-                        border: '1px solid #eaeaea', 
+                      <div key={idx} className="address-item" style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        padding: '16px',
+                        background: '#fff',
+                        border: '1px solid #eaeaea',
                         borderRadius: '12px',
                         marginBottom: '12px',
                         cursor: 'pointer'
                       }}>
-                        <div style={{ 
-                          background: '#f5f5f5', 
-                          padding: '12px', 
-                          borderRadius: '8px', 
+                        <div style={{
+                          background: '#f5f5f5',
+                          padding: '12px',
+                          borderRadius: '8px',
                           marginRight: '16px',
                           display: 'flex',
                           alignItems: 'center',
@@ -213,7 +213,7 @@ const ProfilePage = () => {
                       <div className="order-header">
                         <span className="order-number">Order #{order.orderNumber}</span>
                         <span className="order-date">
-                          {order.createdAt && !isNaN(parseInt(order.createdAt)) 
+                          {order.createdAt && !isNaN(parseInt(order.createdAt))
                             ? new Date(parseInt(order.createdAt)).toLocaleDateString()
                             : new Date(order.createdAt).toLocaleDateString()}
                         </span>

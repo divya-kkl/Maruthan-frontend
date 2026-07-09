@@ -1,30 +1,12 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import './StoreQuality.css';
-
-const scorecards = [
-  {
-    country: "United States",
-    month: "May",
-    rating: "Good",
-    ratingIndex: 2,
-  },
-  {
-    country: "United Arab Emirates",
-    month: "May",
-    rating: "Great",
-    ratingIndex: 3,
-  },
-  {
-    country: "United States",
-    month: "May",
-    rating: "Good",
-    ratingIndex: 2,
-  }
-];
 
 const segments = ["Low", "Fair", "Good", "Great", "Exceptional"];
 
 const StoreQuality = () => {
+  const { scorecards } = useSelector((state) => state.storeQuality);
+  
   return (
     <section className="store-quality-section">
       <h2 className="store-quality-title">This wasn't easy... but you made it possible.</h2>

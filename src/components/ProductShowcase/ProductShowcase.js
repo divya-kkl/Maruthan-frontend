@@ -1,67 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import './ProductShowcase.css';
-import { GraphQLClient, gql } from 'graphql-request';
 import { useNavigate } from 'react-router-dom';
 import QuickViewModal from '../QuickViewModal/QuickViewModal';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
 
-const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:2000/graphql';
 
-const GET_PRODUCTS = gql`
-  query GetProduct($search: String) {
-    getProduct(search: $search) {
-      products {
-      id
-      name
-      price
-      mrp
-      discountPercentage
-      images
-      brand
-      productCategoriesID
-      productCategoriesCode
-      variants {
-        color
-        size
-        stock
-      }
-      description
-      material
-      embellishment
-      neck
-      sleeves
-      closure
-      lining
-      washCare
-      ironCare
-      createdAt
-      updatedAt
-    }
-  }
-}`;
 
 const ProductShowcase = () => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+
+
+  const dispatch = useDispatch();
+  const { product, status } = useSelector((state) => state.product);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const navigate = useNavigate();
+  const loading = status === 'loading' || status === 'idle';
+  const displayProducts = product && product.length > 0 ? [...product].reverse().slice(0, 5) : [];
+
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const client = new GraphQLClient(GRAPHQL_ENDPOINT);
-
-        const data = await client.request(GET_PRODUCTS, { search: '' });
-        const fetchedProducts = data.getProduct?.products ? data.getProduct?.products.slice(0, 5) : [];
-        setProducts(fetchedProducts);
-      } catch (err) {
-        console.error('Error fetching products:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
+    dispatch(fetchProducts())
+  }, [dispatch]);
 
   const openQuickView = (product) => {
     setSelectedProduct({
@@ -99,14 +58,14 @@ const ProductShowcase = () => {
               </div>
             </div>
           ))
-        ) : products.length > 0 ? (
-          products.map((product) => (
+        ) : displayProducts.length > 0 ? (
+          displayProducts.map((product) => (
             <div className="product-card" key={product.id}>
               <div className="product-image-wrapper" style={{ cursor: 'pointer' }} onClick={() => navigate(`/product/${product.id}`)}>
-                <img 
-                  src={product.images && product.images.length > 0 ? product.images[0] : '/images/placeholder.png'} 
-                  alt={product.name} 
-                  className="product-image" 
+                <img
+                  src={product.images && product.images.length > 0 ? product.images[0] : '/images/placeholder.png'}
+                  alt={product.name}
+                  className="product-image"
                 />
               </div>
               <div className="product-info">
@@ -134,7 +93,7 @@ const ProductShowcase = () => {
           </button>
         )}
       </div>
-      
+
       {selectedProduct && <QuickViewModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
     </section>
   );
