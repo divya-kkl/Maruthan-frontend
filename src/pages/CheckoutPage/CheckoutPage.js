@@ -3,18 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./CheckoutPage.css";
 import { useSelector, useDispatch } from "react-redux";
 import { removeFromCart } from "../../redux/Slice/cartSlice";
-import { fetchSavedAddresses, fetchPaymentMethods, placeOrder, resetOrderSuccess } from "../../redux/Slice/checkoutSlice";
-
-const CREATE_RAZORPAY_ORDER = gql`
-  mutation CreateRazorpayOrder($amount: Float!) {
-    createRazorpayOrder(amount: $amount) {
-      success
-      orderId
-      amount
-      currency
-    }
-  }
-`;
+import { fetchSavedAddresses, fetchPaymentMethods, placeOrder, createRazorpayOrder, resetOrderSuccess } from "../../redux/Slice/checkoutSlice";
 
 
 
@@ -137,60 +126,61 @@ const Checkout = ({ onNavigate }) => {
           phone: savedAddresses[selectedAddressIndex].phone,
         };
 
+      const input = {
+        deliveryCharge: deliveryCharge || 0,
+        paymentMethod: formData.paymentMethod,
+        deliveryAddress,
+        notes: formData.notes || undefined,
+      };
+
       // Purely Frontend Razorpay Payment if UPI (Online Delivery)
       if (formData.paymentMethod === "UPI" || formData.paymentMethod === "RAZORPAY") {
         if (!window.Razorpay) {
             alert("Razorpay SDK failed to load. Please check your internet connection.");
-            setIsPlacingOrder(false);
             return;
         }
         if (!process.env.REACT_APP_RAZORPAY_KEY_ID) {
             alert("Razorpay Key is missing! Please check your .env file.");
-            setIsPlacingOrder(false);
             return;
         }
 
         // 1. Calculate amount (cart total + delivery charge)
         const totalAmount = getCartTotal() + (deliveryCharge || 0);
 
-        // 2. Call backend to create Razorpay Order
-        const rzpResponse = await client.request(CREATE_RAZORPAY_ORDER, {
-          amount: totalAmount
-        });
+        // 2. Call backend to create Razorpay Order via Redux
+        let rzpResponse;
+        try {
+          rzpResponse = await dispatch(createRazorpayOrder(totalAmount)).unwrap();
+        } catch (err) {
+          alert("Failed to initialize Razorpay order. Please try again.");
+          return;
+        }
 
-        if (!rzpResponse.createRazorpayOrder.success) {
+        if (!rzpResponse.success) {
            alert("Failed to initialize Razorpay order. Please try again.");
-           setIsPlacingOrder(false);
            return;
         }
 
         const options = {
           key: process.env.REACT_APP_RAZORPAY_KEY_ID, 
-          amount: rzpResponse.createRazorpayOrder.amount, // Amount is in paise
+          amount: rzpResponse.amount, // Amount is in paise
           currency: "INR",
           name: "littleRR",
-          order_id: rzpResponse.createRazorpayOrder.orderId, 
+          order_id: rzpResponse.orderId, 
           description: "Purchase Order",
           handler: async function (response) {
             try {
-              // 3. Payment success callback from Razorpay -> Place Order on backend
+              // 3. Payment success callback from Razorpay -> Place Order on backend via Redux
               input.paymentMethod = "RAZORPAY";
               input.razorpayOrderId = response.razorpay_order_id;
               input.razorpayPaymentId = response.razorpay_payment_id;
               input.razorpaySignature = response.razorpay_signature;
 
-              const data = await client.request(PLACE_ORDER, { input });
+              dispatch(placeOrder({ input, cartItems }));
               
-              window.dispatchEvent(new Event("cartUpdated"));
-              if (onNavigate) {
-                 onNavigate(`order-success/${data.placeOrder.id}`);
-              } else {
-                 navigate(`/order-success/${data.placeOrder.id}`);
-              }
             } catch (verifyErr) {
               console.error("Payment Verification Error", verifyErr);
               alert("Payment verification failed! Please contact support.");
-              setIsPlacingOrder(false);
             }
           },
           prefill: {
@@ -203,7 +193,6 @@ const Checkout = ({ onNavigate }) => {
           modal: {
             ondismiss: function() {
               alert("Payment cancelled.");
-              setIsPlacingOrder(false);
             }
           }
         };
@@ -211,16 +200,13 @@ const Checkout = ({ onNavigate }) => {
         const rzp = new window.Razorpay(options);
         rzp.on('payment.failed', function (response){
           alert("Payment failed: " + response.error.description);
-          setIsPlacingOrder(false);
         });
         rzp.open();
         return;
       }
 
       // If not ONLINE (e.g. COD), proceed normally
-      const data = await client.request(PLACE_ORDER, { input });
-
-    dispatch(placeOrder({ input, cartItems }));
+      dispatch(placeOrder({ input, cartItems }));
   };
 
   if (loading) {

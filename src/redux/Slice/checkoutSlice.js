@@ -68,6 +68,17 @@ const PLACE_ORDER = gql`
   }
 `;
 
+const CREATE_RAZORPAY_ORDER = gql`
+  mutation CreateRazorpayOrder($amount: Float!) {
+    createRazorpayOrder(amount: $amount) {
+      success
+      orderId
+      amount
+      currency
+    }
+  }
+`;
+
 const GET_ORDER_BY_ID = gql`
   query GetOrderById($id: ID!) {
     getOrderById(id: $id) {
@@ -192,6 +203,22 @@ export const fetchOrderById = createAsyncThunk(
       });
       const data = await client.request(GET_ORDER_BY_ID, { id: orderId });
       return data.getOrderById;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+export const createRazorpayOrder = createAsyncThunk(
+  'checkout/createRazorpayOrder',
+  async (amount, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("token");
+      const client = new GraphQLClient(GRAPHQL_ENDPOINT, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      const data = await client.request(CREATE_RAZORPAY_ORDER, { amount });
+      return data.createRazorpayOrder;
     } catch (err) {
       return rejectWithValue(err.message);
     }
