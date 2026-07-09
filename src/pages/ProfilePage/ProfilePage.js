@@ -6,93 +6,14 @@ import { fetchUserDetails, fetchUserOrders, updateUserAddress, logout as logoutA
 import AddAddressModal from '../../components/AddAddressModal/AddAddressModal';
 import './ProfilePage.css';
 
-const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:2000/graphql';
-
-const GET_ORDERS = gql`
-  query GetOrder($search: String) {
-    getOrder(search: $search) {
-      orders {
-        id
-        userId
-        orderNumber
-        subTotal
-        totalAmount
-        status
-        paymentMethod
-        deliveryAddress {
-          name
-          street
-          city
-          state
-          country
-          phone
-        }
-        notes
-        createdAt
-        items {
-          name
-          image
-          price
-          quantity
-        }
-      }
-    }
-  }
-`;
-
-const GET_USER = gql`
-  query GetUserById($id: ID!) {
-    getUserById(id: $id) {
-      id
-      username
-      email
-      phone_number
-      addresses {
-        id
-        firstName
-        lastName
-        address
-        apartment
-        city
-        state
-        pincode
-        country
-        phone
-        isDefault
-      }
-    }
-  }
-`;
-
-const UPDATE_USER = gql`
-  mutation UpdateUser($id: ID!, $input: UpdateUserInput) {
-    updateUser(id: $id, input: $input) {
-      id
-      addresses {
-        id
-        firstName
-        lastName
-        address
-        apartment
-        city
-        state
-        pincode
-        country
-        phone
-        isDefault
-      }
-    }
-  }
-`;
-
 const ProfilePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState(location.state?.activeTab || 'profile');
-  const [user, setUser] = useState(null);
-  const [orders, setOrders] = useState([]);
-  const [loadingOrders, setLoadingOrders] = useState(false);
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
+
+  const { user, orders, loadingOrders } = useSelector((state) => state.user);
 
   useEffect(() => {
     if (location.state?.activeTab) {
@@ -110,60 +31,30 @@ const ProfilePage = () => {
       return;
     }
 
-    if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      setUser(parsedUser);
-      fetchUserDetails(parsedUser.id || parsedUser._id, token);
+    let currentUser = user;
+    if (!currentUser && storedUser) {
+      currentUser = JSON.parse(storedUser);
+      dispatch(setUser(currentUser));
     }
-  }, [navigate]);
 
-  const fetchUserDetails = async (userId, token) => {
-    try {
-      const client = new GraphQLClient(GRAPHQL_ENDPOINT, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const data = await client.request(GET_USER, { id: userId });
-      if (data.getUserById) {
-        setUser(prev => ({ ...prev, ...data.getUserById }));
-        localStorage.setItem('user', JSON.stringify({ ...JSON.parse(localStorage.getItem('user')), ...data.getUserById }));
-      }
-    } catch (error) {
-      console.error("Error fetching user details:", error);
+    if (currentUser) {
+      dispatch(fetchUserDetails({ userId: currentUser.id || currentUser._id, token }));
     }
-  };
+
+  }, [navigate, dispatch]);
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      setLoadingOrders(true);
-      try {
-        const token = localStorage.getItem('token');
-        const client = new GraphQLClient(GRAPHQL_ENDPOINT, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        const currentUserId = user.id || user._id;
-        const data = await client.request(GET_ORDERS, { search: currentUserId });
-
-        const allOrders = data.getOrder?.orders || [];
-        const userOrders = allOrders.filter(order => order.userId === currentUserId);
-
-        userOrders.sort((a, b) => parseInt(b.createdAt) - parseInt(a.createdAt));
-        setOrders(userOrders);
-      } catch (error) {
-        console.error("Error fetching orders:", error);
-      } finally {
-        setLoadingOrders(false);
-      }
-    };
-
     if (activeTab === 'orders' && user) {
-      fetchOrders();
+      const token = localStorage.getItem('token');
+      dispatch(fetchUserOrders({ userId: user.id || user._id, token }));
     }
-  }, [activeTab, user]);
+  }, [activeTab, user, dispatch]);
 
   const handleSignOut = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     localStorage.removeItem('guestId');
+    dispatch(logoutAction());
     navigate('/login');
   };
 
@@ -171,14 +62,14 @@ const ProfilePage = () => {
     try {
       const token = localStorage.getItem('token');
       const userId = user.id || user._id;
-
-      await dispatch(updateUserAddress({
-        userId,
-        token,
-        newAddress,
-        currentAddresses: user.addresses
+      
+      await dispatch(updateUserAddress({ 
+        userId, 
+        token, 
+        newAddress, 
+        currentAddresses: user.addresses 
       })).unwrap();
-
+      
       setIsAddressModalOpen(false);
     } catch (error) {
       console.error("Error updating user addresses:", error);
