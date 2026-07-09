@@ -6,7 +6,7 @@ import { FaLessThan, FaGreaterThan } from "react-icons/fa";
 
 const TopBanner = () => {
   const dispatch = useDispatch();
-  const { messages } = useSelector((state) => state.topBanner);
+  const { messages, loading } = useSelector((state) => state.topBanner);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
@@ -29,7 +29,17 @@ const TopBanner = () => {
     return () => clearInterval(timer);
   }, [messages.length, nextSlide]); // depend on messages.length to reset interval if messages load
 
-  if (messages.length === 0) return null;
+  if (loading || messages.length === 0) {
+    return (
+      <div className="top-banner">
+        <div className="top-banner-content">
+          <div className="banner-text-container">
+            <div className="shimmer-text" style={{ width: '250px', height: '18px', backgroundColor: 'rgba(255,255,255,0.3)', margin: '0 auto', borderRadius: '4px' }}></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="top-banner">

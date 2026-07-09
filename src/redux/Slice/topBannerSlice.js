@@ -25,12 +25,20 @@ export const fetchTopBanners = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.message);
     }
+  },
+  {
+    condition: (_, { getState }) => {
+      const { topBanner } = getState();
+      if (topBanner.messages && topBanner.messages.length > 0) {
+        return false; // Don't fetch if already loaded
+      }
+    }
   }
 );
 
 const initialState = {
   messages: [],
-  loading: false,
+  loading: true,
   error: null,
 };
 

@@ -41,6 +41,7 @@ const ProfilePage = () => {
       dispatch(fetchUserDetails({ userId: currentUser.id || currentUser._id, token }));
     }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate, dispatch]);
 
   useEffect(() => {

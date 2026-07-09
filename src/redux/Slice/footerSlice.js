@@ -28,11 +28,11 @@ const initialState = {
     email: 'info@littlerr.in'
   },
   socials: [
-    { id: 'fb', name: 'facebook', url: '/facebook', icon: 'f' },
-    { id: 'ig', name: 'instagram', url: '/instagram', icon: 'instagram' },
-    { id: 'yt', name: 'youtube', url: '/youtube', icon: 'youtube' },
-    { id: 'in', name: 'linkedin', url: '/linkedin', icon: 'in' },
-    { id: 'wa', name: 'whatsapp', url: '/whatsapp', icon: 'whatsapp' }
+    { id: 'fb', name: 'facebook', url: 'https://www.facebook.com', icon: 'f' },
+    { id: 'ig', name: 'instagram', url: 'https://www.instagram.com', icon: 'instagram' },
+    { id: 'yt', name: 'youtube', url: 'https://www.youtube.com', icon: 'youtube' },
+    { id: 'in', name: 'linkedin', url: 'https://www.linkedin.com', icon: 'in' },
+    { id: 'wa', name: 'whatsapp', url: 'https://wa.me/919786221122', icon: 'whatsapp' }
   ],
   copyright: '© 2026 littlerr. All rights reserved'
 };

@@ -30,6 +30,14 @@ export const fetchStores = createAsyncThunk(
         } catch(err) {
             return rejectWithValue(err.message);
         }
+    },
+    {
+      condition: (_, { getState }) => {
+        const { store } = getState();
+        if (store.status === 'succeeded' || store.status === 'loading') {
+          return false;
+        }
+      }
     }
 );
 

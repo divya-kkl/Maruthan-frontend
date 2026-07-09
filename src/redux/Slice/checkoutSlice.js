@@ -246,17 +246,23 @@ const checkoutSlice = createSlice({
     builder
       .addCase(fetchSavedAddresses.pending, (state) => {
         state.loadingAddresses = true;
+        state.error = null;
       })
       .addCase(fetchSavedAddresses.fulfilled, (state, action) => {
         state.loadingAddresses = false;
         state.savedAddresses = action.payload;
+        state.error = null;
       })
       .addCase(fetchSavedAddresses.rejected, (state, action) => {
         state.loadingAddresses = false;
         state.error = action.payload;
       })
+      .addCase(fetchPaymentMethods.pending, (state) => {
+        state.error = null;
+      })
       .addCase(fetchPaymentMethods.fulfilled, (state, action) => {
         state.paymentMethods = action.payload;
+        state.error = null;
       })
       .addCase(placeOrder.pending, (state) => {
         state.isPlacingOrder = true;
