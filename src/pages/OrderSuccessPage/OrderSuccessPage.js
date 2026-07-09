@@ -1,74 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useCart } from '../../context/CartContext';
-import { GraphQLClient, gql } from 'graphql-request';
+import { useDispatch, useSelector } from 'react-redux';
+import { clearCart } from '../../redux/Slice/cartSlice';
+import { fetchOrderById } from '../../redux/Slice/checkoutSlice';
 import './OrderSuccessPage.css';
 import './OrderDetails.css';
-
-const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT || "http://localhost:2000/graphql";
-
-const GET_ORDER_BY_ID = gql`
-  query GetOrderById($id: ID!) {
-    getOrderById(id: $id) {
-      id
-      orderNumber
-      subTotal
-      deliveryCharge
-      totalAmount
-      paymentMethod
-      status
-      deliveryAddress {
-        name
-        street
-        city
-        state
-        country
-        phone
-      }
-      notes
-      items {
-        name
-        image
-        quantity
-        price
-      }
-    }
-  }
-`;
 
 const OrderSuccessPage = () => {
   const navigate = useNavigate();
   const { orderId } = useParams();
-  const { clearCart } = useCart();
-  const [orderDetails, setOrderDetails] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  
+  const { orderDetails, loadingOrderDetails: loading } = useSelector((state) => state.checkout);
   const isDetailsMode = window.location.pathname.includes('order-details');
 
   useEffect(() => {
-    // Only clear the frontend cart when landing on the success page, not the details page
-    if (clearCart && !isDetailsMode) {
-      clearCart();
+    if (!isDetailsMode) {
+      dispatch(clearCart());
     }
     window.scrollTo(0, 0);
 
-    const fetchOrderDetails = async () => {
-      if (!orderId) return;
-      try {
-        const token = localStorage.getItem('token');
-        const client = new GraphQLClient(GRAPHQL_ENDPOINT, {
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
-        });
-        const data = await client.request(GET_ORDER_BY_ID, { id: orderId });
-        setOrderDetails(data.getOrderById);
-      } catch (err) {
-        console.error("Failed to fetch order details:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchOrderDetails();
-  }, [clearCart, orderId, isDetailsMode]);
+    if (orderId) {
+      dispatch(fetchOrderById(orderId));
+    }
+  }, [dispatch, orderId, isDetailsMode]);
 
   return (
     <div className="order-success-container">

@@ -1,69 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { FiSearch, FiUser, FiShoppingBag, FiMenu, FiX } from 'react-icons/fi';
 import './Header.css';
-import { GraphQLClient, gql } from 'graphql-request';
-import { useCart } from '../../context/CartContext';
+
 import { MdKeyboardArrowDown } from 'react-icons/md';
 import { useNavigate, NavLink, Link } from 'react-router-dom';
 import SearchDrawer from '../SearchDrawer/SearchDrawer';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCategories } from '../../redux/Slice/headerSlice';
 
-const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:2000/graphql';
-
-const GET_PRODUCT_CATEGORIES = gql`
-  query GetProductCategories($search: String) {
-    getProductCategories(search: $search) {
-      categories {
-        id
-        name
-        code
-        description
-        imageUrl
-        status
-        parentCategoryId
-        subCategories {
-          id
-          name
-          code
-          productCategoryId
-          description
-          imageUrl
-          status
-          createdTime
-        }
-        createdTime
-      }
-    }
-  }
-`;
 
 const Header = () => {
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const { getCartCount } = useCart();
-  const cartCount = getCartCount();
+  const dispatch = useDispatch()
+  const { categories, loading } = useSelector((state) => state.category)
+  const { cartItems } = useSelector((state) => state.cart);
+  const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
   const navigate = useNavigate();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const client = new GraphQLClient(GRAPHQL_ENDPOINT);
-        const data = await client.request(GET_PRODUCT_CATEGORIES);
-       
-        const parentCategories = (data.getProductCategories?.categories || [])
-          .filter(cat => !cat.parentCategoryId)
-          .reverse();
-        setCategories(parentCategories);
-      } catch (err) {
-        console.error('Error fetching categories:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCategories();
-  }, []);
+    dispatch(fetchCategories())
+  }, [dispatch]);
 
   return (
     <header className="site-header">

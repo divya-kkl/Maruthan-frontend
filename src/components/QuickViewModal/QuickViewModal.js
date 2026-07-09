@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './QuickViewModal.css';
-import { useCart } from '../../context/CartContext';
+import { useDispatch } from 'react-redux';
+import { addToCart } from '../../redux/Slice/cartSlice';
 import { useNavigate } from 'react-router-dom';
 import { FiChevronLeft, FiChevronRight, FiShare2 } from 'react-icons/fi';
 
 const QuickViewModal = ({ product, onClose }) => {
   const [selectedSize, setSelectedSize] = useState('1Y');
   const [quantity, setQuantity] = useState(1);
-  const { addToCart } = useCart();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [activeImage, setActiveImage] = useState(product?.images?.[0] || '/images/placeholder.png');
 
@@ -40,13 +41,13 @@ const QuickViewModal = ({ product, onClose }) => {
   }, []);
 
   const handleAddToCart = () => {
-    addToCart(product, quantity, selectedSize);
+    dispatch(addToCart({ product, quantity, size: selectedSize }));
     onClose();
     navigate('/cart');
   };
 
   const handleBuyNow = () => {
-    addToCart(product, quantity, selectedSize);
+    dispatch(addToCart({ product, quantity, size: selectedSize }));
     onClose();
     navigate('/checkout');
   };

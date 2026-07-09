@@ -26,9 +26,7 @@ import WhatsAppFloat from './components/WhatsAppFloat/WhatsAppFloat';
 
 import OurStoresPage from './pages/OurStoresPage/OurStoresPage';
 import ProductPage from './pages/ProductPage/ProductPage';
-import { CartProvider } from './context/CartContext';
 
-import FAQAdmin from './pages/FAQAdmin/FAQAdmin';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -40,7 +38,7 @@ const ScrollToTop = () => {
   return null;
 };
 
-// Simple wrapper for SignIn to handle navigation
+
 const SignInWrapper = () => {
   const navigate = useNavigate();
   return (
@@ -52,7 +50,7 @@ const SignInWrapper = () => {
   );
 };
 
-// Wrapper for CategoryPage to force remount on category change
+
 const CategoryPageWrapper = () => {
   const { categoryCode } = useParams();
   return <CategoryPage key={categoryCode} />;
@@ -60,7 +58,7 @@ const CategoryPageWrapper = () => {
 
 const BottomSections = () => {
   const { pathname } = useLocation();
-  // Hide StoreQuality and StoreFeatures on informational pages
+
   if (pathname === '/order-status' || pathname === '/payment' || pathname === '/exchange' || pathname === '/shipping' || pathname === '/cancellation' || pathname === '/about-us' || pathname === '/contact-us' || pathname === '/privacy-policy' || pathname === '/terms') {
     return null;
   }
@@ -89,10 +87,9 @@ function App() {
   }, []);
 
   return (
-    <CartProvider>
-      <Router>
-        <ScrollToTop />
-        <div className="App">
+    <Router>
+      <ScrollToTop />
+      <div className="App">
           {globalLoading && (
             <div style={{
               position: 'fixed',
@@ -146,7 +143,6 @@ function App() {
               <Route path="/stores" element={<OurStoresPage />} />
               <Route path="/login" element={<SignInWrapper />} />
               <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/faq-admin" element={<FAQAdmin />} />
               <Route path="/order-status" element={<OrderStatusPage />} />
               <Route path="/payment" element={<PaymentPage />} />
               <Route path="/exchange" element={<ExchangePage />} />
@@ -159,11 +155,10 @@ function App() {
             </Routes>
             <BottomSections />
             <Footer />
-            <WhatsAppFloat />
-          </div>
+          <WhatsAppFloat />
         </div>
-      </Router>
-    </CartProvider>
+      </div>
+    </Router>
   );
 }
 

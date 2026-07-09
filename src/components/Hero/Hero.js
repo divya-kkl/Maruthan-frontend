@@ -1,39 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { GraphQLClient, gql } from 'graphql-request';
+import React, { useEffect } from 'react';
 import './Hero.css';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchBanner } from '../../redux/Slice/bannerSlice';
 
-const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:2000/graphql';
-
-const GET_ACTIVE_BANNERS = gql`
-  query GetActiveBanners($bannerType: String) {
-    getActiveBanners(bannerType: $bannerType) {
-      id
-      backgroundImage
-      bannerType
-      isActive
-    }
-  }
-`;
 
 const Hero = () => {
-  const [bannerData, setBannerData] = useState(null);
+
+  const dispatch = useDispatch();
+  const { banner } = useSelector (( state ) => state.banner);
+  
 
   useEffect(() => {
-    const fetchBanner = async () => {
-      try {
-        const client = new GraphQLClient(GRAPHQL_ENDPOINT);
-        const data = await client.request(GET_ACTIVE_BANNERS, { bannerType: "FIRST" });
-        if (data.getActiveBanners && data.getActiveBanners.length > 0) {
-          setBannerData(data.getActiveBanners[0]);
-        }
-      } catch (err) {
-        console.error('Error fetching Hero banner:', err);
-      }
-    };
-    fetchBanner();
-  }, []);
+   dispatch(fetchBanner());
+  }, [dispatch]);
 
-  const backgroundImage = bannerData?.backgroundImage ;
+  const bannerData = banner?.find((b) => b.bannerType === 'FIRST');
+  const backgroundImage = bannerData?.backgroundImage;
 
   return (
     <section className="hero-section">
@@ -45,7 +27,6 @@ const Hero = () => {
           className="hero-image"
           onError={(e) => {
             e.target.onerror = null;
-            // e.target.src = "/images/hero_banner.png";
           }}
         />
       </div>

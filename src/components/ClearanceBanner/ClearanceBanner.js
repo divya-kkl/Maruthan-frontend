@@ -1,38 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import './ClearanceBanner.css';
 import { FaArrowRight } from 'react-icons/fa';
-import { GraphQLClient, gql } from 'graphql-request';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchBanner } from '../../redux/Slice/bannerSlice';
 
-const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:2000/graphql';
 
-const GET_ACTIVE_BANNERS = gql`
-  query GetActiveBanners($bannerType: String) {
-    getActiveBanners(bannerType: $bannerType) {
-      id
-      backgroundImage
-      bannerType
-      isActive
-    }
-  }
-`;
 
 const ClearanceBanner = () => {
-  const [bannerData, setBannerData] = useState(null);
+ const dispatch = useDispatch();
+ const { banner } = useSelector((state) => state.banner);
+ const bannerData = banner?.find((b) => b.bannerType === 'THIRD');
 
   useEffect(() => {
-    const fetchBanner = async () => {
-      try {
-        const client = new GraphQLClient(GRAPHQL_ENDPOINT);
-        const data = await client.request(GET_ACTIVE_BANNERS, { bannerType: "THIRD" });
-        if (data.getActiveBanners && data.getActiveBanners.length > 0) {
-          setBannerData(data.getActiveBanners[0]);
-        }
-      } catch (err) {
-        console.error('Error fetching Third banner:', err);
-      }
-    };
-    fetchBanner();
-  }, []);
+    dispatch(fetchBanner());
+  }, [dispatch]);
 
   if (bannerData && bannerData.backgroundImage) {
     return (

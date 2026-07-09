@@ -1,48 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { GraphQLClient, gql } from 'graphql-request';
-import { useCart } from '../../context/CartContext';
+import { useDispatch, useSelector } from 'react-redux';
 import { FiShare2, FiMaximize2, FiTruck, FiTag, FiBox, FiCopy, FiX, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { AiFillStar } from 'react-icons/ai';
 import { FaFacebookF, FaTwitter, FaPinterestP } from 'react-icons/fa';
 import SizeChart from '../../components/SizeChart/SizeChart';
 import RelatedProducts from '../../components/RelatedProducts/RelatedProducts';
+import { addToCart } from '../../redux/Slice/cartSlice';
+import { fetchProductById, resetProductDetails } from '../../redux/Slice/productDetailsSlice';
+import { fetchFAQ } from '../../redux/Slice/FAQSlice';
 import './ProductPage.css';
-
-const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:2000/graphql';
-
-const GET_PRODUCT_BY_ID = gql`
-  query GetProductById($id: ID!) {
-    getProductById(id: $id) {
-      id
-      name
-      price
-      mrp
-      images
-      brand
-      description
-      material
-      variants {
-        color
-        size
-        stock
-      }
-    }
-  }
-`;
-
-const GET_ALL_FAQS = gql`
-  query { getAllFAQs { id question answer category order isActive } }
-`;
 
 const ProductPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { addToCart } = useCart();
+  const dispatch = useDispatch();
 
-  const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { product, loading, error } = useSelector((state) => state.productDetails);
+  const faqs = useSelector((state) => state.FAQ.FAQ) || [];
   const [activeImage, setActiveImage] = useState('');
   const [imageLoaded, setImageLoaded] = useState(false);
   const imageRef = useRef(null);
@@ -65,7 +40,6 @@ const ProductPage = () => {
 
   const [selectedSize, setSelectedSize] = useState('');
   const [quantity, setQuantity] = useState(1);
-  const [faqs, setFaqs] = useState([]);
   const [openFaqs, setOpenFaqs] = useState({});
   const [openAccordions, setOpenAccordions] = useState([]);
   const [shareSent, setShareSent] = useState(false);
@@ -74,50 +48,32 @@ const ProductPage = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    setLoading(true);
     setQuantity(1);
     setIsZoomed(false);
     
-    const fetchProduct = async () => {
-      try {
-        const client = new GraphQLClient(GRAPHQL_ENDPOINT);
-        const data = await client.request(GET_PRODUCT_BY_ID, { id });
-        
-        if (data.getProductById) {
-          setProduct(data.getProductById);
-          if (data.getProductById.images && data.getProductById.images.length > 0) {
-            setActiveImage(data.getProductById.images[0]);
-          }
-          if (data.getProductById.variants && data.getProductById.variants.length > 0) {
-            setSelectedSize(data.getProductById.variants[0].size);
-          }
-        } else {
-          setError("Product not found");
-        }
-      } catch (err) {
-        console.error("Error fetching product:", err);
-        setError("Failed to load product details");
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (id) {
+      dispatch(fetchProductById(id));
+    }
+    
+    // Using fetchFAQ from FAQSlice (fetches active FAQs)
+    dispatch(fetchFAQ());
 
-    const fetchFAQs = async () => {
-      try {
-        const client = new GraphQLClient(GRAPHQL_ENDPOINT);
-        const data = await client.request(GET_ALL_FAQS);
-        const activeFaqs = (data.getAllFAQs || [])
-          .filter(f => f.isActive)
-          .sort((a, b) => a.order - b.order);
-        setFaqs(activeFaqs);
-      } catch (err) {
-        console.error("Error fetching FAQs:", err);
-      }
+    return () => {
+      dispatch(resetProductDetails());
     };
+  }, [id, dispatch]);
 
-    fetchProduct();
-    fetchFAQs();
-  }, [id]);
+  // Sync active image and selected size when product loads
+  useEffect(() => {
+    if (product) {
+      if (product.images && product.images.length > 0) {
+        setActiveImage(product.images[0]);
+      }
+      if (product.variants && product.variants.length > 0) {
+        setSelectedSize(product.variants[0].size);
+      }
+    }
+  }, [product]);
 
   const toggleFaq = (faqId) => {
     setOpenFaqs(prev => ({ ...prev, [faqId]: !prev[faqId] }));
@@ -125,14 +81,14 @@ const ProductPage = () => {
 
   const handleAddToCart = () => {
     if (product && selectedSize) {
-      addToCart(product, quantity, selectedSize);
+      dispatch(addToCart({ product, quantity, size: selectedSize }));
       navigate('/cart');
     }
   };
 
   const handleBuyNow = () => {
     if (product && selectedSize) {
-      addToCart(product, quantity, selectedSize);
+      dispatch(addToCart({ product, quantity, size: selectedSize }));
       navigate('/checkout');
     }
   };

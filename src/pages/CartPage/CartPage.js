@@ -1,10 +1,13 @@
 import React, { useEffect } from 'react';
-import { useCart } from '../../context/CartContext';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateQuantity, removeFromCart } from '../../redux/Slice/cartSlice';
 import { useNavigate } from 'react-router-dom';
 import './CartPage.css';
 
 const CartPage = () => {
-  const { cartItems, updateQuantity, removeFromCart, getCartTotal } = useCart();
+  const dispatch = useDispatch();
+  const cartItems = useSelector(state => state.cart.cartItems);
+  const cartTotal = cartItems.reduce((total, item) => total + (item.product.price * item.quantity), 0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -55,7 +58,7 @@ const CartPage = () => {
                       <p className="cart-item-size">Size: {item.size}</p>
                       <button 
                         className="cart-item-remove" 
-                        onClick={() => removeFromCart(item.product.id, item.size)}
+                        onClick={() => dispatch(removeFromCart({ productId: item.product.id, size: item.size }))}
                       >
                         Remove
                       </button>
@@ -68,9 +71,9 @@ const CartPage = () => {
                   
                   <div className="td-quantity">
                     <div className="cart-qty-selector">
-                      <button onClick={() => updateQuantity(item.product.id, item.size, item.quantity - 1)}>&minus;</button>
+                      <button onClick={() => dispatch(updateQuantity({ productId: item.product.id, size: item.size, newQuantity: item.quantity - 1 }))}>&minus;</button>
                       <span>{item.quantity}</span>
-                      <button onClick={() => updateQuantity(item.product.id, item.size, item.quantity + 1)}>+</button>
+                      <button onClick={() => dispatch(updateQuantity({ productId: item.product.id, size: item.size, newQuantity: item.quantity + 1 }))}>+</button>
                     </div>
                   </div>
                   
@@ -111,7 +114,7 @@ const CartPage = () => {
             <div className="cart-summary-block">
               <div className="subtotal-row">
                 <span>Subtotal</span>
-                <span className="subtotal-price">Rs. {getCartTotal().toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+                <span className="subtotal-price">Rs. {cartTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
               </div>
               <p className="tax-shipping-note">Tax included. Shipping calculated at checkout.</p>
               <button className="checkout-btn" onClick={handleCheckout}>Check out</button>

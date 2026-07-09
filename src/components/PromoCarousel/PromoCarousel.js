@@ -1,52 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import './PromoCarousel.css';
-import { GraphQLClient, gql } from 'graphql-request';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
 
-const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:2000/graphql';
-
-const GET_PRODUCTS = gql`
-  query GetProduct($search: String) {
-    getProduct(search: $search) {
-      products {
-        id
-        name
-        price
-        mrp
-        discountPercentage
-        images
-        brand
-        variants {
-          color
-          size
-          stock
-        }
-        description
-      }
-    }
-  }`;
 
 const PromoCarousel = () => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch()
+  const { product, status: productStatus } = useSelector((state) => state.product);
   const navigate = useNavigate();
-
+  const loading = productStatus === 'loading' || productStatus === 'idle';
+  const products = product && product.length > 0 ? [...product].reverse().slice(0, 5) : [];
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const client = new GraphQLClient(GRAPHQL_ENDPOINT);
-        const data = await client.request(GET_PRODUCTS, { search: '' });
-        const fetchedProducts = data.getProduct?.products ? data.getProduct?.products.slice(0, 5) : [];
-        setProducts(fetchedProducts);
-      } catch (err) {
-        console.error('Error fetching promo products:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
+    dispatch(fetchProducts())
+  }, [dispatch]);
 
   return (
     <section className="promo-carousel-section">
@@ -76,12 +43,12 @@ const PromoCarousel = () => {
               </div>
             ))
           ) : products.length > 0 ? (
-            products.map((product) => (
-              <div className="promo-card" key={product.id}>
+            products.map((item) => (
+              <div className="promo-card" key={item.id}>
                 <div className="promo-image-wrapper">
                   <img
-                    src={product.images && product.images.length > 0 ? product.images[0] : '/images/placeholder.png'}
-                    alt={product.name}
+                    src={item.images && item.images.length > 0 ? item.images[0] : '/images/placeholder.png'}
+                    alt={item.name}
                     className="promo-image"
                     onError={(e) => {
                       e.target.onerror = null;
@@ -90,8 +57,8 @@ const PromoCarousel = () => {
                   />
                 </div>
                 <div className="promo-info">
-                  <p className="promo-desc" title={product.name}>{product.name}</p>
-                  <button className="promo-shop-btn" onClick={() => navigate(`/product/${product.id}`)}>Shop Now</button>
+                  <p className="promo-desc" title={item.name}>{item.name}</p>
+                  <button className="promo-shop-btn" onClick={() => navigate(`/product/${item.id}`)}>Shop Now</button>
                 </div>
               </div>
             ))
@@ -99,7 +66,7 @@ const PromoCarousel = () => {
             <p style={{ textAlign: 'center', width: '100%', padding: '20px' }}>No promos found.</p>
           )}
         </div>
-        
+
         <div className="promo-view-all-wrapper" style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
           {loading ? (
             <div className="shimmer-button" style={{ width: '150px', borderRadius: '4px' }}></div>
@@ -113,5 +80,4 @@ const PromoCarousel = () => {
     </section>
   );
 };
-
 export default PromoCarousel;

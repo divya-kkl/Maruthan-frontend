@@ -1,83 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { GraphQLClient, gql } from "graphql-request";
 import "./CheckoutPage.css";
-import { useCart } from "../../context/CartContext";
-
-const GRAPHQL_ENDPOINT =
-  process.env.REACT_APP_GRAPHQL_ENDPOINT || "http://localhost:2000/graphql";
-
-const GET_USER_ADDRESSES = gql`
-  query GetUserAddresses {
-    getUserAddresses {
-      addressType
-      name
-      street
-      city
-      state
-      country
-      phone
-    }
-  }
-`;
-
-const GET_PAYMENT_METHODS = gql`
-  query GetAllPaymentMethods {
-    getAllPaymentMethods {
-      id
-      name
-      value
-      description
-      icon
-      status
-      sortOrder
-    }
-  }
-`;
-
-const PLACE_ORDER = gql`
-  mutation PlaceOrder($input: PlaceOrderInput!) {
-    placeOrder(input: $input) {
-      id
-      userId
-      orderNumber
-      items {
-        productId
-        quantity
-        price
-        mrp
-        name
-        image
-        size
-      }
-      subTotal
-      deliveryCharge
-      totalAmount
-      status
-      paymentStatus
-      paymentMethod
-      deliveryAddress {
-        addressType
-        name
-        street
-        city
-        state
-        country
-        phone
-      }
-      notes
-      createdAt
-      updatedAt
-    }
-  }
-`;
+import { useSelector, useDispatch } from "react-redux";
+import { removeFromCart } from "../../redux/Slice/cartSlice";
+import { fetchSavedAddresses, fetchPaymentMethods, placeOrder, resetOrderSuccess } from "../../redux/Slice/checkoutSlice";
 
 const Checkout = ({ onNavigate }) => {
   const navigate = useNavigate();
-  const { cartItems, getCartTotal, removeFromCart, deliveryCharge } = useCart();
+  const dispatch = useDispatch();
+  const { cartItems, deliveryCharge } = useSelector(state => state.cart);
+  const getCartTotal = () => cartItems.reduce((total, item) => total + (item.product.price * item.quantity), 0);
 
   const [loading] = useState(false);
-  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  const { savedAddresses, loadingAddresses, paymentMethods, isPlacingOrder, orderSuccessData, error } = useSelector(state => state.checkout);
+
   const [formData, setFormData] = useState({
     addressType: "Home",
     name: "",
@@ -91,56 +27,57 @@ const Checkout = ({ onNavigate }) => {
     notes: "",
   });
 
-  const [savedAddresses, setSavedAddresses] = useState([]);
   const [selectedAddressIndex, setSelectedAddressIndex] = useState('new');
-  const [loadingAddresses, setLoadingAddresses] = useState(true);
-  const [paymentMethods, setPaymentMethods] = useState([]);
 
-  // We no longer fetch from backend because we use CartContext
+  // We no longer fetch from backend directly
   useEffect(() => {
     window.scrollTo(0, 0);
-    fetchSavedAddresses();
-    fetchPaymentMethods();
-  }, []);
+    dispatch(fetchSavedAddresses());
+    dispatch(fetchPaymentMethods());
+  }, [dispatch]);
 
-  const fetchPaymentMethods = async () => {
-    try {
-      const client = new GraphQLClient(GRAPHQL_ENDPOINT);
-      const data = await client.request(GET_PAYMENT_METHODS);
-      const allMethods = (data.getAllPaymentMethods || [])
-        .sort((a, b) => a.sortOrder - b.sortOrder);
-      setPaymentMethods(allMethods);
-      // Set first active payment method as default
-      const firstActive = allMethods.find(m => m.status === 'ACTIVE');
+  // Set default payment method and select first saved address if available
+  useEffect(() => {
+    if (paymentMethods.length > 0) {
+      const firstActive = paymentMethods.find(m => m.status === 'ACTIVE');
       if (firstActive) {
         setFormData(prev => ({ ...prev, paymentMethod: firstActive.value }));
       }
-    } catch (err) {
-      console.error('Error fetching payment methods:', err);
     }
-  };
+  }, [paymentMethods]);
 
-  const fetchSavedAddresses = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setLoadingAddresses(false);
-        return;
-      }
-      const client = new GraphQLClient(GRAPHQL_ENDPOINT, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await client.request(GET_USER_ADDRESSES);
-      if (data.getUserAddresses && data.getUserAddresses.length > 0) {
-        setSavedAddresses(data.getUserAddresses);
-        setSelectedAddressIndex(0);
-      }
-    } catch (err) {
-      console.error("Error fetching addresses:", err);
-    } finally {
-      setLoadingAddresses(false);
+  useEffect(() => {
+    if (savedAddresses.length > 0) {
+      setSelectedAddressIndex(0);
     }
-  };
+  }, [savedAddresses]);
+
+  // Navigate on successful order
+  useEffect(() => {
+    if (orderSuccessData && orderSuccessData.id) {
+      window.dispatchEvent(new Event("cartUpdated"));
+      const orderId = orderSuccessData.id;
+      dispatch(resetOrderSuccess());
+      if (onNavigate) {
+         onNavigate(`order-success/${orderId}`);
+      } else {
+         navigate(`/order-success/${orderId}`);
+      }
+    }
+  }, [orderSuccessData, navigate, onNavigate, dispatch]);
+
+  useEffect(() => {
+    if (error && error.includes("Unauthorized")) {
+      alert("Please login to place an order.");
+      if (onNavigate) {
+         onNavigate("signin");
+      } else {
+         navigate("/login");
+      }
+    } else if (error) {
+      alert("Failed to place order: " + (error || "Please try again."));
+    }
+  }, [error, navigate, onNavigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -167,106 +104,34 @@ const Checkout = ({ onNavigate }) => {
     e.preventDefault();
     if (!cartItems || cartItems.length === 0) return;
 
-    setIsPlacingOrder(true);
-    try {
-      const token = localStorage.getItem("token");
-
-      const deliveryAddress = selectedAddressIndex === 'new'
-        ? {
-            addressType: formData.addressType,
-            name: formData.name,
-            street: formData.street,
-            city: formData.city,
-            state: formData.state,
-            country: formData.country,
-            phone: formData.phone,
-          }
-        : {
-            addressType: savedAddresses[selectedAddressIndex].addressType,
-            name: savedAddresses[selectedAddressIndex].name,
-            street: savedAddresses[selectedAddressIndex].street,
-            city: savedAddresses[selectedAddressIndex].city,
-            state: savedAddresses[selectedAddressIndex].state,
-            country: savedAddresses[selectedAddressIndex].country,
-            phone: savedAddresses[selectedAddressIndex].phone,
-          };
-
-      const input = {
-        deliveryCharge: deliveryCharge || 0,
-        paymentMethod: formData.paymentMethod,
-        deliveryAddress,
-        notes: formData.notes || undefined,
-      };
-
-      const client = new GraphQLClient(GRAPHQL_ENDPOINT, {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-      });
-
-      // SYNC CART: Ensure the backend cart matches our frontend cart context
-      const userStr = localStorage.getItem("user");
-      if (userStr) {
-        const user = JSON.parse(userStr);
-        if (user && user.id) {
-          const CLEAR_CART = gql`
-            mutation ClearCart($userId: ID!) {
-              clearCart(userId: $userId)
-            }
-          `;
-          try {
-            await client.request(CLEAR_CART, { userId: user.id });
-          } catch (e) {
-            // It's perfectly fine if the cart doesn't exist yet!
-            console.warn("Backend cart empty or not found. Proceeding to create one.");
-          }
-
-          const ADD_TO_CART = gql`
-            mutation AddToCart($userId: ID!, $shopId: ID!, $productId: ID!, $quantity: Float!, $size: String!) {
-              addToCart(userId: $userId, shopId: $shopId, productId: $productId, quantity: $quantity, size: $size) {
-                id
-              }
-            }
-          `;
-          for (const item of cartItems) {
-            await client.request(ADD_TO_CART, {
-              userId: user.id,
-              shopId: item.product.shopDetails || item.product.shopId || "default",
-              productId: item.product.id || item.product._id,
-              quantity: parseFloat(item.quantity),
-              size: item.size || "Default"
-            });
-          }
+    const deliveryAddress = selectedAddressIndex === 'new'
+      ? {
+          addressType: formData.addressType,
+          name: formData.name,
+          street: formData.street,
+          city: formData.city,
+          state: formData.state,
+          country: formData.country,
+          phone: formData.phone,
         }
-      }
+      : {
+          addressType: savedAddresses[selectedAddressIndex].addressType,
+          name: savedAddresses[selectedAddressIndex].name,
+          street: savedAddresses[selectedAddressIndex].street,
+          city: savedAddresses[selectedAddressIndex].city,
+          state: savedAddresses[selectedAddressIndex].state,
+          country: savedAddresses[selectedAddressIndex].country,
+          phone: savedAddresses[selectedAddressIndex].phone,
+        };
 
-      // Now place the order (which reads from the backend cart we just synced)
-      const data = await client.request(PLACE_ORDER, { input });
+    const input = {
+      deliveryCharge: deliveryCharge || 0,
+      paymentMethod: formData.paymentMethod,
+      deliveryAddress,
+      notes: formData.notes || undefined,
+    };
 
-      window.dispatchEvent(new Event("cartUpdated"));
-
-      if (onNavigate) {
-         onNavigate(`order-success/${data.placeOrder.id}`);
-      } else {
-         navigate(`/order-success/${data.placeOrder.id}`);
-      }
-    } catch (err) {
-      console.error("Error during checkout:", err);
-
-      if (
-        err.message &&
-        err.message.includes("Unauthorized")
-      ) {
-        alert("Please login to place an order.");
-        if (onNavigate) {
-           onNavigate("signin");
-        } else {
-           navigate("/login");
-        }
-      } else {
-        alert("Failed to place order: " + (err.message || "Please try again."));
-      }
-    } finally {
-      setIsPlacingOrder(false);
-    }
+    dispatch(placeOrder({ input, cartItems }));
   };
 
   if (loading) {
@@ -526,7 +391,7 @@ const Checkout = ({ onNavigate }) => {
                 <button 
                   type="button"
                   className="remove-summary-item"
-                  onClick={() => removeFromCart(item.product.id || item.product._id, item.size)}
+                  onClick={() => dispatch(removeFromCart({ productId: item.product.id || item.product._id, size: item.size }))}
                   aria-label="Remove item"
                 >
                   &times;

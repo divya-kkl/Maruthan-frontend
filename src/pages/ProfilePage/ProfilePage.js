@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FiMapPin, FiChevronRight } from 'react-icons/fi';
-import { GraphQLClient, gql } from 'graphql-request';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchUserDetails, fetchUserOrders, updateUserAddress, logout as logoutAction, setUser } from '../../redux/Slice/userSlice';
 import AddAddressModal from '../../components/AddAddressModal/AddAddressModal';
 import './ProfilePage.css';
 
@@ -169,32 +170,16 @@ const ProfilePage = () => {
   const handleSaveAddress = async (newAddress) => {
     try {
       const token = localStorage.getItem('token');
-      const client = new GraphQLClient(GRAPHQL_ENDPOINT, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const userId = user.id || user._id;
 
-      const currentUserId = user.id || user._id;
-      const updatedAddresses = [...(user.addresses || [])];
+      await dispatch(updateUserAddress({
+        userId,
+        token,
+        newAddress,
+        currentAddresses: user.addresses
+      })).unwrap();
 
-      if (newAddress.isDefault) {
-        updatedAddresses.forEach(addr => addr.isDefault = false);
-      }
-
-      updatedAddresses.push(newAddress);
-
-      const input = {
-        addresses: updatedAddresses.map(addr => {
-          const { id, ...rest } = addr;
-          return rest;
-        })
-      };
-
-      const data = await client.request(UPDATE_USER, { id: currentUserId, input });
-      if (data.updateUser) {
-        setUser(prev => ({ ...prev, addresses: data.updateUser.addresses }));
-        localStorage.setItem('user', JSON.stringify({ ...JSON.parse(localStorage.getItem('user')), addresses: data.updateUser.addresses }));
-        setIsAddressModalOpen(false);
-      }
+      setIsAddressModalOpen(false);
     } catch (error) {
       console.error("Error updating user addresses:", error);
       alert("Failed to save address. Please try again.");
@@ -253,20 +238,20 @@ const ProfilePage = () => {
                 {user.addresses && user.addresses.length > 0 ? (
                   <div className="addresses-list">
                     {user.addresses.map((addr, idx) => (
-                      <div key={idx} className="address-item" style={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        padding: '16px', 
-                        background: '#fff', 
-                        border: '1px solid #eaeaea', 
+                      <div key={idx} className="address-item" style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        padding: '16px',
+                        background: '#fff',
+                        border: '1px solid #eaeaea',
                         borderRadius: '12px',
                         marginBottom: '12px',
                         cursor: 'pointer'
                       }}>
-                        <div style={{ 
-                          background: '#f5f5f5', 
-                          padding: '12px', 
-                          borderRadius: '8px', 
+                        <div style={{
+                          background: '#f5f5f5',
+                          padding: '12px',
+                          borderRadius: '8px',
                           marginRight: '16px',
                           display: 'flex',
                           alignItems: 'center',
@@ -337,7 +322,7 @@ const ProfilePage = () => {
                       <div className="order-header">
                         <span className="order-number">Order #{order.orderNumber}</span>
                         <span className="order-date">
-                          {order.createdAt && !isNaN(parseInt(order.createdAt)) 
+                          {order.createdAt && !isNaN(parseInt(order.createdAt))
                             ? new Date(parseInt(order.createdAt)).toLocaleDateString()
                             : new Date(order.createdAt).toLocaleDateString()}
                         </span>

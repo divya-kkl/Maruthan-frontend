@@ -1,58 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import './OurStoresPage.css';
-import { GraphQLClient, gql } from 'graphql-request';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchStores } from '../../redux/Slice/storeSlice';
 import { FiMapPin, FiPhone, FiUser, FiMessageCircle, FiCompass, FiHome } from 'react-icons/fi';
 
-const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:2000/graphql';
-
-const GET_SHOPS = gql`
-  query GetAllShopUsers {
-    getAllShopUsers {
-      id
-      shopName
-      ownerName
-      email
-      contactNumber
-      address
-      createdAt
-      image
-    }
-  }
-`;
 
 const OurStores = () => {
-  const [stores, setStores] = useState([]);
+ const dispatch = useDispatch();
+ const { store: stores = [] } = useSelector((state) => state.store);
 
   useEffect(() => {
-    const fetchStores = async () => {
-      try {
-        const client = new GraphQLClient(GRAPHQL_ENDPOINT);
-        const data = await client.request(GET_SHOPS);
+    dispatch(fetchStores())
 
-        if (data.getAllShopUsers && data.getAllShopUsers.length > 0) {
-          const fetchedStores = data.getAllShopUsers.map((shop, index) => {
-            return {
-              id: shop.id,
-              shopName: shop.shopName,
-              ownerName: shop.ownerName,
-              email: shop.email,
-              address: shop.address,
-              contactNumber: shop.contactNumber,
-              image: shop.image || `/images/store${(index % 3) + 1}.png`
-            };
-          });
-          setStores(fetchedStores);
-        } else {
-          setStores([]);
-        }
-      } catch (err) {
-        console.error('Error fetching stores:', err);
-        setStores([]);
-      }
-    };
-
-    fetchStores();
-  }, []);
+  }, [dispatch]);
 
   const handleWhatsAppClick = (contactNumber) => {
     if (!contactNumber) return;

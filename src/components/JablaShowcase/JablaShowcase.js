@@ -1,48 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import './JablaShowcase.css';
-import { GraphQLClient, gql } from 'graphql-request';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
 import { useNavigate } from 'react-router-dom';
 import QuickViewModal from '../QuickViewModal/QuickViewModal';
 
-const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:2000/graphql';
-
-const GET_PRODUCTS = gql`
-  query GetProduct($search: String) {
-    getProduct(search: $search) {
-      products {
-      id
-      name
-      price
-      images
-    }
-  }
-}`;
-
 const JablaShowcase = () => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const { product, status: productStatus } = useSelector((state) => state.product);
+  const loading = productStatus === 'loading' || productStatus === 'idle';
+  const products = product && product.length > 0 ? [...product].reverse().slice(0, 5) : [];
   const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState(null);
   const openQuickView = (product) => { setSelectedProduct(product); };
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const client = new GraphQLClient(GRAPHQL_ENDPOINT);
-        const data = await client.request(GET_PRODUCTS, { search: '' });
-        
-    
-        const fetchedProducts = data.getProduct?.products ? data.getProduct?.products.slice(0, 5) : [];
-        setProducts(fetchedProducts);
-      } catch (err) {
-        console.error('Error fetching products:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
+    dispatch(fetchProducts())
+  }, [dispatch]);
 
   return (
     <section className="jabla-section">
@@ -58,7 +32,7 @@ const JablaShowcase = () => {
             <p className="jabla-subtitle">Breathable cotton frock made for summer comfort and everyday charm!</p>
           </>
         )}
-        
+
         <div className="jabla-grid">
           {loading ? (
             [...Array(5)].map((_, index) => (
@@ -72,25 +46,25 @@ const JablaShowcase = () => {
               </div>
             ))
           ) : products.length > 0 ? (
-            products.map((product) => (
-              <div className="jabla-card" key={product.id}>
-                <div className="jabla-image-wrapper" style={{ cursor: 'pointer' }} onClick={() => navigate(`/product/${product.id}`)}>
-                  <img 
-                    src={product.images && product.images.length > 0 ? product.images[0] : '/images/placeholder.png'} 
-                    alt={product.name} 
+            products.map((item) => (
+              <div className="jabla-card" key={item.id}>
+                <div className="jabla-image-wrapper" style={{ cursor: 'pointer' }} onClick={() => navigate(`/product/${item.id}`)}>
+                  <img
+                    src={item.images && item.images.length > 0 ? item.images[0] : '/images/placeholder.png'}
+                    alt={item.name}
                     className="jabla-image"
                     onError={(e) => {
-                      e.target.onerror = null; 
-                      e.target.src="/images/placeholder.png";
+                      e.target.onerror = null;
+                      e.target.src = "/images/placeholder.png";
                     }}
                   />
                 </div>
                 <div className="jabla-info">
-                  <h3 className="jabla-name" title={product.name}>{product.name}</h3>
+                  <h3 className="jabla-name" title={item.name}>{item.name}</h3>
                   <div className="jabla-price">
-                    Rs. {Number(product.price).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                    Rs. {Number(item.price).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                   </div>
-                  <button className="jabla-select-btn" onClick={() => openQuickView(product)}>Select Options</button>
+                  <button className="jabla-select-btn" onClick={() => openQuickView(item)}>Select Options</button>
                 </div>
               </div>
             ))

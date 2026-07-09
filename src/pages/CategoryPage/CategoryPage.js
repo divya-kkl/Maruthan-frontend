@@ -1,66 +1,27 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { GraphQLClient, gql } from 'graphql-request';
+import { useDispatch, useSelector } from 'react-redux';
 import './CategoryPage.css';
 import QuickViewModal from '../../components/QuickViewModal/QuickViewModal';
-
-const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:2000/graphql';
-
-const GET_PRODUCTS_BY_CATEGORY = gql`
-  query GetProductsByCategoryCode($code: String!, $sort: String, $filters: ProductFilterInput, $page: Int, $limit: Int) {
-    getProductsByCategoryCode(code: $code, sort: $sort, filters: $filters, page: $page, limit: $limit) {
-      products {
-        id
-        name
-        price
-        mrp
-        discountPercentage
-        images
-        brand
-        productCategoriesID
-        productCategoriesCode
-        variants {
-          color
-          size
-          stock
-        }
-        description
-        material
-        embellishment
-        neck
-        sleeves
-        closure
-        lining
-        washCare
-        ironCare
-        createdAt
-        updatedAt
-      }
-      filters {
-        sizes { name count }
-        colors { name count }
-        brands { name count }
-        stock { inStock outOfStock }
-        price { min max }
-      }
-    }
-  }
-`;
+import { fetchCategoryProducts, resetCategoryProducts } from '../../redux/Slice/categoryProductsSlice';
 
 const CategoryPage = () => {
   const { categoryCode } = useParams();
   const navigate = useNavigate();
-  const [products, setProducts] = useState([]);
-  const [filterData, setFilterData] = useState({
-    sizes: [], colors: [], brands: [], stock: { inStock: 0, outOfStock: 0 }, price: { min: 0, max: 0 }
-  });
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  
+  const {
+    products,
+    filterData,
+    loading,
+    loadingMore,
+    hasMore,
+    totalCount,
+  } = useSelector((state) => state.categoryProducts);
+
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [sort, setSort] = useState('features');
   const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [totalCount, setTotalCount] = useState(0);
   const [hasScrolled, setHasScrolled] = useState(false);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const itemsPerPage = 12;
@@ -138,75 +99,39 @@ const CategoryPage = () => {
   };
 
   useEffect(() => {
-    // Parse the serialized filters inside the effect
     const filters = JSON.parse(activeFiltersKey);
 
-    let cancelled = false;
-
-    const fetchCategoryProducts = async (isNewQuery = false) => {
-      if (page === 1) {
-        setLoading(true);
-      } else {
-        setLoadingMore(true);
-        await new Promise(resolve => setTimeout(resolve, 1500));
-      }
-      try {
-        const client = new GraphQLClient(GRAPHQL_ENDPOINT);
-        const data = await client.request(GET_PRODUCTS_BY_CATEGORY, {
-          code: categoryCode,
-          sort: sort,
-          page: page,
-          limit: itemsPerPage,
-          filters: {
-            sizes: filters.sizes.length > 0 ? filters.sizes : null,
-            brands: filters.brands.length > 0 ? filters.brands : null,
-            colors: filters.colors.length > 0 ? filters.colors : null,
-            stock: filters.stock.length > 0 ? filters.stock : null,
-            price: (filters.price.min !== '' || filters.price.max !== '') ? {
-              min: filters.price.min !== '' ? Number(filters.price.min) : 0,
-              max: filters.price.max !== '' ? Number(filters.price.max) : 999999
-            } : null
-          }
-        });
-
-        if (cancelled) return;
-
-        if (data.getProductsByCategoryCode) {
-          const newProducts = data.getProductsByCategoryCode.products || [];
-          setProducts(prev => {
-            const updatedProducts = isNewQuery ? newProducts : [...prev, ...newProducts];
-            setHasMore(newProducts.length === itemsPerPage);
-            const newTotalCount = data.getProductsByCategoryCode.totalCount ||
-              (updatedProducts.length + (newProducts.length === itemsPerPage ? 1 : 0));
-            setTotalCount(newTotalCount);
-            return updatedProducts;
-          });
-          if (data.getProductsByCategoryCode.filters) {
-            setFilterData(prev => prev.sizes.length > 0 && !isNewQuery ? prev : data.getProductsByCategoryCode.filters);
-          }
-        } else {
-          setProducts([]);
-          setTotalCount(0);
-        }
-      } catch (err) {
-        if (!cancelled) console.error('Error fetching category products:', err);
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
-          setLoadingMore(false);
-        }
-      }
+    const apiFilters = {
+      sizes: filters.sizes.length > 0 ? filters.sizes : null,
+      brands: filters.brands.length > 0 ? filters.brands : null,
+      colors: filters.colors.length > 0 ? filters.colors : null,
+      stock: filters.stock.length > 0 ? filters.stock : null,
+      price: (filters.price.min !== '' || filters.price.max !== '') ? {
+        min: filters.price.min !== '' ? Number(filters.price.min) : 0,
+        max: filters.price.max !== '' ? Number(filters.price.max) : 999999
+      } : null
     };
 
     if (categoryCode) {
-      fetchCategoryProducts(page === 1);
+      dispatch(fetchCategoryProducts({
+        categoryCode,
+        sort,
+        page,
+        limit: itemsPerPage,
+        filters: apiFilters,
+        isNewQuery: page === 1
+      }));
     }
+  }, [categoryCode, sort, activeFiltersKey, page, dispatch, itemsPerPage]);
 
-    return () => { cancelled = true; };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [categoryCode, sort, activeFiltersKey, page]);
+  
+  useEffect(() => {
+    return () => {
+      dispatch(resetCategoryProducts());
+    };
+  }, [dispatch]);
 
-  // Detect first user scroll to prevent instant loading on very large monitors
+  
   useEffect(() => {
     window.scrollTo(0, 0); // Reset scroll position when page loads/reloads
     const handleInitialScroll = () => {

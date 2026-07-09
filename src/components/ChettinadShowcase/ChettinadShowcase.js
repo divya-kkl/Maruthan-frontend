@@ -1,26 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './ChettinadShowcase.css';
-import { GraphQLClient, gql } from 'graphql-request';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
 import { useNavigate } from 'react-router-dom';
 import QuickViewModal from '../QuickViewModal/QuickViewModal';
 
-const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:2000/graphql';
 
-const GET_PRODUCTS = gql`
-  query GetProduct($search: String) {
-    getProduct(search: $search) {
-      products {
-      id
-      name
-      price
-      images
-    }
-  }
-}`;
 
 const ChettinadShowcase = () => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const { product, status: productStatus } = useSelector((state) => state.product);
+  const loading = productStatus === 'loading' || productStatus === 'idle';
+  const products = product && product.length > 0 ? [...product].reverse().slice(0, 5) : [];
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef(null);
   const navigate = useNavigate();
@@ -60,23 +51,8 @@ const ChettinadShowcase = () => {
   };
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const client = new GraphQLClient(GRAPHQL_ENDPOINT);
-        const data = await client.request(GET_PRODUCTS, { search: '' });
-
-
-        const fetchedProducts = data.getProduct?.products ? data.getProduct?.products.slice(0, 10) : [];
-        setProducts(fetchedProducts);
-      } catch (err) {
-        console.error('Error fetching products:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
+    dispatch(fetchProducts())
+  }, [dispatch]);
 
   return (
     <section className="chettinad-section">

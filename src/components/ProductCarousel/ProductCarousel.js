@@ -1,46 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './ProductCarousel.css';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import { GraphQLClient, gql } from 'graphql-request';
 import { useNavigate } from 'react-router-dom';
 import QuickViewModal from '../QuickViewModal/QuickViewModal';
-
-const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:2000/graphql';
-
-const GET_PRODUCTS = gql`
-  query GetProduct($search: String) {
-    getProduct(search: $search) {
-      products {
-      id
-      name
-      price
-      mrp
-      discountPercentage
-      images
-      brand
-      productCategoriesID
-      productCategoriesCode
-      variants {
-        color
-        size
-        stock
-      }
-      createdAt
-      updatedAt
-    }
-  }
-}`;
-
-const GET_ACTIVE_BANNERS = gql`
-  query GetActiveBanners($bannerType: String) {
-    getActiveBanners(bannerType: $bannerType) {
-      id
-      backgroundImage
-      bannerType
-      isActive
-    }
-  }
-`;
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchBanner } from '../../redux/Slice/bannerSlice';
+import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
 
 const CarouselCard = ({ product, openQuickView }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -77,12 +42,19 @@ const CarouselCard = ({ product, openQuickView }) => {
 };
 
 const ProductCarousel = () => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+
+  const { product, status: productStatus } = useSelector((state) => state.product);
+  const { banner } = useSelector((state) => state.banner);
+
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [bannerData, setBannerData] = useState(null);
   const scrollContainerRef = useRef(null);
   const navigate = useNavigate();
+
+  const loading = productStatus === 'loading' || productStatus === 'idle';
+  const products = product && product.length > 0 ? [...product].reverse() : [];
+
+  const bannerData = banner && banner.length > 0 ? banner.find((b) => b.bannerType === 'SECOND') : null;
 
   const openQuickView = (product) => {
     setSelectedProduct(product);
@@ -99,7 +71,6 @@ const ProductCarousel = () => {
     if (scrollContainerRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
       if (scrollLeft + clientWidth >= scrollWidth - 10) {
-
         scrollContainerRef.current.scrollTo({ left: 0, behavior: 'smooth' });
       } else {
         const scrollAmount = scrollContainerRef.current.clientWidth;
@@ -107,7 +78,6 @@ const ProductCarousel = () => {
       }
     }
   };
-
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -117,36 +87,9 @@ const ProductCarousel = () => {
   }, []);
 
   useEffect(() => {
-    const fetchBanner = async () => {
-      try {
-        const client = new GraphQLClient(GRAPHQL_ENDPOINT);
-        const data = await client.request(GET_ACTIVE_BANNERS, { bannerType: "SECOND" });
-        if (data.getActiveBanners && data.getActiveBanners.length > 0) {
-          setBannerData(data.getActiveBanners[0]);
-        }
-      } catch (err) {
-        console.error('Error fetching Second banner:', err);
-      }
-    };
-    fetchBanner();
-  }, []);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const client = new GraphQLClient(GRAPHQL_ENDPOINT);
-        const data = await client.request(GET_PRODUCTS, { search: '' });
-        const fetchedProducts = data.getProduct?.products ? data.getProduct?.products : [];
-        setProducts(fetchedProducts);
-      } catch (err) {
-        console.error('Error fetching products:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
+    dispatch(fetchProducts());
+    dispatch(fetchBanner());
+  }, [dispatch]);
 
   return (
     <>
@@ -212,15 +155,17 @@ const ProductCarousel = () => {
 
       {/* Girls Wear Banner Section (Second Image) */}
       <section className="girls-wear-banner-section">
-        <img
-          src={bannerData?.backgroundImage || "/images/banner1.jpg"}
-          alt="Girls Wear Trendy & Stylish"
-          className="girls-wear-banner-img"
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = "/images/banner1.png"; // temporary fallback so you can see it
-          }}
-        />
+        {bannerData?.backgroundImage && (
+          <img
+            src={bannerData.backgroundImage}
+            alt="Girls Wear Trendy & Stylish"
+            className="girls-wear-banner-img"
+            onError={(e) => {
+              e.target.onerror = null;
+
+            }}
+          />
+        )}
       </section>
     </>
   );

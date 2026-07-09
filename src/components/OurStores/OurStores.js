@@ -1,63 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, {  useEffect } from 'react';
 import './OurStores.css';
 import '../../pages/OurStoresPage/OurStoresPage.css';
-import { GraphQLClient, gql } from 'graphql-request';
 import { FiMapPin, FiPhone, FiUser, FiMessageCircle, FiCompass, FiHome } from 'react-icons/fi';
+import { useSelector,useDispatch } from 'react-redux';
+import { fetchStores } from '../../redux/Slice/storeSlice';
 
-const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:2000/graphql';
 
-const GET_SHOPS = gql`
-  query GetAllShopUsers {
-    getAllShopUsers {
-      id
-      shopName
-      ownerName
-      email
-      contactNumber
-      address
-      createdAt
-      image
-    }
-  }
-`;
 
 const OurStores = () => {
-  const [stores, setStores] = useState([]);
-  // eslint-disable-next-line no-unused-vars
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const { store: stores = [], status } = useSelector((state) => state.store);
+  const loading = status === 'loading' || status === 'idle';
 
   useEffect(() => {
-    const fetchStores = async () => {
-      try {
-        const client = new GraphQLClient(GRAPHQL_ENDPOINT);
-        const data = await client.request(GET_SHOPS);
-        
-        if (data.getAllShopUsers && data.getAllShopUsers.length > 0) {
-          const fetchedStores = data.getAllShopUsers.map((shop, index) => {
-             return {
-                id: shop.id,
-                shopName: shop.shopName,
-                ownerName: shop.ownerName,
-                email: shop.email,
-                address: shop.address,
-                contactNumber: shop.contactNumber,
-                image: shop.image || `/images/store${(index % 3) + 1}.png`
-             };
-          });
-          setStores(fetchedStores);
-        } else {
-          setStores([]);
-        }
-      } catch (err) {
-        console.error('Error fetching stores:', err);
-        setStores([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStores();
-  }, []);
+   dispatch(fetchStores())
+  }, [dispatch]);
 
   const handleWhatsAppClick = (contactNumber) => {
     if (!contactNumber) return;

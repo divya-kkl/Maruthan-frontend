@@ -1,0 +1,38 @@
+import { configureStore } from '@reduxjs/toolkit';
+import userReducer from './Slice/userSlice';
+import topBannerReducer from './Slice/topBannerSlice';
+import headerReducer from './Slice/headerSlice';
+import bannerReducer from './Slice/bannerSlice';
+import topproductsReducer from './Slice/productShowcasesSlice';
+import storeReducer from './Slice/storeSlice'
+import storeQualityReducer from './Slice/storeQualitySlice';
+import storeFeaturesReducer from './Slice/storeFeaturesSlice';
+import footerReducer from './Slice/footerSlice';
+import FAQReducer from './Slice/FAQSlice';
+import addressReducer from './Slice/addressSlice';
+import cartReducer from './Slice/cartSlice';
+import sizeChartReducer from './Slice/sizeChartSlice';
+import categoryProductsReducer from './Slice/categoryProductsSlice';
+import checkoutReducer from './Slice/checkoutSlice';
+import productDetailsReducer from './Slice/productDetailsSlice';
+
+export const store = configureStore({
+  reducer: {
+    user: userReducer,
+    topBanner: topBannerReducer,
+    category: headerReducer,
+    banner: bannerReducer,
+    product: topproductsReducer,
+    store: storeReducer,
+    storeQuality: storeQualityReducer,
+    storeFeatures: storeFeaturesReducer,
+    footer: footerReducer,
+    FAQ: FAQReducer,
+    address: addressReducer,
+    cart: cartReducer,
+    sizeChart: sizeChartReducer,
+    categoryProducts: categoryProductsReducer,
+    checkout: checkoutReducer,
+    productDetails: productDetailsReducer,
+  },
+});

@@ -1,55 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import './CottonFrockShowcase.css';
-import { GraphQLClient, gql } from 'graphql-request';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
 import { useNavigate } from 'react-router-dom';
 import QuickViewModal from '../QuickViewModal/QuickViewModal';
 
-const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:2000/graphql';
-
-const GET_PRODUCTS = gql`
-  query GetProduct($search: String) {
-    getProduct(search: $search) {
-      products {
-      id
-      name
-      price
-      images
-    }
-  }
-}`;
-
 const CottonFrockShowcase = () => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const { product, status: productStatus } = useSelector((state) => state.product);
+  const loading = productStatus === "loading" || productStatus === 'idel';
+  const products = product && product.length > 0 ? [...product].reverse().slice(0, 5) : [];
   const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState(null);
   const openQuickView = (product) => { setSelectedProduct(product); };
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const client = new GraphQLClient(GRAPHQL_ENDPOINT);
-        // We can search for frock to get relevant products
-        const data = await client.request(GET_PRODUCTS, { search: 'frock' });
-        
-        let fetchedProducts = data.getProduct?.products ? data.getProduct?.products : [];
-        
-        // Fallback if search 'frock' returns nothing
-        if (fetchedProducts.length === 0) {
-            const allData = await client.request(GET_PRODUCTS, { search: '' });
-            fetchedProducts = allData.getProduct?.products || [];
-        }
-
-        setProducts(fetchedProducts.slice(0, 5));
-      } catch (err) {
-        console.error('Error fetching cotton frock products:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
+    dispatch(fetchProducts())
+  }, [dispatch]);
 
   return (
     <section className="cotton-frock-section">
@@ -65,7 +32,7 @@ const CottonFrockShowcase = () => {
             <p className="cotton-frock-subtitle">Breathable cotton frock made for summer comfort and everyday charm!</p>
           </>
         )}
-        
+
         <div className="cotton-frock-grid">
           {loading ? (
             [...Array(5)].map((_, index) => (
@@ -82,13 +49,13 @@ const CottonFrockShowcase = () => {
             products.map((product) => (
               <div className="cotton-frock-card" key={product.id}>
                 <div className="cotton-frock-image-wrapper" style={{ cursor: 'pointer' }} onClick={() => navigate(`/product/${product.id}`)}>
-                  <img 
-                    src={product.images && product.images.length > 0 ? product.images[0] : '/images/placeholder.png'} 
-                    alt={product.name} 
+                  <img
+                    src={product.images && product.images.length > 0 ? product.images[0] : '/images/placeholder.png'}
+                    alt={product.name}
                     className="cotton-frock-image"
                     onError={(e) => {
-                      e.target.onerror = null; 
-                      e.target.src="/images/placeholder.png";
+                      e.target.onerror = null;
+                      e.target.src = "/images/placeholder.png";
                     }}
                   />
                 </div>

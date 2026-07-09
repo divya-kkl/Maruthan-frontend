@@ -1,81 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import './BoysShowcase.css';
-import { GraphQLClient, gql } from 'graphql-request';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchCategories } from '../../redux/Slice/headerSlice';
+import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
 import { useNavigate } from 'react-router-dom';
 import QuickViewModal from '../QuickViewModal/QuickViewModal';
 
-const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:2000/graphql';
-
-const GET_CATEGORIES = gql`
-  query GetProductCategories {
-    getProductCategories {
-      categories {
-        id
-        name
-        code
-      }
-    }
-  }
-`;
-
-const GET_PRODUCTS = gql`
-  query GetProduct($search: String) {
-    getProduct(search: $search) {
-      products {
-      id
-      name
-      price
-      images
-      productCategoriesID
-      productCategoriesCode
-    }
-  }
-}`;
-
 const BoysShowcase = () => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const { categories, loading: catLoading } = useSelector((state) => state.category);
+  const { product: allProducts, status: productStatus } = useSelector((state) => state.product);
+
+  const loading = productStatus === 'loading' || productStatus === 'idle' || catLoading;
+
+  let boysProducts = [];
+  if (allProducts && allProducts.length > 0) {
+    const boysCategory = categories?.find(c =>
+      c.name.toLowerCase().includes('boy') || c.code.toLowerCase().includes('boy')
+    );
+
+    if (boysCategory) {
+      boysProducts = allProducts.filter(p =>
+        p.productCategoriesID === boysCategory.id ||
+        (p.productCategoriesCode && p.productCategoriesCode.includes(boysCategory.code))
+      );
+    }
+
+    if (boysProducts.length === 0) {
+      boysProducts = allProducts.filter(p => p.name.toLowerCase().includes('boy'));
+    }
+  }
+
+  const products = boysProducts.length > 0 ? [...boysProducts].reverse().slice(0, 5) : [];
+
   const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState(null);
   const openQuickView = (product) => { setSelectedProduct(product); };
 
   useEffect(() => {
-    const fetchBoysProducts = async () => {
-      try {
-        const client = new GraphQLClient(GRAPHQL_ENDPOINT);
-        
-        const catData = await client.request(GET_CATEGORIES);
-        const categories = catData.getProductCategories?.categories || [];
-        const boysCategory = categories.find(c => 
-          c.name.toLowerCase().includes('boy') || c.code.toLowerCase().includes('boy')
-        );
-        
-        const prodData = await client.request(GET_PRODUCTS, { search: '' });
-        let allProducts = prodData.getProduct?.products || [];
-        
-    
-        let boysProducts = [];
-        if (boysCategory) {
-          boysProducts = allProducts.filter(p => 
-            p.productCategoriesID === boysCategory.id || 
-            (p.productCategoriesCode && p.productCategoriesCode.includes(boysCategory.code))
-          );
-        }
-
-        if (boysProducts.length === 0) {
-          boysProducts = allProducts.filter(p => p.name.toLowerCase().includes('boy'));
-        }
-
-        setProducts(boysProducts.slice(0, 5));
-      } catch (err) {
-        console.error('Error fetching boys products:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBoysProducts();
-  }, []);
+    dispatch(fetchCategories());
+    dispatch(fetchProducts());
+  }, [dispatch]);
 
   return (
     <section className="boys-section">
@@ -91,7 +56,7 @@ const BoysShowcase = () => {
             <p className="boys-subtitle">Let your boy stand out from the crowd in our unique ethnic wears like dhoti shirts and more. Fashion that's as playful as he is!</p>
           </>
         )}
-        
+
         <div className="boys-grid">
           {loading ? (
             [...Array(5)].map((_, index) => (
@@ -108,13 +73,13 @@ const BoysShowcase = () => {
             products.map((product) => (
               <div className="boys-card" key={product.id}>
                 <div className="boys-image-wrapper" style={{ cursor: 'pointer' }} onClick={() => navigate(`/product/${product.id}`)}>
-                  <img 
-                    src={product.images && product.images.length > 0 ? product.images[0] : '/images/placeholder.png'} 
-                    alt={product.name} 
+                  <img
+                    src={product.images && product.images.length > 0 ? product.images[0] : '/images/placeholder.png'}
+                    alt={product.name}
                     className="boys-image"
                     onError={(e) => {
-                      e.target.onerror = null; 
-                      e.target.src="/images/placeholder.png";
+                      e.target.onerror = null;
+                      e.target.src = "/images/placeholder.png";
                     }}
                   />
                 </div>
