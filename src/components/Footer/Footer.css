@@ -1,8 +1,9 @@
 .footer-section {
   background-color: #0F2D5C;
   color: white;
-  padding: 20px 40px 20px 40px;
+  padding: 60px 40px 20px 40px;
   font-family: Arial, sans-serif;
+  margin-bottom: 0 !important;
 }
 
 .footer-container {

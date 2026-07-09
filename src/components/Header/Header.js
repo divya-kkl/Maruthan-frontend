@@ -112,6 +112,9 @@ const Header = () => {
           <li className="mobile-nav-item">
             <NavLink to="/stores" onClick={() => setIsMobileMenuOpen(false)}>Our Stores</NavLink>
           </li>
+          <li className="mobile-nav-item">
+            <NavLink to="/login" onClick={() => setIsMobileMenuOpen(false)}>Login</NavLink>
+          </li>
           {/* <li className="mobile-nav-item">
             <NavLink to="/blog" onClick={() => setIsMobileMenuOpen(false)}>Blog</NavLink>
           </li> */}

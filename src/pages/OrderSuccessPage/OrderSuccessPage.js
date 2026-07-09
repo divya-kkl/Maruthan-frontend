@@ -99,6 +99,15 @@ const OrderSuccessPage = () => {
 
             <div className="order-dashboard-right">
               <div className="premium-shipping-card">
+                <h3 className="dashboard-section-title">Order Status</h3>
+                <div className="payment-method-content">
+                  <div className="payment-badge" style={{ textTransform: 'uppercase' }}>
+                    {orderDetails.status}
+                  </div>
+                </div>
+              </div>
+
+              <div className="premium-shipping-card" style={{ marginTop: '20px' }}>
                 <h3 className="dashboard-section-title">Shipping Details</h3>
                 <div className="shipping-address-content">
                   <p className="shipping-name">{orderDetails.deliveryAddress?.name}</p>
@@ -124,8 +133,11 @@ const OrderSuccessPage = () => {
               <div className="premium-shipping-card" style={{ marginTop: '20px' }}>
                 <h3 className="dashboard-section-title">Payment Method</h3>
                 <div className="payment-method-content">
-                  <div className="payment-badge">{orderDetails.paymentMethod === 'COD' ? 'Cash on Delivery' : orderDetails.paymentMethod}</div>
-                  <p className="payment-status">Status: <strong>{orderDetails.status}</strong></p>
+                  <div className="payment-badge">
+                    {orderDetails.paymentMethod === 'COD' 
+                      ? 'Cash on Delivery' 
+                      : (orderDetails.paymentMethod === 'RAZORPAY' ? 'Online Payment' : orderDetails.paymentMethod)}
+                  </div>
                 </div>
               </div>
             </div>

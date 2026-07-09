@@ -29,10 +29,15 @@ export const fetchBanner = createAsyncThunk(
         catch(err){
             return rejectWithValue(err.message)
         }
+    },
+    {
+        condition: (_, { getState }) => {
+            const { banner } = getState();
+            if (banner.status === 'succeeded' || banner.status === 'loading') {
+                return false; // Don't fetch if already loaded
+            }
+        }
     }
-   
-
-    
 );
 
 const bannerSlice = createSlice({

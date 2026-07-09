@@ -86,10 +86,6 @@ const CartPage = () => {
           </div>
 
           <div className="cart-sidebar-section">
-            <div className="order-note-block">
-              <label>Add Order Note</label>
-              <textarea placeholder="Add Order Note"></textarea>
-            </div>
 
             <div className="shipping-estimate-block">
               <label>Estimate Shipping</label>

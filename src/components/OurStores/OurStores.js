@@ -17,12 +17,7 @@ const OurStores = () => {
   }, [dispatch]);
 
   const handleWhatsAppClick = (contactNumber) => {
-    if (!contactNumber) return;
-    let primaryNumber = contactNumber.split(/[/,]/)[0];
-    let cleanNumber = primaryNumber.replace(/[^\d+]/g, '');
-    if (cleanNumber) {
-      window.open(`https://wa.me/${cleanNumber}`, '_blank');
-    }
+    window.open(`https://wa.me/919786221122`, '_blank');
   };
 
   const handleDirectionsClick = (store) => {

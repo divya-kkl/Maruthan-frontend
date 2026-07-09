@@ -56,7 +56,14 @@ export const fetchProducts = createAsyncThunk(
     
     catch(err){
         return rejectWithValue(err.message);
-        
+      }
+    },
+    {
+      condition: (_, { getState }) => {
+        const { product } = getState();
+        if (product.status === 'succeeded' || product.status === 'loading') {
+          return false; // Don't fetch if already loaded
+        }
       }
     }
 );

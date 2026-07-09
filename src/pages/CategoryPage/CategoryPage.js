@@ -60,6 +60,15 @@ const CategoryPage = () => {
     setPage(1);
     setActiveFilters(prev => {
       const currentList = prev[type];
+      
+      if (type === 'colors') {
+        if (currentList.includes(value)) {
+          return { ...prev, [type]: [] };
+        } else {
+          return { ...prev, [type]: [value] };
+        }
+      }
+
       if (currentList.includes(value)) {
         return { ...prev, [type]: currentList.filter(item => item !== value) };
       } else {
@@ -265,16 +274,37 @@ const CategoryPage = () => {
               {expandedFilters.colour && (
                 <div className="filter-content">
                   <div className="filter-colors-grid">
-                    {filterData.colors.map((color) => (
+                    {filterData.colors.map((color) => {
+                      const normalizedColorName = color.name.toLowerCase().trim();
+                      const colorMapping = {
+                        'bule': 'blue',
+                        'black and bule': 'linear-gradient(to right, black, blue)',
+                        'color': '#e0e0e0',
+                        'def': '#e0e0e0',
+                        'dfd': '#e0e0e0',
+                        'dfgt': '#e0e0e0',
+                        'erser': '#e0e0e0',
+                        'mikiki': '#e0e0e0',
+                        'nt5': '#e0e0e0',
+                        'peach': '#FFCBA4',
+                        'mustard': '#FFDB58',
+                        'navy': '#000080',
+                        'maroon': '#800000',
+                        'olive': '#808000'
+                      };
+                      const bgColor = colorMapping[normalizedColorName] || normalizedColorName.replace(/\s/g, '');
+                      const styleProp = bgColor.includes('gradient') ? { background: bgColor } : { backgroundColor: bgColor };
+
+                      return (
                       <div
                         className={`color-swatch-wrapper ${activeFilters.colors.includes(color.name) ? 'selected' : ''}`}
                         key={color.name}
                         title={`${color.name} (${color.count})`}
                         onClick={() => handleFilterChange('colors', color.name)}
                       >
-                        <div className="color-swatch" style={{ backgroundColor: color.name.toLowerCase().replace(/\s/g, '') }}></div>
+                        <div className="color-swatch" style={{ ...styleProp, border: '1px solid #ccc' }}></div>
                       </div>
-                    ))}
+                    )})}
                     {filterData.colors.length === 0 && <span className="filter-text-item">No colors available</span>}
                   </div>
                 </div>
@@ -399,7 +429,7 @@ const CategoryPage = () => {
           {/* Top Bar (Results Count & Sort) */}
           <div className="category-top-bar">
             <div className="results-count">
-              There are {filteredProducts.length} results in total
+              There are {totalCount || 0} results in total
             </div>
             <button 
               className="mobile-filter-toggle-btn"

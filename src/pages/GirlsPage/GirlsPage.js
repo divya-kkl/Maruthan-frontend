@@ -173,7 +173,7 @@ const GirlsPage = () => {
 
           <div className="category-top-bar">
             <div className="results-count">
-              There are {products.length} results in total
+              There are {totalCount || 0} results in total
             </div>
             <div className="sort-by-wrapper">
               <span>Sort by:</span>

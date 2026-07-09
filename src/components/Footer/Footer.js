@@ -63,7 +63,7 @@ const Footer = ({ onNavigate }) => {
 
           <div className="footer-socials">
             {socials.map((social) => (
-              <a key={social.id} href={social.url} className="social-icon">
+              <a key={social.id} href={social.url} className="social-icon" target="_blank" rel="noopener noreferrer">
                 {renderSocialIcon(social.icon)}
               </a>
             ))}

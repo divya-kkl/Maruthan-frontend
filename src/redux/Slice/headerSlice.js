@@ -47,9 +47,15 @@ export const fetchCategories = createAsyncThunk(
     catch(err){
       return rejectWithValue(err.message);
     }
-  
+  },
+  {
+    condition: (_, { getState }) => {
+      const { category } = getState();
+      if (category.categories && category.categories.length > 0) {
+        return false; // Don't fetch if already loaded
+      }
     }
-  
+  }
 );
 
 const headerSlice = createSlice({
