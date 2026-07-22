@@ -74,7 +74,7 @@ const ProfilePage = () => {
       setIsAddressModalOpen(false);
     } catch (error) {
       console.error("Error updating user addresses:", error);
-      alert("Failed to save address. Please try again.");
+      alert("Failed to save address: " + (error.message || error));
     }
   };
 
@@ -107,7 +107,6 @@ const ProfilePage = () => {
               <div className="profile-card">
                 <div className="profile-card-header">
                   <h3>{user.username ? user.username.toUpperCase() : 'USER'}</h3>
-                  <button className="edit-btn">Edit</button>
                 </div>
                 <div className="profile-card-body">
                   <div className="info-row">
@@ -172,7 +171,7 @@ const ProfilePage = () => {
                 )}
               </div>
 
-              {/* Marketing Preferences */}
+              {/* Marketing Preferences
               <div className="profile-section-header">
                 <h3>Marketing preferences</h3>
               </div>
@@ -188,7 +187,7 @@ const ProfilePage = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               {/* Sign Out Links */}
               <div className="signout-links">
