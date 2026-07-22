@@ -163,19 +163,26 @@ export const updateUserAddress = createAsyncThunk(
         headers: { Authorization: `Bearer ${token}` }
       });
 
-      const updatedAddresses = [...(currentAddresses || [])];
+      const updatedAddresses = (currentAddresses || []).map(addr => ({
+        ...addr,
+        isDefault: newAddress.isDefault ? false : addr.isDefault
+      }));
 
-      if (newAddress.isDefault) {
-        updatedAddresses.forEach(addr => addr.isDefault = false);
-      }
-
-      updatedAddresses.push(newAddress);
+      const finalAddresses = [...updatedAddresses, newAddress];
 
       const input = {
-        addresses: updatedAddresses.map(addr => {
-          const { id, ...rest } = addr;
-          return rest;
-        })
+        addresses: finalAddresses.map(addr => ({
+          firstName: addr.firstName,
+          lastName: addr.lastName,
+          address: addr.address,
+          apartment: addr.apartment,
+          city: addr.city,
+          state: addr.state,
+          pincode: addr.pincode,
+          country: addr.country,
+          phone: addr.phone,
+          isDefault: !!addr.isDefault
+        }))
       };
 
       const data = await client.request(UPDATE_USER, { id: userId, input });
