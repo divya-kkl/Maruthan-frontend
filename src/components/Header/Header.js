@@ -3,7 +3,7 @@ import { FiSearch, FiUser, FiShoppingBag, FiMenu, FiX } from 'react-icons/fi';
 import './Header.css';
 
 import { MdKeyboardArrowDown } from 'react-icons/md';
-import { useNavigate, NavLink, Link } from 'react-router-dom';
+import { useNavigate, NavLink} from 'react-router-dom';
 import SearchDrawer from '../SearchDrawer/SearchDrawer';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCategories } from '../../redux/Slice/headerSlice';
