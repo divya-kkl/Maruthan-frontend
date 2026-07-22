@@ -14,6 +14,7 @@
   z-index: 9999;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   text-decoration: none;
+  zoom: calc(1 / var(--browser-zoom, 1));
 }
 
 .whatsapp-float:hover {
