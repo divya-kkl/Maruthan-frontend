@@ -28,11 +28,11 @@ const Header = () => {
         <button className="mobile-menu-btn icon-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
           {isMobileMenuOpen ? <FiX /> : <FiMenu />}
         </button>
-     
+
         <div className="header-logo">
-          <Link to="/">
+          <a href="/">
             <img src="/images/log1.png" alt="Little RR" className="logo-image" />
-          </Link>
+          </a>
         </div>
 
         <nav className="header-nav">
@@ -67,7 +67,7 @@ const Header = () => {
           </ul>
         </nav>
 
-      
+
         <div className="header-icons">
           <button className="icon-btn" aria-label="Search" onClick={() => setIsSearchOpen(true)}>
             <FiSearch />
