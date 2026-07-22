@@ -271,8 +271,9 @@
 .girls-wear-banner-img {
   width: 100%;
   height: 100%; 
-  object-fit: fill; /* Forces the image to stretch to 100% width and 500px height */
+  object-fit: cover; /* Forces the image to stretch to 100% width and 500px height */
   display: block;
+  object-position: center;
 }
 
 @media (max-width: 768px) {
