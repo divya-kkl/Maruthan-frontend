@@ -20,9 +20,9 @@ const initialState = {
   ],
   contact: {
     locations: [
-      { id: 1, name: 'Velachery, Chennai', phone: '91-9786221122' },
-      { id: 2, name: 'RS Puram, Coimbatore', phone: '91-9786221122' },
-      { id: 3, name: 'Singanallur, Coimbatore', phone: '91-9786221122' }
+      { id: 1, name: 'AnnaNagar, Madurai', phone: '91-9786221122' },
+      { id: 2, name: 'Karaikudi, Sivagangai', phone: '91-9786221122' },
+      { id: 3, name: 'KalyarKovil, Sivagangai', phone: '91-9786221122' }
     ],
     mainPhone: '+91-9786221122',
     email: 'info@littlerr.in'
