@@ -4,11 +4,12 @@
   display: flex;
   justify-content: center;
   background-color: #ffffff;
+  min-width: 1300px;
+  zoom: calc(1 / var(--browser-zoom, 1));
 }
 
 .hero-container {
   width: 100%;
-  max-width: 1920px;
   position: relative;
   overflow: hidden;
 }

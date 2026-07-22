@@ -268,11 +268,12 @@
   margin-top: 40px;
   background-color: #ffffff;
   overflow: hidden;
+  min-width: 1300px;
+  zoom: calc(1 / var(--browser-zoom, 1));
 }
 
 .girls-wear-banner-img {
   width: 100%;
-  max-width: 1920px;
   height: auto;
   display: block;
 }
