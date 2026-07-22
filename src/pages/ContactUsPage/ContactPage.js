@@ -52,7 +52,7 @@ const ContactPage = () => {
         <h1 className="contact-main-title">Contact Us</h1>
 
         <p className="contact-subtitle">
-          Please use the below form. You can also call service on +91-9952778217
+          Please use the below form. You can also call service on <span className="contact-phone-number">+91-9952778217</span>
         </p>
 
         <div className="contact-map-container">
@@ -79,7 +79,7 @@ const ContactPage = () => {
             <div className="contact-info-block">
               <h3 className="contact-info-title">Customer Care:</h3>
               <p className="contact-info-text">
-                <a href="tel:+919952778217" className="contact-link">WhatsApp / Call</a> : +91-9952778217
+                <a href="tel:+919952778217" className="contact-link">WhatsApp / Call</a> : <span className="contact-phone-number">+91-9952778217</span>
               </p>
               <p className="contact-info-text">
                 <a href="mailto:info@littlerr.in" className="contact-link">Email</a>: info@littlerr.in
@@ -93,7 +93,7 @@ const ContactPage = () => {
                 10C Vasantha Nagar, 5th Street<br />
                 Behind old Jai Shanthi Theater<br />
                 Singnallur, Coimbatore - 641005, Tamil Nadu<br />
-                Phone: 8220954602 / 9952778217
+                Phone: <span className="contact-phone-number">8220954602 / 9952778217</span>
               </p>
             </div>
           </div>

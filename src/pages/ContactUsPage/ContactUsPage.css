@@ -225,3 +225,7 @@
     flex-direction: column;
   }
 }
+
+.contact-phone-number {
+  font-family: 'Times New Roman', Times, serif;
+}
