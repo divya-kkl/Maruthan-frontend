@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 
 const initialState = {
-    formDate : {
+    formData: {
         country: 'India',
         firstName: '',
         lastName: '',
@@ -21,12 +21,12 @@ const addressSlice = createSlice({
     initialState,
 
     reducers: {
-        updateAddressField: (state, action) =>{
+        updateAddressField: (state, action) => {
             const { name, value } = action.payload;
-            state.formDate[name] = value;
+            state.formData[name] = value;
         },
-        resetAddressForm: (state) =>{
-            state.formDate = initialState.formDate;
+        resetAddressForm: (state) => {
+            state.formData = initialState.formData;
         }
     }
 })
