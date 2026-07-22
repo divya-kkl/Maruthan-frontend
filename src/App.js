@@ -86,6 +86,26 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    let initialPixelRatio = parseFloat(sessionStorage.getItem('initialPixelRatio'));
+    if (!initialPixelRatio || isNaN(initialPixelRatio)) {
+      initialPixelRatio = window.devicePixelRatio || 1;
+      sessionStorage.setItem('initialPixelRatio', initialPixelRatio);
+    }
+    
+    const updateZoom = () => {
+      const currentPixelRatio = window.devicePixelRatio || 1;
+      const zoomFactor = currentPixelRatio / initialPixelRatio;
+      document.documentElement.style.setProperty('--browser-zoom', zoomFactor);
+    };
+
+    updateZoom();
+    window.addEventListener('resize', updateZoom);
+    return () => {
+      window.removeEventListener('resize', updateZoom);
+    };
+  }, []);
+
   return (
     <Router>
       <ScrollToTop />

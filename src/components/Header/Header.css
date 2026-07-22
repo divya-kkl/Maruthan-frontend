@@ -6,10 +6,12 @@
   position: sticky;
   top: 52px;
   z-index: 1002;
+  min-width: 1300px;
+  zoom: calc(1 / var(--browser-zoom, 1));
 }
 
 .header-container {
-  max-width: 1400px;
+  width: 1300px;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -134,103 +136,14 @@
   font-family: sans-serif;
 }
 
-/* Responsive adjustments */
-@media (max-width: 1024px) {
-  .nav-list {
-    gap: 15px;
-  }
-  .nav-item a {
-    font-size: 13px;
-  }
-}
-
-@media (max-width: 768px) {
-  .header-nav {
-    display: none; /* Hide desktop nav on mobile, would need a hamburger menu */
-  }
-  .header-container {
-    padding: 10px 20px;
-    height: 60px;
-  }
-  .header-logo {
-    margin-right: auto;
-    transform: none;
-  }
-  .logo-image {
-    height: 40px;
-  }
-  .site-header {
-    top: 32px;
-  }
-}
-
-/* Mobile Navigation Button */
+/* Mobile Navigation Button (Always hidden to lock desktop layout) */
 .mobile-menu-btn {
-  display: none;
-  margin-right: 15px; 
+  display: none !important;
 }
 
-/* Mobile Navigation Dropdown */
+/* Mobile Navigation Dropdown (Always hidden) */
 .mobile-nav {
-  display: none;
-}
-
-@media (max-width: 768px) {
-  .mobile-menu-btn {
-    display: flex;
-  }
-  
-  .mobile-nav {
-    display: block;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background-color: #FFFFFF;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    transform: translateY(-20px);
-    opacity: 0;
-    pointer-events: none;
-    transition: all 0.3s ease;
-    z-index: 999;
-  }
-
-  .mobile-nav.open {
-    transform: translateY(0);
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  .mobile-nav-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .mobile-nav-item {
-    border-bottom: 1px solid #eee;
-  }
-
-  .mobile-nav-item:last-child {
-    border-bottom: none;
-  }
-
-  .mobile-nav-item a {
-    display: block;
-    padding: 15px 20px;
-    text-decoration: none;
-    color: #333;
-    font-size: 16px;
-    font-weight: 500;
-  }
-
-  .mobile-nav-item a:hover,
-  .mobile-nav-item a.active {
-    background-color: #f9f9f9;
-    color: #0F2D5C;
-  }
+  display: none !important;
 }
 
 /* Shimmer loading for header links */
