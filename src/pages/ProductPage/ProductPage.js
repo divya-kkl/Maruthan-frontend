@@ -8,6 +8,7 @@ import SizeChart from '../../components/SizeChart/SizeChart';
 import RelatedProducts from '../../components/RelatedProducts/RelatedProducts';
 import { addToCart } from '../../redux/Slice/cartSlice';
 import { fetchProductById, resetProductDetails } from '../../redux/Slice/productDetailsSlice';
+import { fetchProductReviews } from '../../redux/Slice/reviewSlice';
 import { fetchFAQ } from '../../redux/Slice/FAQSlice';
 import './ProductPage.css';
 
@@ -17,10 +18,12 @@ const ProductPage = () => {
   const dispatch = useDispatch();
 
   const { product, loading, error } = useSelector((state) => state.productDetails);
+  const { reviews, averageRating: reviewAverage, totalCount: reviewCount } = useSelector((state) => state.reviews);
   const faqs = useSelector((state) => state.FAQ.FAQ) || [];
   const [activeImage, setActiveImage] = useState('');
   const [imageLoaded, setImageLoaded] = useState(false);
   const imageRef = useRef(null);
+  const reviewsSectionRef = useRef(null);
 
   useEffect(() => {
     if (imageRef.current && imageRef.current.complete) {
@@ -53,6 +56,7 @@ const ProductPage = () => {
     
     if (id) {
       dispatch(fetchProductById(id));
+      dispatch(fetchProductReviews(id));
     }
     
     // Using fetchFAQ from FAQSlice (fetches active FAQs)
@@ -74,6 +78,10 @@ const ProductPage = () => {
       }
     }
   }, [product]);
+
+  const scrollToReviews = () => {
+    reviewsSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const toggleFaq = (faqId) => {
     setOpenFaqs(prev => ({ ...prev, [faqId]: !prev[faqId] }));
@@ -159,6 +167,22 @@ const ProductPage = () => {
   const currentStock = selectedVariant ? selectedVariant.stock : (product.variants?.[0]?.stock || 0);
   const stockProgress = Math.min((currentStock / 50) * 100, 100);
 
+  const ratingDistribution = [0, 0, 0, 0, 0];
+  if (reviews && reviews.length > 0) {
+    reviews.forEach(r => {
+      const roundedRating = Math.round(r.rating);
+      if (roundedRating >= 1 && roundedRating <= 5) {
+        ratingDistribution[roundedRating - 1]++;
+      }
+    });
+  }
+  const totalDistributionReviews = reviews ? reviews.length : 0;
+  const getPercentage = (count) => {
+    if (totalDistributionReviews === 0) return 0;
+    const denominator = Math.max(totalDistributionReviews, 10);
+    return Math.round((count / denominator) * 100);
+  };
+
   return (
     <>
     <div className="product-page-container">
@@ -211,11 +235,19 @@ const ProductPage = () => {
         <div className="product-brand">{product.brand || "Prince N Princess"}</div>
         <h1 className="product-title">{product.name}</h1>
         
-        <div className="product-rating">
-          <div className="stars">
-            <AiFillStar /><AiFillStar /><AiFillStar /><AiFillStar /><AiFillStar />
+        <div className="product-rating" onClick={scrollToReviews} style={{ cursor: 'pointer', width: 'fit-content' }}>
+          <div className="stars" style={{ display: 'flex', gap: '2px' }}>
+            {[1, 2, 3, 4, 5].map((star) => (
+              <AiFillStar 
+                key={star} 
+                color={star <= Math.round(reviewAverage || 0) ? '#ffc107' : '#e4e5e9'} 
+                style={{ fontSize: '16px' }}
+              />
+            ))}
           </div>
-          <span>(1)</span>
+          <span style={{ fontSize: '13px', color: '#666' }}>
+            {reviewAverage > 0 ? `${reviewAverage.toFixed(1)} ` : ''}({reviewCount || 0} {reviewCount === 1 ? 'review' : 'reviews'})
+          </span>
         </div>
 
         <div className="product-price-row">
@@ -421,7 +453,131 @@ const ProductPage = () => {
     <div style={{ marginTop: '40px', paddingBottom: '40px' }}>
       <RelatedProducts key={id} title="New Arrivals" />
     </div>
-         {faqs.length > 0 && (
+    
+    {/* Reviews & Ratings Section */}
+    <div className="product-reviews-section" ref={reviewsSectionRef}>
+      <h2 className="reviews-section-title">Customer Ratings & Reviews</h2>
+      
+      <div className="reviews-dashboard">
+        {/* Left Side: Summary Card */}
+        <div className="overall-rating-card" style={{
+          border: '1px solid #e0e0e0',
+          borderRadius: '16px',
+          padding: '20px 15px',
+          backgroundColor: '#fff',
+          width: '100%',
+          maxWidth: '160px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 2px 10px rgba(0, 0, 0, 0.04)',
+          boxSizing: 'border-box',
+          margin: '0 auto'
+        }}>
+          <div className="rating-pill" style={{
+            backgroundColor: '#26a541',
+            color: '#fff',
+            borderRadius: '10px',
+            padding: '8px 16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '6px',
+            marginBottom: '15px',
+            width: 'fit-content'
+          }}>
+            <span style={{ fontSize: '26px', fontWeight: '700', lineHeight: '1' }}>{(reviewAverage || 0).toFixed(1)}</span>
+            <span style={{ fontSize: '20px', lineHeight: '1' }}>★</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', textAlign: 'center' }}>
+            <div style={{ fontSize: '12px', color: '#878787', fontWeight: '500' }}>
+              {(reviewCount || 0).toLocaleString('en-IN')} ratings
+            </div>
+            <div style={{ fontSize: '12px', color: '#878787', fontWeight: '500' }}>
+              {(reviews ? reviews.length : 0).toLocaleString('en-IN')} reviews
+            </div>
+          </div>
+        </div>
+
+        {/* Middle/Distribution List */}
+        <div className="rating-distribution-card" style={{ padding: '0 10px', width: '100%' }}>
+          <div className="rating-distribution-list">
+            {[
+              { starsCount: 5, label: 'Very Good', color: '#26a541' },
+              { starsCount: 4, label: 'Good', color: '#84c225' },
+              { starsCount: 3, label: 'Ok-Ok', color: '#ffc107' },
+              { starsCount: 2, label: 'Bad', color: '#ff5722' },
+              { starsCount: 1, label: 'Very Bad', color: '#ff3d00' }
+            ].map((item) => {
+              const count = ratingDistribution[item.starsCount - 1];
+              const pct = getPercentage(count);
+              return (
+                <div key={item.starsCount} className="distribution-row" style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '12px', fontSize: '13px' }}>
+                  <span className="distribution-label" style={{ width: '80px', color: '#333', fontWeight: '500', textAlign: 'left' }}>{item.label}</span>
+                  <div className="distribution-bar-bg" style={{ flex: 1, height: '6px', backgroundColor: '#f0f0f0', borderRadius: '3px', overflow: 'hidden' }}>
+                    <div className="distribution-bar-fill" style={{ width: `${pct}%`, height: '100%', backgroundColor: item.color, borderRadius: '3px' }}></div>
+                  </div>
+                  <span className="distribution-count" style={{ width: '40px', color: '#878787', textAlign: 'right', fontWeight: '500' }}>{count}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Right Side: Reviews List */}
+        <div className="reviews-list-card" style={{ gridColumn: '1 / span 2', marginTop: '20px' }}>
+          {reviews && reviews.length > 0 ? (
+            <div className="reviews-list">
+              {reviews.map((rev) => (
+                <div key={rev.id} className="review-item-card" style={{ borderBottom: '1px solid #eee', paddingBottom: '20px', marginBottom: '20px' }}>
+                  <div className="review-item-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px', marginBottom: '10px' }}>
+                    <div className="review-user-info" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <div className="review-user-avatar" style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#e6edf7', color: '#1a365d', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '16px' }}>
+                        {rev.userName ? rev.userName.charAt(0).toUpperCase() : 'C'}
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span className="review-user-name" style={{ fontWeight: '600', fontSize: '14px', color: '#333' }}>{rev.userName || 'Customer'}</span>
+                        <span className="review-verified-badge" style={{ fontSize: '11px', color: '#2e7d32', fontWeight: '500' }}>✓ Verified Purchase</span>
+                      </div>
+                    </div>
+                    <div className="review-item-rating-date" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                      <div className="review-item-stars" style={{ display: 'flex', gap: '2px' }}>
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <AiFillStar 
+                            key={star} 
+                            color={star <= Math.round(rev.rating) ? '#ffc107' : '#e4e5e9'} 
+                            style={{ fontSize: '14px' }}
+                          />
+                        ))}
+                      </div>
+                      <span className="review-item-date" style={{ fontSize: '11px', color: '#999', marginTop: '4px' }}>
+                        {rev.createdAt && !isNaN(parseInt(rev.createdAt))
+                          ? new Date(parseInt(rev.createdAt)).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
+                          : new Date(rev.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="review-item-comment" style={{ fontSize: '14px', color: '#555', lineHeight: '1.6', paddingLeft: '52px' }}>
+                    {rev.comment || <em style={{ color: '#888' }}>No comment left.</em>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="empty-reviews-state" style={{ textAlign: 'center', padding: '40px 20px', color: '#888' }}>
+              <div className="empty-reviews-icon" style={{ fontSize: '48px', color: '#ddd', marginBottom: '15px' }}>★</div>
+              <h3 style={{ margin: '0 0 8px 0', color: '#444' }}>No Reviews Yet</h3>
+              <p style={{ margin: 0, fontSize: '14px', color: '#777', maxWidth: '360px', marginLeft: 'auto', marginRight: 'auto', lineHeight: '1.5' }}>
+                Be the first to share your thoughts on this product! Submit a review from your "My Orders" page after purchasing.
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+    
+    {faqs.length > 0 && (
         <div className="standalone-faq-container">
           <h2 className="standalone-faq-title">FAQ</h2>
           <div className="standalone-faq-list">

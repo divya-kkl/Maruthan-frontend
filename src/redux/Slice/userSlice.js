@@ -25,6 +25,7 @@ const GET_ORDERS = gql`
         notes
         createdAt
         items {
+          productId
           name
           image
           price

@@ -340,3 +340,386 @@
     gap: 5px;
   }
 }
+
+/* Write Review Button and Modal Styles */
+.write-review-inline-btn {
+  margin-top: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  background-color: transparent;
+  color: #1a365d;
+  border: 1px solid #1a365d;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+  align-self: flex-start;
+}
+
+.write-review-inline-btn:hover {
+  background-color: #1a365d;
+  color: #fff;
+}
+
+.review-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.review-modal-card {
+  background-color: #fff;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 480px;
+  padding: 25px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.review-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+.review-modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.review-modal-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #999;
+  line-height: 1;
+}
+
+.review-modal-close:hover {
+  color: #333;
+}
+
+.review-modal-product-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #f4f7fa;
+  border-radius: 8px;
+  border: 1px solid #e6edf5;
+}
+
+.review-modal-product-info img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.review-modal-product-info h4 {
+  margin: 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.review-rating-input-group {
+  margin-bottom: 20px;
+}
+
+.review-rating-input-group label {
+  display: block;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: #444;
+}
+
+.review-star-rating {
+  display: flex;
+  gap: 5px;
+}
+
+.review-star-input {
+  color: #e4e5e9;
+  transition: color 0.15s ease-in-out, transform 0.15s ease-in-out;
+}
+
+.review-star-input.selected {
+  color: #ffc107;
+}
+
+.review-star-input:hover {
+  transform: scale(1.2);
+}
+
+.review-comment-input-group {
+  margin-bottom: 25px;
+}
+
+.review-comment-input-group label {
+  display: block;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: #444;
+}
+
+.review-comment-input-group textarea {
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.review-comment-input-group textarea:focus {
+  border-color: #1a365d;
+  outline: none;
+}
+
+.review-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.review-cancel-btn {
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+  color: #666;
+  transition: background-color 0.2s;
+}
+
+.review-cancel-btn:hover {
+  background-color: #f9f9f9;
+}
+
+.review-submit-btn {
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  background-color: #1a365d;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.review-submit-btn:hover {
+  background-color: #122543;
+}
+
+.review-submit-btn:disabled {
+  background-color: #b3c2d4;
+  cursor: not-allowed;
+}
+
+/* Inline Feedback Box & Outlined Stars (Flipkart style) */
+.order-item-feedback-box {
+  margin-top: 15px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-self: flex-start;
+  width: 100%;
+  max-width: 320px;
+  box-sizing: border-box;
+}
+
+.feedback-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.feedback-stars-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+}
+
+.feedback-star-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  flex: 1;
+  transition: transform 0.2s ease;
+}
+
+.feedback-star-col:hover {
+  transform: scale(1.1);
+}
+
+.feedback-star-outline {
+  font-size: 26px;
+  color: #cbd5e0;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.feedback-star-col:hover .feedback-star-outline {
+  color: #ffc107;
+}
+
+.feedback-star-label {
+  font-size: 10px;
+  color: #718096;
+  margin-top: 5px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Success Checkmark Modal Animation */
+.review-modal-success-content {
+  text-align: center;
+  padding: 30px 10px;
+}
+
+.review-modal-success-content h3 {
+  margin: 15px 0 8px;
+  font-size: 20px;
+  color: #333;
+}
+
+.review-modal-success-content p {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.success-checkmark-wrapper {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto;
+}
+
+.checkmark-modal {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: block;
+  stroke-width: 2;
+  stroke: #2e7d32;
+  stroke-miterlimit: 10;
+  box-shadow: inset 0px 0px 0px #2e7d32;
+  animation: fill-checkmark .4s ease-in-out .4s forwards, scale-checkmark .3s ease-in-out .9s forwards;
+}
+
+.checkmark-modal-circle {
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  stroke-width: 2;
+  stroke-miterlimit: 10;
+  stroke: #2e7d32;
+  fill: none;
+  animation: stroke-checkmark .6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.checkmark-modal-check {
+  transform-origin: 50% 50%;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  stroke: #2e7d32;
+  animation: stroke-checkmark .3s cubic-bezier(0.65, 0, 0.45, 1) .8s forwards;
+}
+
+@keyframes stroke-checkmark {
+  100% { stroke-dashoffset: 0; }
+}
+
+@keyframes fill-checkmark {
+  100% { box-shadow: inset 0px 0px 0px 30px rgba(46, 125, 50, 0.1); }
+}
+
+@keyframes scale-checkmark {
+  0%, 100% { transform: none; }
+  50% { transform: scale3d(1.1, 1.1, 1); }
+}
+
+/* User Submitted Review Box */
+.user-submitted-review-box {
+  margin-top: 12px;
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 12px;
+  padding: 12px 16px;
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  box-sizing: border-box;
+}
+
+.user-review-badge {
+  font-size: 10px;
+  font-weight: 700;
+  color: #166534;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.user-review-stars {
+  display: flex;
+  gap: 2px;
+}
+
+.user-review-star {
+  font-size: 18px;
+  color: #cbd5e0;
+}
+
+.user-review-star.filled {
+  color: #ffc107;
+}
+
+.user-review-comment {
+  font-size: 13px;
+  color: #1e293b;
+  margin: 4px 0 0 0;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+
+

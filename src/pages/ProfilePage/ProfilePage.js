@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { FiMapPin, FiChevronRight } from 'react-icons/fi';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchUserDetails, fetchUserOrders, updateUserAddress, logout as logoutAction, setUser } from '../../redux/Slice/userSlice';
+import { createReview, updateReview, fetchAllReviews, resetSubmitState, openReviewModal, closeReviewModal, setReviewRating, setReviewComment } from '../../redux/Slice/reviewSlice';
 import AddAddressModal from '../../components/AddAddressModal/AddAddressModal';
 import './ProfilePage.css';
 
@@ -14,6 +15,17 @@ const ProfilePage = () => {
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
 
   const { user, orders, loadingOrders } = useSelector((state) => state.user);
+  const { 
+    allReviews, 
+    submitting, 
+    submitSuccess,
+    isReviewModalOpen,
+    reviewProduct,
+    reviewOrderId,
+    rating,
+    comment,
+    editingReviewId 
+  } = useSelector((state) => state.reviews);
 
   useEffect(() => {
     if (location.state?.activeTab) {
@@ -48,6 +60,7 @@ const ProfilePage = () => {
     if (activeTab === 'orders' && user) {
       const token = localStorage.getItem('token');
       dispatch(fetchUserOrders({ userId: user.id || user._id, token }));
+      dispatch(fetchAllReviews());
     }
   }, [activeTab, user, dispatch]);
 
@@ -75,6 +88,53 @@ const ProfilePage = () => {
     } catch (error) {
       console.error("Error updating user addresses:", error);
       alert("Failed to save address: " + (error.message || error));
+    }
+  };
+
+  const handleOpenReviewModal = (item, orderId, initialRating = 5, initialComment = '', reviewId = null) => {
+    dispatch(openReviewModal({ product: item, orderId, rating: initialRating, comment: initialComment, reviewId }));
+  };
+
+  const handleSubmitReview = async () => {
+    if (rating === 0) {
+      alert("Please select a star rating!");
+      return;
+    }
+    
+    try {
+      if (editingReviewId) {
+        await dispatch(updateReview({
+          id: editingReviewId,
+          input: {
+            rating: parseFloat(rating),
+            comment: comment
+          }
+        })).unwrap();
+      } else {
+        const input = {
+          productId: reviewProduct.productId,
+          orderId: reviewOrderId,
+          userId: user.id || user._id,
+          userName: user.username || 'Customer',
+          rating: parseFloat(rating),
+          comment: comment
+        };
+        await dispatch(createReview(input)).unwrap();
+      }
+      
+      // Refresh user orders and reviews
+      const token = localStorage.getItem('token');
+      dispatch(fetchUserOrders({ userId: user.id || user._id, token }));
+      dispatch(fetchAllReviews());
+      
+      setTimeout(() => {
+        dispatch(closeReviewModal());
+      }, 2000);
+    } catch (error) {
+      console.error("Failed to submit review:", error);
+      alert("Error submitting review: " + (error.message || error));
+    } finally {
+      setIsSubmittingReview(false);
     }
   };
 
@@ -247,20 +307,88 @@ const ProfilePage = () => {
                         </div>
 
                         {/* Items and Prices */}
-                        {order.items && order.items.map((item, idx) => (
-                          <React.Fragment key={idx}>
-                            <div style={{ gridColumn: '1', display: 'flex', alignItems: 'center' }}>
-                              <img src={item.image} alt={item.name} style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '4px', marginRight: '15px' }} onError={(e) => { e.target.src = "https://placehold.co/60x60/e8e8e8/8a2b8f?text=Item" }} />
-                              <div className="order-item-details">
-                                <h4 style={{ margin: '0 0 5px 0', fontSize: '14px' }}>{item.name}</h4>
-                                <p style={{ margin: 0, fontSize: '12px', color: '#666' }}>Qty: {item.quantity}</p>
+                        {order.items && order.items.map((item, idx) => {
+                          const userReview = allReviews?.find(r => 
+                            r.productId === item.productId && 
+                            r.orderId === order.id &&
+                            r.userId === (user.id || user._id)
+                          );
+                          return (
+                            <React.Fragment key={idx}>
+                              <div style={{ gridColumn: '1', display: 'flex', alignItems: 'center' }}>
+                                <img src={item.image} alt={item.name} style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '4px', marginRight: '15px' }} onError={(e) => { e.target.src = "https://placehold.co/60x60/e8e8e8/8a2b8f?text=Item" }} />
+                                <div className="order-item-details">
+                                  <h4 style={{ margin: '0 0 5px 0', fontSize: '14px' }}>{item.name}</h4>
+                                  <p style={{ margin: 0, fontSize: '12px', color: '#666' }}>Qty: {item.quantity}</p>
+                                  {userReview ? (
+                                    <div className="user-submitted-review-box">
+                                      <span className="user-review-badge">Your Review</span>
+                                      <div className="user-review-stars" style={{ display: 'flex', gap: '2px' }}>
+                                        {[1, 2, 3, 4, 5].map((star) => (
+                                          <span 
+                                            key={star} 
+                                            className={`user-review-star ${star <= userReview.rating ? 'filled' : ''}`}
+                                            style={{ color: star <= userReview.rating ? '#ffc107' : '#cbd5e0', fontSize: '18px' }}
+                                          >
+                                            ★
+                                          </span>
+                                        ))}
+                                      </div>
+                                      <p className="user-review-comment">
+                                        "{userReview.comment}"
+                                      </p>
+                                      <button 
+                                        type="button"
+                                        className="edit-review-inline-btn"
+                                        onClick={() => handleOpenReviewModal(item, order.id, userReview.rating, userReview.comment, userReview.id)}
+                                        style={{
+                                          marginTop: '6px',
+                                          background: 'none',
+                                          border: 'none',
+                                          color: '#1a365d',
+                                          fontWeight: '600',
+                                          fontSize: '11px',
+                                          cursor: 'pointer',
+                                          padding: 0,
+                                          textDecoration: 'underline',
+                                          textAlign: 'left',
+                                          alignSelf: 'flex-start'
+                                        }}
+                                      >
+                                        Edit Review
+                                      </button>
+                                    </div>
+                                  ) : (
+                                    <div className="order-item-feedback-box">
+                                      <span className="feedback-title">How was the product?</span>
+                                      <div className="feedback-stars-row">
+                                        {[
+                                          { val: 1, label: 'Very Bad' },
+                                          { val: 2, label: 'Bad' },
+                                          { val: 3, label: 'Ok-Ok' },
+                                          { val: 4, label: 'Good' },
+                                          { val: 5, label: 'Very Good' }
+                                        ].map((starObj) => (
+                                          <div 
+                                            key={starObj.val} 
+                                            className="feedback-star-col"
+                                            onClick={() => handleOpenReviewModal(item, order.id, starObj.val)}
+                                          >
+                                            <span className="feedback-star-outline">☆</span>
+                                            <span className="feedback-star-label">{starObj.label}</span>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
                               </div>
-                            </div>
-                            <div style={{ gridColumn: '3', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', fontWeight: 'bold' }}>
-                              Rs. {item.price.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                            </div>
-                          </React.Fragment>
-                        ))}
+                              <div style={{ gridColumn: '3', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', fontWeight: 'bold' }}>
+                                Rs. {item.price.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                              </div>
+                            </React.Fragment>
+                          );
+                        })}
                       </div>
 
                       <div className="order-footer">
@@ -280,6 +408,80 @@ const ProfilePage = () => {
 
       {isAddressModalOpen && (
         <AddAddressModal onClose={() => setIsAddressModalOpen(false)} onSave={handleSaveAddress} />
+      )}
+
+      {isReviewModalOpen && reviewProduct && (
+        <div className="review-modal-overlay" onClick={() => dispatch(closeReviewModal())}>
+          <div className="review-modal-card" onClick={(e) => e.stopPropagation()}>
+            {submitSuccess ? (
+              <div className="review-modal-success-content">
+                <div className="success-checkmark-wrapper">
+                  <svg className="checkmark-modal" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                    <circle className="checkmark-modal-circle" cx="26" cy="26" r="25" fill="none" />
+                    <path className="checkmark-modal-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                  </svg>
+                </div>
+                <h3>Thank you!</h3>
+                <p>Your review has been submitted successfully.</p>
+              </div>
+            ) : (
+              <>
+                <div className="review-modal-header">
+                  <h3>Write a Review</h3>
+                  <button className="review-modal-close" onClick={() => dispatch(closeReviewModal())}>&#x2715;</button>
+                </div>
+                
+                <div className="review-modal-product-info">
+                  <img 
+                    src={reviewProduct.image} 
+                    alt={reviewProduct.name} 
+                    onError={(e) => { e.target.src = "https://placehold.co/80x80/f5f5f5/8a2b8f?text=Product" }}
+                  />
+                  <div>
+                    <h4>{reviewProduct.name}</h4>
+                  </div>
+                </div>
+                
+                <div className="review-rating-input-group">
+                  <label>Your Rating:</label>
+                  <div className="review-star-rating">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <span
+                        key={star}
+                        className={`review-star-input ${star <= rating ? 'selected' : ''}`}
+                        onClick={() => dispatch(setReviewRating(star))}
+                        style={{ cursor: 'pointer', fontSize: '24px', marginRight: '5px' }}
+                      >
+                        ★
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="review-comment-input-group">
+                  <label>Your Review:</label>
+                  <textarea
+                    placeholder="Share your thoughts about this product..."
+                    value={comment}
+                    onChange={(e) => dispatch(setReviewComment(e.target.value))}
+                    rows="4"
+                  />
+                </div>
+                
+                <div className="review-modal-actions">
+                  <button className="review-cancel-btn" onClick={() => dispatch(closeReviewModal())}>Cancel</button>
+                  <button 
+                    className="review-submit-btn" 
+                    onClick={handleSubmitReview}
+                    disabled={submitting}
+                  >
+                    {submitting ? 'Submitting...' : 'Submit Review'}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );
