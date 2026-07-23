@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { FiMapPin, FiChevronRight } from 'react-icons/fi';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchUserDetails, fetchUserOrders, updateUserAddress, logout as logoutAction, setUser } from '../../redux/Slice/userSlice';
-import { createReview, updateReview, fetchAllReviews, resetSubmitState, openReviewModal, closeReviewModal, setReviewRating, setReviewComment } from '../../redux/Slice/reviewSlice';
+import { createReview, updateReview, fetchAllReviews, openReviewModal, closeReviewModal, setReviewRating, setReviewComment } from '../../redux/Slice/reviewSlice';
 import AddAddressModal from '../../components/AddAddressModal/AddAddressModal';
 import './ProfilePage.css';
 
@@ -133,8 +133,6 @@ const ProfilePage = () => {
     } catch (error) {
       console.error("Failed to submit review:", error);
       alert("Error submitting review: " + (error.message || error));
-    } finally {
-      setIsSubmittingReview(false);
     }
   };
 

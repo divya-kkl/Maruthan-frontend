@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearCart } from '../../redux/Slice/cartSlice';
 import { fetchOrderById } from '../../redux/Slice/checkoutSlice';
-import { createReview, updateReview, fetchAllReviews, resetSubmitState, openReviewModal, closeReviewModal, setReviewRating, setReviewComment } from '../../redux/Slice/reviewSlice';
+import { createReview, updateReview, fetchAllReviews, openReviewModal, closeReviewModal, setReviewRating, setReviewComment } from '../../redux/Slice/reviewSlice';
 import './OrderSuccessPage.css';
 import './OrderDetails.css';
 
