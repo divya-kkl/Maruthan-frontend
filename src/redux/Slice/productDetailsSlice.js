@@ -14,6 +14,8 @@ const GET_PRODUCT_BY_ID = gql`
       brand
       description
       material
+      rating
+      numReviews
       variants {
         color
         size

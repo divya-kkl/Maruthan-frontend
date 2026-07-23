@@ -99,6 +99,7 @@ const GET_ORDER_BY_ID = gql`
       }
       notes
       items {
+        productId
         name
         image
         quantity
