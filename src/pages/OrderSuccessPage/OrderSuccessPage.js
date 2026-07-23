@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearCart } from '../../redux/Slice/cartSlice';
 import { fetchOrderById } from '../../redux/Slice/checkoutSlice';
-import { createReview, updateReview, fetchAllReviews } from '../../redux/Slice/reviewSlice';
+import { createReview, updateReview, fetchAllReviews, resetSubmitState, openReviewModal, closeReviewModal, setReviewRating, setReviewComment } from '../../redux/Slice/reviewSlice';
 import './OrderSuccessPage.css';
 import './OrderDetails.css';
 
@@ -14,26 +14,21 @@ const OrderSuccessPage = () => {
   
   const { orderDetails, loadingOrderDetails: loading } = useSelector((state) => state.checkout);
   const { user } = useSelector((state) => state.user);
-  const { allReviews } = useSelector((state) => state.reviews || { allReviews: [] });
+  const { 
+    allReviews, 
+    submitting, 
+    submitSuccess,
+    isReviewModalOpen,
+    reviewProduct,
+    reviewOrderId,
+    rating,
+    comment,
+    editingReviewId 
+  } = useSelector((state) => state.reviews);
   const isDetailsMode = window.location.pathname.includes('order-details');
 
-  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
-  const [reviewProduct, setReviewProduct] = useState(null);
-  const [reviewOrderId, setReviewOrderId] = useState('');
-  const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState('');
-  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
-  const [editingReviewId, setEditingReviewId] = useState(null);
-
   const handleOpenReviewModal = (item, orderId, initialRating = 5, initialComment = '', reviewId = null) => {
-    setReviewProduct(item);
-    setReviewOrderId(orderId);
-    setRating(initialRating); // Pre-select clicked star
-    setComment(initialComment);
-    setEditingReviewId(reviewId);
-    setSubmitSuccess(false);
-    setIsReviewModalOpen(true);
+    dispatch(openReviewModal({ product: item, orderId, rating: initialRating, comment: initialComment, reviewId }));
   };
 
   const handleSubmitReview = async () => {
@@ -50,7 +45,6 @@ const OrderSuccessPage = () => {
       return;
     }
 
-    setIsSubmittingReview(true);
     try {
       if (editingReviewId) {
         await dispatch(updateReview({
@@ -72,19 +66,14 @@ const OrderSuccessPage = () => {
         await dispatch(createReview(input)).unwrap();
       }
       
-      setSubmitSuccess(true);
       dispatch(fetchAllReviews());
       
       setTimeout(() => {
-        setIsReviewModalOpen(false);
-        setSubmitSuccess(false);
-        setEditingReviewId(null);
+        dispatch(closeReviewModal());
       }, 2000);
     } catch (error) {
       console.error("Failed to submit review:", error);
       alert("Error submitting review: " + (error.message || error));
-    } finally {
-      setIsSubmittingReview(false);
     }
   };
 
@@ -332,7 +321,7 @@ const OrderSuccessPage = () => {
       </div>
 
       {isReviewModalOpen && reviewProduct && (
-        <div className="review-modal-overlay" onClick={() => setIsReviewModalOpen(false)}>
+        <div className="review-modal-overlay" onClick={() => dispatch(closeReviewModal())}>
           <div className="review-modal-card" onClick={(e) => e.stopPropagation()}>
             {submitSuccess ? (
               <div className="review-modal-success-content">
@@ -349,7 +338,7 @@ const OrderSuccessPage = () => {
               <>
                 <div className="review-modal-header">
                   <h3>Write a Review</h3>
-                  <button className="review-modal-close" onClick={() => setIsReviewModalOpen(false)}>&#x2715;</button>
+                  <button className="review-modal-close" onClick={() => dispatch(closeReviewModal())}>&#x2715;</button>
                 </div>
                 
                 <div className="review-modal-product-info">
@@ -370,7 +359,7 @@ const OrderSuccessPage = () => {
                       <span
                         key={star}
                         className={`review-star-input ${star <= rating ? 'selected' : ''}`}
-                        onClick={() => setRating(star)}
+                        onClick={() => dispatch(setReviewRating(star))}
                         style={{ cursor: 'pointer', fontSize: '24px', marginRight: '5px' }}
                       >
                         ★
@@ -384,19 +373,19 @@ const OrderSuccessPage = () => {
                   <textarea
                     placeholder="Share your thoughts about this product..."
                     value={comment}
-                    onChange={(e) => setComment(e.target.value)}
+                    onChange={(e) => dispatch(setReviewComment(e.target.value))}
                     rows="4"
                   />
                 </div>
                 
                 <div className="review-modal-actions">
-                  <button className="review-cancel-btn" onClick={() => setIsReviewModalOpen(false)}>Cancel</button>
+                  <button className="review-cancel-btn" onClick={() => dispatch(closeReviewModal())}>Cancel</button>
                   <button 
                     className="review-submit-btn" 
                     onClick={handleSubmitReview}
-                    disabled={isSubmittingReview}
+                    disabled={submitting}
                   >
-                    {isSubmittingReview ? 'Submitting...' : 'Submit Review'}
+                    {submitting ? 'Submitting...' : 'Submit Review'}
                   </button>
                 </div>
               </>

@@ -142,12 +142,47 @@ const reviewSlice = createSlice({
     submitting: false,
     submitSuccess: false,
     submitError: null,
+    isReviewModalOpen: false,
+    reviewProduct: null,
+    reviewOrderId: '',
+    rating: 0,
+    comment: '',
+    editingReviewId: null,
   },
   reducers: {
     resetSubmitState: (state) => {
       state.submitSuccess = false;
       state.submitError = null;
       state.submitting = false;
+    },
+    openReviewModal: (state, action) => {
+      const { product, orderId, rating = 5, comment = '', reviewId = null } = action.payload;
+      state.reviewProduct = product;
+      state.reviewOrderId = orderId;
+      state.rating = rating;
+      state.comment = comment;
+      state.editingReviewId = reviewId;
+      state.isReviewModalOpen = true;
+      state.submitting = false;
+      state.submitSuccess = false;
+      state.submitError = null;
+    },
+    closeReviewModal: (state) => {
+      state.isReviewModalOpen = false;
+      state.reviewProduct = null;
+      state.reviewOrderId = '';
+      state.rating = 0;
+      state.comment = '';
+      state.editingReviewId = null;
+      state.submitting = false;
+      state.submitSuccess = false;
+      state.submitError = null;
+    },
+    setReviewRating: (state, action) => {
+      state.rating = action.payload;
+    },
+    setReviewComment: (state, action) => {
+      state.comment = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -211,5 +246,5 @@ const reviewSlice = createSlice({
   }
 });
 
-export const { resetSubmitState } = reviewSlice.actions;
+export const { resetSubmitState, openReviewModal, closeReviewModal, setReviewRating, setReviewComment } = reviewSlice.actions;
 export default reviewSlice.reducer;
