@@ -3,6 +3,16 @@ import { GraphQLClient, gql } from "graphql-request";
 
 const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:2000/graphql';
 
+export const TRENDING_SEARCHES = [
+  // IMPORTANT: The 'code' MUST EXACTLY match the Category Code in your Admin Panel!
+  { name: "Newborn Pattu Frock", code: "newborn" },
+  { name: "Girls Pattu Pavadai", code: "girls" },
+  { name: "Chettinad Cotton Pattupavadai", code: "chettinad" },
+  { name: "Pattu Frock", code: "pattu" },
+  { name: "Tamil Newyear collection", code: "tamil-newyear" },
+  { name: "Best selling products", code: "best-selling" }
+];
+
 const GET_PRODUCTS = gql`
   query GetProduct($search: String) {
     getProduct(search: $search) {
@@ -73,9 +83,14 @@ const productSlice = createSlice({
     initialState:{
         product: [],
         status: 'idle',
-        error: null
+        error: null,
+        searchTerm: ''
     },
-    reducers:{},
+    reducers:{
+        setSearchTerm: (state, action) => {
+            state.searchTerm = action.payload;
+        }
+    },
     extraReducers: ( builder ) =>{
         builder
         .addCase(fetchProducts.pending, (state) =>{
@@ -92,4 +107,5 @@ const productSlice = createSlice({
 
     }
 });
+export const { setSearchTerm } = productSlice.actions;
 export default productSlice.reducer;
