@@ -6,19 +6,21 @@
   position: sticky;
   top: 52px;
   z-index: 1002;
-  min-width: 1300px;
-  zoom: calc(1 / var(--browser-zoom, 1));
 }
 
 .header-container {
-  width: 1300px;
+  width: 100%;
+  max-width: 100%;
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 40px;
+  padding: 10px 30px;
   height: 80px;
+  box-sizing: border-box;
 }
+
+
 
 /* Logo */
 .header-logo {
@@ -136,15 +138,95 @@
   font-family: sans-serif;
 }
 
-/* Mobile Navigation Button (Always hidden to lock desktop layout) */
+/* Mobile Navigation */
 .mobile-menu-btn {
-  display: none !important;
+  display: none;
 }
 
-/* Mobile Navigation Dropdown (Always hidden) */
 .mobile-nav {
-  display: none !important;
+  display: none;
 }
+
+@media (max-width: 768px) {
+  .site-header {
+    min-width: auto;
+    width: 100%;
+    top: 0;
+    zoom: 1 !important;
+  }
+
+  .header-container {
+    width: 100%;
+    max-width: 100%;
+    padding: 12px 20px;
+    height: 72px;
+    box-sizing: border-box;
+  }
+
+  .logo-image {
+    height: 52px;
+  }
+
+  .header-nav {
+    display: none;
+  }
+
+  .mobile-menu-btn {
+    display: flex !important;
+    font-size: 26px;
+  }
+
+  .header-icons {
+    gap: 18px;
+  }
+
+  .icon-btn {
+    font-size: 24px;
+  }
+
+  .mobile-nav {
+    display: none;
+    background-color: #ffffff;
+    border-bottom: 1px solid #eee;
+    padding: 20px 24px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    z-index: 1000;
+    box-sizing: border-box;
+  }
+
+  .mobile-nav.open {
+    display: block !important;
+  }
+
+  .mobile-nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .mobile-nav-item a {
+    text-decoration: none;
+    color: #333;
+    font-size: 17px;
+    font-weight: 500;
+    display: block;
+    padding: 6px 0;
+  }
+
+  .mobile-nav-item a.active {
+    color: #0F2D5C;
+    font-weight: 700;
+  }
+}
+
+
 
 /* Shimmer loading for header links */
 .header-shimmer-item {

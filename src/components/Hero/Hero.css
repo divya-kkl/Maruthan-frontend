@@ -31,3 +31,10 @@
   white-space: nowrap;
   border-width: 0;
 }
+
+@media (max-width: 768px) {
+  .hero-section {
+    min-width: auto;
+    width: 100%;
+  }
+}
