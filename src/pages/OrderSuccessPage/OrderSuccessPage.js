@@ -143,7 +143,7 @@ const OrderSuccessPage = () => {
                         <span className="premium-item-qty">{item.quantity}</span>
                       </div>
                       <div className="premium-item-info">
-                        <div className="premium-item-header-line" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%', gap: '15px' }}>
+                        <div className="premium-item-header-line">
                           <span className="premium-item-name">{item.name}</span>
                           <span className="premium-item-price">
                             Rs. {(item.price * item.quantity).toLocaleString('en-IN', { minimumFractionDigits: 2 })}

@@ -752,5 +752,119 @@
   line-height: 1.4;
 }
 
+/* Mobile Responsiveness for Profile & Orders Tab */
+@media (max-width: 768px) {
+  .profile-page-container {
+    padding: 0 12px;
+    margin: 15px auto;
+  }
+
+  .profile-main {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .profile-sidebar {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+    border-bottom: 1px solid #e1e1e1;
+    padding-bottom: 5px;
+  }
+
+  .sidebar-item {
+    font-size: 15px;
+    padding: 8px 14px;
+    white-space: nowrap;
+  }
+
+  .order-card {
+    border-radius: 10px;
+    margin-bottom: 15px;
+    overflow: hidden;
+  }
+
+  .order-header {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px 14px;
+  }
+
+  .order-number {
+    font-size: 13px;
+    word-break: break-all;
+  }
+
+  .order-date {
+    font-size: 12px;
+  }
+
+  .order-body {
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 14px !important;
+    gap: 16px !important;
+  }
+
+  .order-address-column {
+    grid-column: auto !important;
+    grid-row: auto !important;
+    order: 10 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .order-item-left {
+    grid-column: auto !important;
+    width: 100% !important;
+    flex-direction: row !important;
+    gap: 12px !important;
+  }
+
+  .order-item-left img {
+    width: 56px !important;
+    height: 56px !important;
+    margin-right: 0 !important;
+  }
+
+  .order-item-price-col {
+    grid-column: auto !important;
+    justify-content: flex-start !important;
+    padding-top: 4px !important;
+    font-size: 14px !important;
+  }
+
+  .order-item-feedback-box,
+  .user-submitted-review-box {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 10px 12px !important;
+  }
+
+  .feedback-stars-row {
+    gap: 2px !important;
+  }
+
+  .feedback-star-outline {
+    font-size: 20px !important;
+  }
+
+  .feedback-star-label {
+    font-size: 8px !important;
+  }
+
+  .order-footer {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    padding: 12px 14px !important;
+  }
+
+  .view-order-btn {
+    width: 100% !important;
+    text-align: center !important;
+  }
+}
+
 
 

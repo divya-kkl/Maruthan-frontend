@@ -279,7 +279,7 @@ const ProfilePage = () => {
                       </div>
                       <div className="order-body" style={{ display: 'grid', gridTemplateColumns: order.deliveryAddress ? '1.8fr 1.2fr 0.9fr' : '1fr 0.9fr', columnGap: '24px', rowGap: '20px', alignItems: 'start', padding: '20px 24px' }}>
                         {/* Address Column - Spans all rows */}
-                        <div style={{ gridColumn: '2', gridRow: `1 / span ${Math.max(1, order.items ? order.items.length : 1)}`, background: '#f8fafc', padding: '14px 16px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                        <div className="order-address-column" style={{ gridColumn: '2', gridRow: `1 / span ${Math.max(1, order.items ? order.items.length : 1)}`, background: '#f8fafc', padding: '14px 16px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
                           {order.deliveryAddress && (
                             <div className="order-address-info">
                               <h5 style={{ margin: '0 0 8px 0', fontSize: '12px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: '700' }}>Delivery Address</h5>
@@ -313,7 +313,7 @@ const ProfilePage = () => {
                           );
                           return (
                             <React.Fragment key={idx}>
-                              <div style={{ gridColumn: '1', display: 'flex', alignItems: 'flex-start', borderBottom: idx < order.items.length - 1 ? '1px solid #f0f0f0' : 'none', paddingBottom: idx < order.items.length - 1 ? '15px' : '0' }}>
+                              <div className="order-item-left" style={{ gridColumn: '1', display: 'flex', alignItems: 'flex-start', borderBottom: idx < order.items.length - 1 ? '1px solid #f0f0f0' : 'none', paddingBottom: idx < order.items.length - 1 ? '15px' : '0' }}>
                                 <img src={item.image} alt={item.name} style={{ width: '64px', height: '64px', objectFit: 'cover', borderRadius: '6px', marginRight: '15px', flexShrink: 0 }} onError={(e) => { e.target.src = "https://placehold.co/64x64/e8e8e8/8a2b8f?text=Item" }} />
                                 <div className="order-item-details" style={{ flex: 1, textAlign: 'left' }}>
                                   <h4 style={{ margin: '0 0 5px 0', fontSize: '14px', color: '#1e293b', fontWeight: '600' }}>{item.name}</h4>
@@ -381,7 +381,7 @@ const ProfilePage = () => {
                                   )}
                                 </div>
                               </div>
-                              <div style={{ gridColumn: '3', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-end', fontWeight: '700', fontSize: '15px', color: '#0F2D5C', paddingTop: '2px', borderBottom: idx < order.items.length - 1 ? '1px solid #f0f0f0' : 'none', paddingBottom: idx < order.items.length - 1 ? '15px' : '0' }}>
+                              <div className="order-item-price-col" style={{ gridColumn: '3', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-end', fontWeight: '700', fontSize: '15px', color: '#0F2D5C', paddingTop: '2px', borderBottom: idx < order.items.length - 1 ? '1px solid #f0f0f0' : 'none', paddingBottom: idx < order.items.length - 1 ? '15px' : '0' }}>
                                 Rs. {item.price.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                               </div>
                             </React.Fragment>
