@@ -166,38 +166,45 @@
 
 @media (max-width: 768px) {
   .order-success-container {
-    padding: 15px 10px;
+    padding: 10px 8px;
     min-height: unset;
   }
   .order-success-card {
-    padding: 20px 15px;
+    padding: 16px 12px;
     border-radius: 10px;
   }
   .success-icon-wrapper {
     margin-bottom: 15px;
   }
   .success-title {
-    font-size: 22px;
+    font-size: 20px;
     margin-bottom: 10px;
   }
   .success-message {
-    font-size: 14px;
+    font-size: 13px;
     margin-bottom: 15px;
   }
   .order-number-box {
-    padding: 12px 15px;
-    margin-bottom: 20px;
+    padding: 10px 12px;
+    margin-bottom: 15px;
     min-width: unset;
     width: 100%;
     box-sizing: border-box;
   }
+  .order-number-value {
+    font-size: 14px;
+    word-break: break-all;
+  }
   .success-actions {
     gap: 10px;
     margin-bottom: 15px;
+    flex-direction: column;
   }
   .action-btn {
-    padding: 12px 20px;
+    padding: 12px 16px;
     font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
   }
   .success-footer-note {
     padding-top: 15px;

@@ -82,7 +82,7 @@
 .showcase-price {
   font-size: 15px;
   color: #000;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
   font-family: 'Times New Roman';
   font-weight: 400;
   margin-left: 10px;
@@ -99,6 +99,7 @@
   width: 100%;
   transition: all 0.2s;
   font-family: 'Times New Roman', Times, serif;
+  margin-top: 12px;
 }
 
 .select-options-btn:hover {

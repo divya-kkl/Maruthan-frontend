@@ -277,29 +277,29 @@ const ProfilePage = () => {
                         </span>
                         <span className={`order-status ${order.status?.toLowerCase()}`}>{order.status}</span>
                       </div>
-                      <div className="order-body" style={{ display: 'grid', gridTemplateColumns: '2fr 1.5fr 1fr', rowGap: '15px', marginTop: '15px' }}>
+                      <div className="order-body" style={{ display: 'grid', gridTemplateColumns: order.deliveryAddress ? '1.8fr 1.2fr 0.9fr' : '1fr 0.9fr', columnGap: '24px', rowGap: '20px', alignItems: 'start', padding: '20px 24px' }}>
                         {/* Address Column - Spans all rows */}
-                        <div style={{ gridColumn: '2', gridRow: `1 / span ${Math.max(1, order.items ? order.items.length : 1)}`, padding: '0 15px', borderLeft: '1px solid #eee', borderRight: '1px solid #eee' }}>
+                        <div className="order-address-column" style={{ gridColumn: '2', gridRow: `1 / span ${Math.max(1, order.items ? order.items.length : 1)}`, background: '#f8fafc', padding: '14px 16px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
                           {order.deliveryAddress && (
                             <div className="order-address-info">
-                              <h5 style={{ margin: '0 0 8px 0', fontSize: '13px', color: '#777', textTransform: 'uppercase' }}>Delivery Address</h5>
-                              <p style={{ margin: 0, fontSize: '14px', color: '#333' }}><strong>{order.deliveryAddress.name}</strong></p>
-                              <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: '#555' }}>
+                              <h5 style={{ margin: '0 0 8px 0', fontSize: '12px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: '700' }}>Delivery Address</h5>
+                              <p style={{ margin: 0, fontSize: '14px', color: '#1e293b' }}><strong>{order.deliveryAddress.name}</strong></p>
+                              <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: '#475569', lineHeight: '1.4' }}>
                                 {order.deliveryAddress.street}, {order.deliveryAddress.city}
                               </p>
-                              <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: '#555' }}>
+                              <p style={{ margin: '2px 0 0 0', fontSize: '13px', color: '#475569' }}>
                                 {order.deliveryAddress.state}, {order.deliveryAddress.country}
                               </p>
-                              <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: '#555' }}>
-                                Phone: {order.deliveryAddress.phone}
+                              <p style={{ margin: '6px 0 0 0', fontSize: '13px', color: '#475569' }}>
+                                <strong>Phone:</strong> {order.deliveryAddress.phone}
                               </p>
                             </div>
                           )}
 
                           {order.notes && (
-                            <div className="order-notes-info" style={{ marginTop: '15px' }}>
-                              <h5 style={{ margin: '0 0 8px 0', fontSize: '13px', color: '#777', textTransform: 'uppercase' }}>Order Notes</h5>
-                              <p style={{ margin: 0, fontSize: '13px', color: '#555', whiteSpace: 'pre-wrap' }}>{order.notes}</p>
+                            <div className="order-notes-info" style={{ marginTop: '12px', paddingTop: '10px', borderTop: '1px solid #cbd5e1' }}>
+                              <h5 style={{ margin: '0 0 6px 0', fontSize: '11px', color: '#64748b', textTransform: 'uppercase' }}>Order Notes</h5>
+                              <p style={{ margin: 0, fontSize: '12px', color: '#475569', whiteSpace: 'pre-wrap' }}>{order.notes}</p>
                             </div>
                           )}
                         </div>
@@ -313,11 +313,11 @@ const ProfilePage = () => {
                           );
                           return (
                             <React.Fragment key={idx}>
-                              <div style={{ gridColumn: '1', display: 'flex', alignItems: 'center' }}>
-                                <img src={item.image} alt={item.name} style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '4px', marginRight: '15px' }} onError={(e) => { e.target.src = "https://placehold.co/60x60/e8e8e8/8a2b8f?text=Item" }} />
-                                <div className="order-item-details">
-                                  <h4 style={{ margin: '0 0 5px 0', fontSize: '14px' }}>{item.name}</h4>
-                                  <p style={{ margin: 0, fontSize: '12px', color: '#666' }}>Qty: {item.quantity}</p>
+                              <div className="order-item-left" style={{ gridColumn: '1', display: 'flex', alignItems: 'flex-start', borderBottom: idx < order.items.length - 1 ? '1px solid #f0f0f0' : 'none', paddingBottom: idx < order.items.length - 1 ? '15px' : '0' }}>
+                                <img src={item.image} alt={item.name} style={{ width: '64px', height: '64px', objectFit: 'cover', borderRadius: '6px', marginRight: '15px', flexShrink: 0 }} onError={(e) => { e.target.src = "https://placehold.co/64x64/e8e8e8/8a2b8f?text=Item" }} />
+                                <div className="order-item-details" style={{ flex: 1, textAlign: 'left' }}>
+                                  <h4 style={{ margin: '0 0 5px 0', fontSize: '14px', color: '#1e293b', fontWeight: '600' }}>{item.name}</h4>
+                                  <p style={{ margin: 0, fontSize: '12px', color: '#64748b' }}>Qty: {item.quantity}</p>
                                   {userReview ? (
                                     <div className="user-submitted-review-box">
                                       <span className="user-review-badge">Your Review</span>
@@ -381,7 +381,7 @@ const ProfilePage = () => {
                                   )}
                                 </div>
                               </div>
-                              <div style={{ gridColumn: '3', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', fontWeight: 'bold' }}>
+                              <div className="order-item-price-col" style={{ gridColumn: '3', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-end', fontWeight: '700', fontSize: '15px', color: '#0F2D5C', paddingTop: '2px', borderBottom: idx < order.items.length - 1 ? '1px solid #f0f0f0' : 'none', paddingBottom: idx < order.items.length - 1 ? '15px' : '0' }}>
                                 Rs. {item.price.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                               </div>
                             </React.Fragment>

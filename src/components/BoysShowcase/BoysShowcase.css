@@ -102,13 +102,13 @@
   font-size: 15px;
   color: #1a365d;
   font-family: 'Times New Roman', Times, serif;
-  margin-bottom: 0;
+  margin-bottom: 12px;
 }
 
 .boys-select-btn {
   width: 100%;
   padding: 10px 0;
-  margin-top: 15px;
+  margin-top: 12px;
   background-color: transparent;
   color: #1a365d;
   border: 1px solid #1a365d;

@@ -45,9 +45,9 @@ const cartSlice = createSlice({
       );
 
       if (existingItemIndex > -1) {
-        state.cartItems[existingItemIndex].quantity += quantity;
+        state.cartItems[existingItemIndex].quantity = Math.min(5, state.cartItems[existingItemIndex].quantity + quantity);
       } else {
-        state.cartItems.push({ product, quantity, size });
+        state.cartItems.push({ product, quantity: Math.min(5, quantity), size });
       }
     },
     updateQuantity: (state, action) => {
@@ -61,7 +61,7 @@ const cartSlice = createSlice({
           item => item.product.id === productId && item.size === size
         );
         if (itemIndex > -1) {
-          state.cartItems[itemIndex].quantity = newQuantity;
+          state.cartItems[itemIndex].quantity = Math.min(5, newQuantity);
         }
       }
     },

@@ -357,7 +357,12 @@ const ProductPage = () => {
           <div className="qty-selector">
             <button className="qty-btn" onClick={() => setQuantity(Math.max(1, quantity - 1))}>&minus;</button>
             <input type="text" className="qty-input" value={quantity} readOnly />
-            <button className="qty-btn" onClick={() => setQuantity(quantity + 1)}>+</button>
+            <button 
+              className="qty-btn" 
+              onClick={() => setQuantity(prev => Math.min(5, prev + 1))}
+              disabled={quantity >= 5}
+              style={{ opacity: quantity >= 5 ? 0.5 : 1, cursor: quantity >= 5 ? 'not-allowed' : 'pointer' }}
+            >+</button>
           </div>
           <button className="add-to-cart-btn" onClick={handleAddToCart}>Add to Cart</button>
           <button className="buy-now-btn" onClick={handleBuyNow}>Buy it now</button>
