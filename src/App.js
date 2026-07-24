@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate, usePa
 import './App.css';
 import TopBanner from './components/TopBanner/TopBanner';
 import Header from './components/Header/Header';
-import StoreQuality from './components/StoreQuality/StoreQuality';
 import StoreFeatures from './components/StoreFeatures/StoreFeatures';
 import Footer from './components/Footer/Footer';
 import CartPage from './pages/CartPage/CartPage';
@@ -64,7 +63,6 @@ const BottomSections = () => {
   }
   return (
     <>
-      <StoreQuality />
       <StoreFeatures />
     </>
   );
