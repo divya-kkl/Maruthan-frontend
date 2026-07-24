@@ -96,7 +96,7 @@
 .cotton-frock-price {
   font-size: 15px;
   color: #1a365d;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 }
 
 .cotton-frock-select-btn {
@@ -110,7 +110,7 @@
   font-family: 'Times New Roman', Times, serif;
   width: 100%;
   text-align: center;
-  margin-top: auto;
+  margin-top: 12px;
 }
 
 .cotton-frock-select-btn:hover {
