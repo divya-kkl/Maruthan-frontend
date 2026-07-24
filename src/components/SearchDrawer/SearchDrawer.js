@@ -46,7 +46,7 @@ const SearchDrawer = ({ isOpen, onClose }) => {
     <div className={`search-drawer-overlay ${isOpen ? 'open' : ''}`} onClick={onClose}>
       <div className="search-drawer-container" onClick={(e) => e.stopPropagation()}>
         <div className="search-drawer-header">
-          <h2 className="search-drawer-title">Search Our Site</h2>
+          <h2 className="search-drawer-title"> Search Our Site</h2>
           <button className="search-close-btn" onClick={onClose}>
             <FiX />
           </button>
