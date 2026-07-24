@@ -73,7 +73,11 @@ const CartPage = () => {
                     <div className="cart-qty-selector">
                       <button onClick={() => dispatch(updateQuantity({ productId: item.product.id, size: item.size, newQuantity: item.quantity - 1 }))}>&minus;</button>
                       <span>{item.quantity}</span>
-                      <button onClick={() => dispatch(updateQuantity({ productId: item.product.id, size: item.size, newQuantity: item.quantity + 1 }))}>+</button>
+                      <button 
+                        onClick={() => dispatch(updateQuantity({ productId: item.product.id, size: item.size, newQuantity: item.quantity + 1 }))}
+                        disabled={item.quantity >= 5}
+                        style={{ opacity: item.quantity >= 5 ? 0.5 : 1, cursor: item.quantity >= 5 ? 'not-allowed' : 'pointer' }}
+                      >+</button>
                     </div>
                   </div>
                   

@@ -103,156 +103,186 @@
 
 /* Left Side - Items Summary */
 .order-dashboard-left {
-  background: #fdfdfd;
-  border: 1px solid #f0f0f0;
-  border-radius: 12px;
-  padding: 30px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 28px 32px;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.03);
+  text-align: left;
 }
 
 .premium-summary-items {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  margin-bottom: 30px;
+  gap: 0;
+  margin-bottom: 25px;
+  text-align: left;
 }
 
 .premium-item-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 20px;
+  text-align: left;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.premium-item-row:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 10px;
 }
 
 .premium-item-img {
   position: relative;
-  width: 80px;
-  height: 80px;
-  border-radius: 8px;
-  border: 1px solid #eaeaea;
-  background: #fff;
+  width: 76px;
+  height: 76px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
 }
 
 .premium-item-img img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 9px;
 }
 
 .premium-item-qty {
   position: absolute;
-  top: -8px;
-  right: -8px;
-  background-color: #555;
-  color: white;
+  top: -7px;
+  right: -7px;
+  background-color: #0f172a;
+  color: #ffffff;
   font-size: 11px;
   font-weight: 700;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  border: 2px solid #ffffff;
 }
 
 .premium-item-info {
   flex: 1;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: 4px;
 }
 
 .premium-item-name {
-  font-weight: 500;
-  color: #222;
+  font-weight: 600;
+  color: #0f172a;
   font-size: 15px;
-  max-width: 200px;
   line-height: 1.4;
+  text-align: left;
+  margin: 0;
 }
 
 .premium-item-price {
-  font-weight: 600;
-  color: #111;
-  font-size: 16px;
+  font-weight: 700;
+  color: #0F2D5C;
+  font-size: 15px;
+  text-align: left;
+  white-space: nowrap;
 }
 
 /* Totals */
 .premium-summary-totals {
-  border-top: 1px dashed #ddd;
+  border-top: 1px dashed #cbd5e1;
   padding-top: 20px;
 }
 
 .premium-total-row {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 12px;
-  color: #666;
-  font-size: 15px;
+  align-items: center;
+  margin-bottom: 10px;
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .premium-grand-total {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
   color: #0F2D5C;
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid #eee;
+  margin-top: 15px;
+  padding-top: 16px;
+  border-top: 1px solid #e2e8f0;
 }
 
 /* Right Side - Shipping & Payment */
 .order-dashboard-right {
   display: flex;
   flex-direction: column;
-  gap: 25px;
+  gap: 20px;
 }
 
 .premium-shipping-card {
-  background: #fdfdfd;
-  border: 1px solid #f0f0f0;
-  border-radius: 12px;
-  padding: 30px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 24px 28px;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.03);
+  text-align: left;
 }
 
 .shipping-address-content p {
-  margin: 0 0 6px 0;
-  color: #555;
-  font-size: 14px;
+  margin: 0 0 5px 0;
+  color: #475569;
+  font-size: 13px;
   line-height: 1.5;
 }
 
 .shipping-name {
-  font-weight: 600;
-  color: #222 !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
   font-size: 15px !important;
-  margin-bottom: 10px !important;
+  margin-bottom: 8px !important;
 }
 
 .shipping-contact {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  margin-top: 15px;
-  color: #888;
-  font-size: 14px;
+  margin-top: 12px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 600;
+  background: #f8fafc;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
 }
 
 .payment-method-content {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 10px;
 }
 
 .payment-badge {
   display: inline-block;
   align-self: flex-start;
-  background: rgba(138, 43, 143, 0.08);
+  background: #f0f3ff;
   color: #0F2D5C;
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: 20px;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  border: 1px solid #dbeafe;
 }
 
 .payment-status {

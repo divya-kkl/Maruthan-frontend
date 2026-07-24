@@ -142,25 +142,28 @@ const OrderSuccessPage = () => {
                         <img src={item.image || "https://placehold.co/80x80/f5f5f5/8a2b8f?text=Product"} alt={item.name} />
                         <span className="premium-item-qty">{item.quantity}</span>
                       </div>
-                      <div className="premium-item-info" style={{ display: 'flex', flexDirection: 'column' }}>
-                        <span className="premium-item-name">{item.name}</span>
-                        <span className="premium-item-price">
-                          Rs. {(item.price * item.quantity).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                        </span>
+                      <div className="premium-item-info">
+                        <div className="premium-item-header-line" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%', gap: '15px' }}>
+                          <span className="premium-item-name">{item.name}</span>
+                          <span className="premium-item-price">
+                            Rs. {(item.price * item.quantity).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                          </span>
+                        </div>
                         {isDetailsMode && (
                           userReview ? (
                             <div className="user-submitted-review-box" style={{
-                              marginTop: '10px',
+                              marginTop: '8px',
                               backgroundColor: '#f0fdf4',
                               border: '1px solid #bbf7d0',
                               borderRadius: '8px',
                               padding: '10px 14px',
                               width: '100%',
-                              maxWidth: '280px',
+                              maxWidth: '340px',
                               boxSizing: 'border-box',
                               display: 'flex',
                               flexDirection: 'column',
-                              gap: '4px'
+                              gap: '4px',
+                              textAlign: 'left'
                             }}>
                               <span className="user-review-badge" style={{ fontSize: '10px', fontWeight: '700', color: '#166534', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Your Review</span>
                               <div className="user-review-stars" style={{ display: 'flex', gap: '2px' }}>
@@ -200,7 +203,7 @@ const OrderSuccessPage = () => {
                             </div>
                           ) : (
                             <div className="order-item-feedback-box" style={{ 
-                              marginTop: '10px',
+                              marginTop: '8px',
                               backgroundColor: '#f8fafc',
                               border: '1px solid #e2e8f0',
                               borderRadius: '8px',
@@ -209,10 +212,11 @@ const OrderSuccessPage = () => {
                               flexDirection: 'column',
                               gap: '6px',
                               width: '100%',
-                              maxWidth: '280px',
-                              boxSizing: 'border-box'
+                              maxWidth: '340px',
+                              boxSizing: 'border-box',
+                              textAlign: 'left'
                             }}>
-                              <span className="feedback-title" style={{ fontSize: '12px', fontWeight: '600', color: '#4a5568' }}>How was the product?</span>
+                              <span className="feedback-title" style={{ fontSize: '12px', fontWeight: '600', color: '#64748b' }}>How was the product?</span>
                               <div className="feedback-stars-row" style={{ display: 'flex', justifyContent: 'space-between', gap: '3px' }}>
                                 {[
                                   { val: 1, label: 'Very Bad' },

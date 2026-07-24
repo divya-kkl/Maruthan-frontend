@@ -183,7 +183,12 @@ const QuickViewModal = ({ product, onClose }) => {
                 <div className="qty-selector">
                   <button className="qty-btn" onClick={() => setQuantity(Math.max(1, quantity - 1))}>&minus;</button>
                   <span className="qty-num">{quantity}</span>
-                  <button className="qty-btn" onClick={() => setQuantity(quantity + 1)}>+</button>
+                  <button 
+                    className="qty-btn" 
+                    onClick={() => setQuantity(prev => Math.min(5, prev + 1))}
+                    disabled={quantity >= 5}
+                    style={{ opacity: quantity >= 5 ? 0.5 : 1, cursor: quantity >= 5 ? 'not-allowed' : 'pointer' }}
+                  >+</button>
                 </div>
                 <button
                   className="add-cart-btn"
