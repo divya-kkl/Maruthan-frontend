@@ -41,18 +41,32 @@ export const fetchProductById = createAsyncThunk(
   }
 );
 
+export const ALL_SIZES = [
+  { key: 's', display: 'S (0-12M)' },
+  { key: 'm', display: 'M (1-2Y)' },
+  { key: 'l', display: 'L (3-4Y)' },
+  { key: 'xl', display: 'XL (5-6Y)' },
+  { key: 'xxl', display: 'XXL (7-8Y)' },
+  { key: 'xxxl', display: 'XXXL (9-10Y)' }
+];
+
 const productDetailsSlice = createSlice({
   name: 'productDetails',
   initialState: {
     product: null,
     loading: true,
     error: null,
+    selectedSize: '',
   },
   reducers: {
     resetProductDetails: (state) => {
       state.product = null;
       state.loading = true;
       state.error = null;
+      state.selectedSize = '';
+    },
+    setSelectedSize: (state, action) => {
+      state.selectedSize = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -64,6 +78,9 @@ const productDetailsSlice = createSlice({
       .addCase(fetchProductById.fulfilled, (state, action) => {
         state.loading = false;
         state.product = action.payload;
+        if (action.payload?.variants?.length > 0) {
+          state.selectedSize = action.payload.variants[0].size;
+        }
       })
       .addCase(fetchProductById.rejected, (state, action) => {
         state.loading = false;
@@ -72,6 +89,6 @@ const productDetailsSlice = createSlice({
   }
 });
 
-export const { resetProductDetails } = productDetailsSlice.actions;
+export const { resetProductDetails, setSelectedSize } = productDetailsSlice.actions;
 
 export default productDetailsSlice.reducer;

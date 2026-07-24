@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './QuickViewModal.css';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../../redux/Slice/cartSlice';
+import { ALL_SIZES } from '../../redux/Slice/productDetailsSlice';
 import { useNavigate } from 'react-router-dom';
 import { FiChevronLeft, FiChevronRight, FiShare2 } from 'react-icons/fi';
 
@@ -110,7 +111,12 @@ const QuickViewModal = ({ product, onClose }) => {
 
             <div className="quickview-size-section">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <p className="size-label" style={{ marginBottom: 0 }}>Size: <span>{selectedSize}</span></p>
+                <p className="size-label" style={{ marginBottom: 0 }}>
+                  Size: <span>{(() => {
+                    const matched = ALL_SIZES.find(s => s.key.toLowerCase() === selectedSize?.toLowerCase() || s.display.toLowerCase() === selectedSize?.toLowerCase());
+                    return matched ? matched.display : selectedSize;
+                  })()}</span>
+                </p>
                 <div 
                   onClick={handleShare} 
                   style={{ 
@@ -127,15 +133,28 @@ const QuickViewModal = ({ product, onClose }) => {
                 </div>
               </div>
               <div className="size-buttons">
-                {['1Y', '2Y', '3Y', '4Y', '5Y', '6Y'].map(size => (
-                  <button
-                    key={size}
-                    className={`size-btn ${selectedSize === size ? 'active' : ''}`}
-                    onClick={() => setSelectedSize(size)}
-                  >
-                    {size}
-                  </button>
-                ))}
+                {ALL_SIZES.map(sizeOption => {
+                  const matchingVariant = product?.variants?.find(
+                    v => v.size?.toLowerCase() === sizeOption.key.toLowerCase() || v.size?.toLowerCase() === sizeOption.display.toLowerCase()
+                  );
+                  const isAvailable = !!matchingVariant;
+                  const isActive = selectedSize?.toLowerCase() === sizeOption.key.toLowerCase() || selectedSize?.toLowerCase() === sizeOption.display.toLowerCase();
+
+                  return (
+                    <button
+                      key={sizeOption.key}
+                      className={`size-btn ${isActive ? 'active' : ''}`}
+                      disabled={!isAvailable}
+                      onClick={() => {
+                        if (isAvailable) {
+                          setSelectedSize(matchingVariant.size);
+                        }
+                      }}
+                    >
+                      {sizeOption.display}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
