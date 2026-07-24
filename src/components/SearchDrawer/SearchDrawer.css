@@ -100,6 +100,27 @@
   background: none;
   border: none;
   cursor: pointer;
+  padding: 0;
+}
+
+.search-clear-icon {
+  position: absolute;
+  right: 45px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #888;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-clear-icon:hover {
+  color: #333;
 }
 
 .search-section-title {

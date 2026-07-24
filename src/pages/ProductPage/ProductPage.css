@@ -259,7 +259,7 @@
   transition: all 0.2s;
 }
 
-.size-option:hover {
+.size-option:hover:not(:disabled) {
   border-color: #800080;
 }
 
@@ -267,6 +267,15 @@
   background-color: #111;
   color: white;
   border-color: #111;
+}
+
+.size-option:disabled {
+  background-color: transparent;
+  color: #b0b0b0;
+  border-color: #e0e0e0;
+  cursor: not-allowed;
+  text-decoration: line-through;
+  opacity: 0.7;
 }
 
 /* Actions: Qty & Buttons */

@@ -7,7 +7,7 @@ import { FaFacebookF, FaTwitter, FaPinterestP } from 'react-icons/fa';
 import SizeChart from '../../components/SizeChart/SizeChart';
 import RelatedProducts from '../../components/RelatedProducts/RelatedProducts';
 import { addToCart } from '../../redux/Slice/cartSlice';
-import { fetchProductById, resetProductDetails } from '../../redux/Slice/productDetailsSlice';
+import { fetchProductById, resetProductDetails, setSelectedSize, ALL_SIZES } from '../../redux/Slice/productDetailsSlice';
 import { fetchProductReviews } from '../../redux/Slice/reviewSlice';
 import { fetchFAQ } from '../../redux/Slice/FAQSlice';
 import './ProductPage.css';
@@ -17,7 +17,7 @@ const ProductPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { product, loading, error } = useSelector((state) => state.productDetails);
+  const { product, loading, error, selectedSize } = useSelector((state) => state.productDetails);
   const { reviews, averageRating: reviewAverage, totalCount: reviewCount } = useSelector((state) => state.reviews);
   const faqs = useSelector((state) => state.FAQ.FAQ) || [];
   const [activeImage, setActiveImage] = useState('');
@@ -41,7 +41,6 @@ const ProductPage = () => {
     return () => clearTimeout(timer);
   }, [activeImage]);
 
-  const [selectedSize, setSelectedSize] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [openFaqs, setOpenFaqs] = useState({});
   const [openAccordions, setOpenAccordions] = useState([]);
@@ -73,11 +72,11 @@ const ProductPage = () => {
       if (product.images && product.images.length > 0) {
         setActiveImage(product.images[0]);
       }
-      if (product.variants && product.variants.length > 0) {
-        setSelectedSize(product.variants[0].size);
+      if (product.variants && product.variants.length > 0 && !selectedSize) {
+        dispatch(setSelectedSize(product.variants[0].size));
       }
     }
-  }, [product]);
+  }, [product, dispatch, selectedSize]);
 
   const scrollToReviews = () => {
     reviewsSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -323,17 +322,31 @@ const ProductPage = () => {
         </div>
 
         <div className="size-selector-section">
-          <div className="size-label">Size: <strong>{selectedSize}</strong></div>
+          <div className="size-label">
+            Size: <strong>{(() => {
+              const matched = ALL_SIZES.find(s => s.key.toLowerCase() === selectedSize?.toLowerCase() || s.display.toLowerCase() === selectedSize?.toLowerCase());
+              return matched ? matched.display : selectedSize;
+            })()}</strong>
+          </div>
           <div className="size-options">
-            {product?.variants && [...new Set(product.variants.map(v => v.size))].map(size => {
-          
+            {ALL_SIZES.map(sizeOption => {
+              const matchingVariant = product?.variants?.find(v => 
+                v.size?.toLowerCase() === sizeOption.key.toLowerCase() || 
+                v.size?.toLowerCase() === sizeOption.display.toLowerCase()
+              );
+              const isAvailable = !!matchingVariant;
+              const isActive = selectedSize?.toLowerCase() === sizeOption.key.toLowerCase() || selectedSize?.toLowerCase() === sizeOption.display.toLowerCase();
+
               return (
                 <button 
-                  key={size}
-                  className={`size-option ${selectedSize === size ? 'active' : ''}`}
-                  onClick={() => setSelectedSize(size)}
+                  key={sizeOption.key}
+                  className={`size-option ${isActive ? 'active' : ''}`}
+                  onClick={() => {
+                    if (isAvailable) dispatch(setSelectedSize(matchingVariant.size));
+                  }}
+                  disabled={!isAvailable}
                 >
-                  {size}
+                  {sizeOption.display}
                 </button>
               );
             })}

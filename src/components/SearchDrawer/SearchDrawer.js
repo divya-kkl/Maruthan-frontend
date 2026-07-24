@@ -2,23 +2,13 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { FiX, FiSearch } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
+import { fetchProducts, setSearchTerm, TRENDING_SEARCHES } from '../../redux/Slice/productShowcasesSlice';
 import './SearchDrawer.css';
-
-const TRENDING_SEARCHES = [
-  "Newborn Pattu Frock",
-  "Girls Pattu Pavadai",
-  "Chettinad Cotton Pattupavadai",
-  "Pattu Frock",
-  "Tamil Newyear collection",
-  "Best selling products"
-];
 
 const SearchDrawer = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [searchTerm, setSearchTerm] = useState('');
-  const { product, status } = useSelector((state) => state.product);
+  const { product, status, searchTerm } = useSelector((state) => state.product);
 
   // Fetch products if not already fetched
   useEffect(() => {
@@ -42,7 +32,9 @@ const SearchDrawer = ({ isOpen, onClose }) => {
   }, [product, searchTerm]);
 
   const handleTagClick = (tag) => {
-    setSearchTerm(tag);
+    // Navigates to the corresponding category page and closes the drawer
+    navigate(`/categories/${tag.code}`);
+    onClose();
   };
 
   const handleProductClick = (productId) => {
@@ -67,9 +59,18 @@ const SearchDrawer = ({ isOpen, onClose }) => {
               className="search-input" 
               placeholder="I'm looking for..." 
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => dispatch(setSearchTerm(e.target.value))}
             />
-            <button className="search-input-icon">
+            {searchTerm && (
+              <button 
+                className="search-clear-icon" 
+                onClick={() => dispatch(setSearchTerm(''))}
+                aria-label="Clear search"
+              >
+                <FiX />
+              </button>
+            )}
+            <button className="search-input-icon" aria-label="Search">
               <FiSearch />
             </button>
           </div>
@@ -84,7 +85,7 @@ const SearchDrawer = ({ isOpen, onClose }) => {
                     className="trending-tag-btn"
                     onClick={() => handleTagClick(tag)}
                   >
-                    {tag}
+                    {tag.name}
                   </button>
                 ))}
               </div>

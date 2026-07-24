@@ -50,3 +50,37 @@ a {
 .category-card:hover .category-name {
   color: #0F2D5C !important;
 }
+
+/* Update View All and Add to Cart Buttons globally */
+.boys-view-all-btn,
+.chettinad-view-all-btn,
+.cotton-frock-view-all-btn,
+.jabla-view-all-btn,
+.newborn-view-all-btn,
+.view-all-btn,
+.shop-more-btn,
+.promo-view-all-btn,
+.add-to-cart-btn {
+  background-color: #0F2D5C !important;
+  color: #ffffff !important;
+  font-family: 'Times New Roman', Times, serif !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+  border: 1px solid #0F2D5C !important;
+}
+
+.boys-view-all-btn:hover,
+.chettinad-view-all-btn:hover,
+.cotton-frock-view-all-btn:hover,
+.jabla-view-all-btn:hover,
+.newborn-view-all-btn:hover,
+.view-all-btn:hover,
+.shop-more-btn:hover,
+.promo-view-all-btn:hover,
+.add-to-cart-btn:hover {
+  background-color: #1A4685 !important; /* Lighter shade of the theme color */
+  color: #ffffff !important;
+  border: 1px solid #1A4685 !important;
+  transform: scale(1.03) !important;
+}
