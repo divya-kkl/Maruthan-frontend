@@ -150,93 +150,95 @@ const OrderSuccessPage = () => {
                           </span>
                         </div>
                         {isDetailsMode && (
-                          userReview ? (
-                            <div className="user-submitted-review-box" style={{
-                              marginTop: '8px',
-                              backgroundColor: '#f0fdf4',
-                              border: '1px solid #bbf7d0',
-                              borderRadius: '8px',
-                              padding: '10px 14px',
-                              width: '100%',
-                              maxWidth: '340px',
-                              boxSizing: 'border-box',
-                              display: 'flex',
-                              flexDirection: 'column',
-                              gap: '4px',
-                              textAlign: 'left'
-                            }}>
-                              <span className="user-review-badge" style={{ fontSize: '10px', fontWeight: '700', color: '#166534', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Your Review</span>
-                              <div className="user-review-stars" style={{ display: 'flex', gap: '2px' }}>
-                                {[1, 2, 3, 4, 5].map((star) => (
-                                  <span 
-                                    key={star} 
-                                    className={`user-review-star ${star <= userReview.rating ? 'filled' : ''}`}
-                                    style={{ color: star <= userReview.rating ? '#ffc107' : '#cbd5e0', fontSize: '16px' }}
-                                  >
-                                    ★
-                                  </span>
-                                ))}
+                          orderDetails?.status?.toLowerCase() === 'delivered' && (
+                            userReview ? (
+                              <div className="user-submitted-review-box" style={{
+                                marginTop: '8px',
+                                backgroundColor: '#f0fdf4',
+                                border: '1px solid #bbf7d0',
+                                borderRadius: '8px',
+                                padding: '10px 14px',
+                                width: '100%',
+                                maxWidth: '340px',
+                                boxSizing: 'border-box',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '4px',
+                                textAlign: 'left'
+                              }}>
+                                <span className="user-review-badge" style={{ fontSize: '10px', fontWeight: '700', color: '#166534', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Your Review</span>
+                                <div className="user-review-stars" style={{ display: 'flex', gap: '2px' }}>
+                                  {[1, 2, 3, 4, 5].map((star) => (
+                                    <span 
+                                      key={star} 
+                                      className={`user-review-star ${star <= userReview.rating ? 'filled' : ''}`}
+                                      style={{ color: star <= userReview.rating ? '#ffc107' : '#cbd5e0', fontSize: '16px' }}
+                                    >
+                                      ★
+                                    </span>
+                                  ))}
+                                </div>
+                                <p className="user-review-comment" style={{ fontSize: '12px', color: '#1e293b', margin: '4px 0 0 0', fontStyle: 'italic', lineHeight: '1.4' }}>
+                                  "{userReview.comment}"
+                                </p>
+                                <button 
+                                  type="button"
+                                  className="edit-review-inline-btn"
+                                  onClick={() => handleOpenReviewModal(item, orderDetails.id, userReview.rating, userReview.comment, userReview.id)}
+                                  style={{
+                                    marginTop: '6px',
+                                    background: 'none',
+                                    border: 'none',
+                                    color: '#1a365d',
+                                    fontWeight: '600',
+                                    fontSize: '11px',
+                                    cursor: 'pointer',
+                                    padding: 0,
+                                    textDecoration: 'underline',
+                                    textAlign: 'left',
+                                    alignSelf: 'flex-start'
+                                  }}
+                                >
+                                  Edit Review
+                                </button>
                               </div>
-                              <p className="user-review-comment" style={{ fontSize: '12px', color: '#1e293b', margin: '4px 0 0 0', fontStyle: 'italic', lineHeight: '1.4' }}>
-                                "{userReview.comment}"
-                              </p>
-                              <button 
-                                type="button"
-                                className="edit-review-inline-btn"
-                                onClick={() => handleOpenReviewModal(item, orderDetails.id, userReview.rating, userReview.comment, userReview.id)}
-                                style={{
-                                  marginTop: '6px',
-                                  background: 'none',
-                                  border: 'none',
-                                  color: '#1a365d',
-                                  fontWeight: '600',
-                                  fontSize: '11px',
-                                  cursor: 'pointer',
-                                  padding: 0,
-                                  textDecoration: 'underline',
-                                  textAlign: 'left',
-                                  alignSelf: 'flex-start'
-                                }}
-                              >
-                                Edit Review
-                              </button>
-                            </div>
-                          ) : (
-                            <div className="order-item-feedback-box" style={{ 
-                              marginTop: '8px',
-                              backgroundColor: '#f8fafc',
-                              border: '1px solid #e2e8f0',
-                              borderRadius: '8px',
-                              padding: '10px 14px',
-                              display: 'flex',
-                              flexDirection: 'column',
-                              gap: '6px',
-                              width: '100%',
-                              maxWidth: '340px',
-                              boxSizing: 'border-box',
-                              textAlign: 'left'
-                            }}>
-                              <span className="feedback-title" style={{ fontSize: '12px', fontWeight: '600', color: '#64748b' }}>How was the product?</span>
-                              <div className="feedback-stars-row" style={{ display: 'flex', justifyContent: 'space-between', gap: '3px' }}>
-                                {[
-                                  { val: 1, label: 'Very Bad' },
-                                  { val: 2, label: 'Bad' },
-                                  { val: 3, label: 'Ok-Ok' },
-                                  { val: 4, label: 'Good' },
-                                  { val: 5, label: 'Very Good' }
-                                ].map((starObj) => (
-                                  <div 
-                                    key={starObj.val} 
-                                    className="feedback-star-col"
-                                    onClick={() => handleOpenReviewModal(item, orderDetails.id, starObj.val)}
-                                    style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', flex: 1 }}
-                                  >
-                                    <span className="feedback-star-outline" style={{ fontSize: '20px', color: '#cbd5e0', transition: 'color 0.2s' }} onMouseEnter={(e) => e.target.style.color = '#ffc107'} onMouseLeave={(e) => e.target.style.color = '#cbd5e0'}>☆</span>
-                                    <span className="feedback-star-label" style={{ fontSize: '9px', color: '#718096', marginTop: '2px', textAlign: 'center', whiteSpace: 'nowrap' }}>{starObj.label}</span>
-                                  </div>
-                                ))}
+                            ) : (
+                              <div className="order-item-feedback-box" style={{ 
+                                marginTop: '8px',
+                                backgroundColor: '#f8fafc',
+                                border: '1px solid #e2e8f0',
+                                borderRadius: '8px',
+                                padding: '10px 14px',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '6px',
+                                width: '100%',
+                                maxWidth: '340px',
+                                boxSizing: 'border-box',
+                                textAlign: 'left'
+                              }}>
+                                <span className="feedback-title" style={{ fontSize: '12px', fontWeight: '600', color: '#64748b' }}>How was the product?</span>
+                                <div className="feedback-stars-row" style={{ display: 'flex', justifyContent: 'space-between', gap: '3px' }}>
+                                  {[
+                                    { val: 1, label: 'Very Bad' },
+                                    { val: 2, label: 'Bad' },
+                                    { val: 3, label: 'Ok-Ok' },
+                                    { val: 4, label: 'Good' },
+                                    { val: 5, label: 'Very Good' }
+                                  ].map((starObj) => (
+                                    <div 
+                                      key={starObj.val} 
+                                      className="feedback-star-col"
+                                      onClick={() => handleOpenReviewModal(item, orderDetails.id, starObj.val)}
+                                      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', flex: 1 }}
+                                    >
+                                      <span className="feedback-star-outline" style={{ fontSize: '20px', color: '#cbd5e0', transition: 'color 0.2s' }} onMouseEnter={(e) => e.target.style.color = '#ffc107'} onMouseLeave={(e) => e.target.style.color = '#cbd5e0'}>☆</span>
+                                      <span className="feedback-star-label" style={{ fontSize: '9px', color: '#718096', marginTop: '2px', textAlign: 'center', whiteSpace: 'nowrap' }}>{starObj.label}</span>
+                                    </div>
+                                  ))}
+                                </div>
                               </div>
-                            </div>
+                            )
                           )
                         )}
                       </div>
