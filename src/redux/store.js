@@ -5,7 +5,6 @@ import headerReducer from './Slice/headerSlice';
 import bannerReducer from './Slice/bannerSlice';
 import topproductsReducer from './Slice/productShowcasesSlice';
 import storeReducer from './Slice/storeSlice'
-import storeQualityReducer from './Slice/storeQualitySlice';
 import storeFeaturesReducer from './Slice/storeFeaturesSlice';
 import footerReducer from './Slice/footerSlice';
 import FAQReducer from './Slice/FAQSlice';
@@ -25,7 +24,6 @@ export const store = configureStore({
     banner: bannerReducer,
     product: topproductsReducer,
     store: storeReducer,
-    storeQuality: storeQualityReducer,
     storeFeatures: storeFeaturesReducer,
     footer: footerReducer,
     FAQ: FAQReducer,
