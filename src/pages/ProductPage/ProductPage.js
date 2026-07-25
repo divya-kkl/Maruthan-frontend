@@ -72,8 +72,27 @@ const ProductPage = () => {
       if (product.images && product.images.length > 0) {
         setActiveImage(product.images[0]);
       }
-      if (product.variants && product.variants.length > 0 && !selectedSize) {
-        dispatch(setSelectedSize(product.variants[0].size));
+      const available = (product?.variants || []).reduce((acc, variant) => {
+        if (!variant.size) return acc;
+        const exists = acc.some(item => item.rawSize.toLowerCase() === variant.size.toLowerCase());
+        if (!exists) {
+          const matched = ALL_SIZES.find(s => 
+            s.key.toLowerCase() === variant.size.toLowerCase() || 
+            s.display.toLowerCase() === variant.size.toLowerCase() ||
+            s.display.toLowerCase().includes(variant.size.toLowerCase())
+          );
+          acc.push({
+            key: matched ? matched.key : variant.size,
+            display: matched ? matched.display : variant.size,
+            rawSize: variant.size,
+            orderIndex: matched ? ALL_SIZES.findIndex(s => s.key === matched.key) : 99
+          });
+        }
+        return acc;
+      }, []).sort((a, b) => a.orderIndex - b.orderIndex);
+
+      if (available.length > 0 && !selectedSize) {
+        dispatch(setSelectedSize(available[0].rawSize));
       }
     }
   }, [product, dispatch, selectedSize]);
@@ -322,48 +341,62 @@ const ProductPage = () => {
         </div>
 
         <div className="size-selector-section">
-          <div className="size-label">
-            Size: <strong>{(() => {
-              const matched = ALL_SIZES.find(s => s.key.toLowerCase() === selectedSize?.toLowerCase() || s.display.toLowerCase() === selectedSize?.toLowerCase());
-              return matched ? matched.display : selectedSize;
-            })()}</strong>
-          </div>
-          <div className="size-options">
-            {(() => {
-              const availableSizes = (product?.variants || []).reduce((acc, variant) => {
-                if (!variant.size) return acc;
-                const exists = acc.some(item => item.rawSize.toLowerCase() === variant.size.toLowerCase());
-                if (!exists) {
-                  const matched = ALL_SIZES.find(s => s.key.toLowerCase() === variant.size.toLowerCase() || s.display.toLowerCase() === variant.size.toLowerCase());
-                  acc.push({
-                    key: matched ? matched.key : variant.size,
-                    display: matched ? matched.display : variant.size,
-                    rawSize: variant.size,
-                    orderIndex: matched ? ALL_SIZES.findIndex(s => s.key === matched.key) : 99
-                  });
-                }
-                return acc;
-              }, []).sort((a, b) => a.orderIndex - b.orderIndex);
-
-              return availableSizes.map(sizeOpt => {
-                const isActive = selectedSize?.toLowerCase() === sizeOpt.rawSize.toLowerCase() || 
-                                 selectedSize?.toLowerCase() === sizeOpt.key.toLowerCase() || 
-                                 selectedSize?.toLowerCase() === sizeOpt.display.toLowerCase();
-
-                return (
-                  <button 
-                    key={sizeOpt.key}
-                    className={`size-option ${isActive ? 'active' : ''}`}
-                    onClick={() => {
-                      dispatch(setSelectedSize(sizeOpt.rawSize));
-                    }}
-                  >
-                    {sizeOpt.display}
-                  </button>
+          {(() => {
+            const availableSizes = (product?.variants || []).reduce((acc, variant) => {
+              if (!variant.size) return acc;
+              const exists = acc.some(item => item.rawSize.toLowerCase() === variant.size.toLowerCase());
+              if (!exists) {
+                const matched = ALL_SIZES.find(s => 
+                  s.key.toLowerCase() === variant.size.toLowerCase() || 
+                  s.display.toLowerCase() === variant.size.toLowerCase() ||
+                  s.display.toLowerCase().includes(variant.size.toLowerCase())
                 );
-              });
-            })()}
-          </div>
+                acc.push({
+                  key: matched ? matched.key : variant.size,
+                  display: matched ? matched.display : variant.size,
+                  rawSize: variant.size,
+                  orderIndex: matched ? ALL_SIZES.findIndex(s => s.key === matched.key) : 99
+                });
+              }
+              return acc;
+            }, []).sort((a, b) => a.orderIndex - b.orderIndex);
+
+            const activeOpt = availableSizes.find(opt => 
+              selectedSize?.toLowerCase() === opt.rawSize.toLowerCase() || 
+              selectedSize?.toLowerCase() === opt.key.toLowerCase() || 
+              selectedSize?.toLowerCase() === opt.display.toLowerCase()
+            ) || availableSizes[0];
+
+            const labelDisplayText = activeOpt ? activeOpt.display : selectedSize;
+
+            return (
+              <>
+                <div className="size-label" style={{ marginBottom: '12px' }}>
+                  Size: <strong>{labelDisplayText}</strong>
+                </div>
+                <div className="size-options">
+                  {availableSizes.map(sizeOpt => {
+                    const isActive = selectedSize?.toLowerCase() === sizeOpt.rawSize.toLowerCase() || 
+                                     selectedSize?.toLowerCase() === sizeOpt.key.toLowerCase() || 
+                                     selectedSize?.toLowerCase() === sizeOpt.display.toLowerCase() ||
+                                     (!selectedSize && activeOpt?.rawSize === sizeOpt.rawSize);
+
+                    return (
+                      <button 
+                        key={sizeOpt.key}
+                        className={`size-option ${isActive ? 'active' : ''}`}
+                        onClick={() => {
+                          dispatch(setSelectedSize(sizeOpt.rawSize));
+                        }}
+                      >
+                        {sizeOpt.display}
+                      </button>
+                    );
+                  })}
+                </div>
+              </>
+            );
+          })()}
         </div>
 
         <div className="product-actions">
