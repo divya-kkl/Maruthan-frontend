@@ -7,15 +7,39 @@ import { useNavigate } from 'react-router-dom';
 import { FiChevronLeft, FiChevronRight, FiShare2 } from 'react-icons/fi';
 
 const QuickViewModal = ({ product, onClose }) => {
-  const [selectedSize, setSelectedSize] = useState('1Y');
+  const [selectedSize, setSelectedSize] = useState('');
   const [quantity, setQuantity] = useState(1);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [activeImage, setActiveImage] = useState(product?.images?.[0] || '/images/placeholder.png');
 
   useEffect(() => {
-    if (product?.images && product.images.length > 0) {
-      setActiveImage(product.images[0]);
+    if (product) {
+      if (product.images && product.images.length > 0) {
+        setActiveImage(product.images[0]);
+      }
+      const available = (product?.variants || []).reduce((acc, variant) => {
+        if (!variant.size) return acc;
+        const exists = acc.some(item => item.rawSize.toLowerCase() === variant.size.toLowerCase());
+        if (!exists) {
+          const matched = ALL_SIZES.find(s => 
+            s.key.toLowerCase() === variant.size.toLowerCase() || 
+            s.display.toLowerCase() === variant.size.toLowerCase() ||
+            s.display.toLowerCase().includes(variant.size.toLowerCase())
+          );
+          acc.push({
+            key: matched ? matched.key : variant.size,
+            display: matched ? matched.display : variant.size,
+            rawSize: variant.size,
+            orderIndex: matched ? ALL_SIZES.findIndex(s => s.key === matched.key) : 99
+          });
+        }
+        return acc;
+      }, []).sort((a, b) => a.orderIndex - b.orderIndex);
+
+      if (available.length > 0) {
+        setSelectedSize(available[0].rawSize);
+      }
     }
   }, [product]);
 
@@ -110,64 +134,78 @@ const QuickViewModal = ({ product, onClose }) => {
             </div>
 
             <div className="quickview-size-section">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <p className="size-label" style={{ marginBottom: 0 }}>
-                  Size: <span>{(() => {
-                    const matched = ALL_SIZES.find(s => s.key.toLowerCase() === selectedSize?.toLowerCase() || s.display.toLowerCase() === selectedSize?.toLowerCase());
-                    return matched ? matched.display : selectedSize;
-                  })()}</span>
-                </p>
-                <div 
-                  onClick={handleShare} 
-                  style={{ 
-                    cursor: 'pointer', 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: '6px', 
-                    fontSize: '15px',
-                    color: '#333',
-                    marginRight: '40px'
-                  }}
-                >
-                  <FiShare2 /> Share
-                </div>
-              </div>
-              <div className="size-buttons">
-                {(() => {
-                  const availableSizes = (product?.variants || []).reduce((acc, variant) => {
-                    if (!variant.size) return acc;
-                    const exists = acc.some(item => item.rawSize.toLowerCase() === variant.size.toLowerCase());
-                    if (!exists) {
-                      const matched = ALL_SIZES.find(s => s.key.toLowerCase() === variant.size.toLowerCase() || s.display.toLowerCase() === variant.size.toLowerCase());
-                      acc.push({
-                        key: matched ? matched.key : variant.size,
-                        display: matched ? matched.display : variant.size,
-                        rawSize: variant.size,
-                        orderIndex: matched ? ALL_SIZES.findIndex(s => s.key === matched.key) : 99
-                      });
-                    }
-                    return acc;
-                  }, []).sort((a, b) => a.orderIndex - b.orderIndex);
+              {(() => {
+                const availableSizes = (product?.variants || []).reduce((acc, variant) => {
+                  if (!variant.size) return acc;
+                  const exists = acc.some(item => item.rawSize.toLowerCase() === variant.size.toLowerCase());
+                  if (!exists) {
+                    const matched = ALL_SIZES.find(s => 
+                      s.key.toLowerCase() === variant.size.toLowerCase() || 
+                      s.display.toLowerCase() === variant.size.toLowerCase() ||
+                      s.display.toLowerCase().includes(variant.size.toLowerCase())
+                    );
+                    acc.push({
+                      key: matched ? matched.key : variant.size,
+                      display: matched ? matched.display : variant.size,
+                      rawSize: variant.size,
+                      orderIndex: matched ? ALL_SIZES.findIndex(s => s.key === matched.key) : 99
+                    });
+                  }
+                  return acc;
+                }, []).sort((a, b) => a.orderIndex - b.orderIndex);
 
-                  return availableSizes.map(sizeOpt => {
-                    const isActive = selectedSize?.toLowerCase() === sizeOpt.rawSize.toLowerCase() || 
-                                     selectedSize?.toLowerCase() === sizeOpt.key.toLowerCase() || 
-                                     selectedSize?.toLowerCase() === sizeOpt.display.toLowerCase();
+                const activeOpt = availableSizes.find(opt => 
+                  selectedSize?.toLowerCase() === opt.rawSize.toLowerCase() || 
+                  selectedSize?.toLowerCase() === opt.key.toLowerCase() || 
+                  selectedSize?.toLowerCase() === opt.display.toLowerCase()
+                ) || availableSizes[0];
 
-                    return (
-                      <button
-                        key={sizeOpt.key}
-                        className={`size-btn ${isActive ? 'active' : ''}`}
-                        onClick={() => {
-                          setSelectedSize(sizeOpt.rawSize);
+                const labelDisplayText = activeOpt ? activeOpt.display : selectedSize;
+
+                return (
+                  <>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                      <p className="size-label" style={{ marginBottom: 0 }}>
+                        Size: <span>{labelDisplayText}</span>
+                      </p>
+                      <div 
+                        onClick={handleShare} 
+                        style={{ 
+                          cursor: 'pointer', 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          gap: '6px', 
+                          fontSize: '15px',
+                          color: '#333',
+                          marginRight: '40px'
                         }}
                       >
-                        {sizeOpt.display}
-                      </button>
-                    );
-                  });
-                })()}
-              </div>
+                        <FiShare2 /> Share
+                      </div>
+                    </div>
+                    <div className="size-buttons">
+                      {availableSizes.map(sizeOpt => {
+                        const isActive = selectedSize?.toLowerCase() === sizeOpt.rawSize.toLowerCase() || 
+                                         selectedSize?.toLowerCase() === sizeOpt.key.toLowerCase() || 
+                                         selectedSize?.toLowerCase() === sizeOpt.display.toLowerCase() ||
+                                         (!selectedSize && activeOpt?.rawSize === sizeOpt.rawSize);
+
+                        return (
+                          <button
+                            key={sizeOpt.key}
+                            className={`size-btn ${isActive ? 'active' : ''}`}
+                            onClick={() => {
+                              setSelectedSize(sizeOpt.rawSize);
+                            }}
+                          >
+                            {sizeOpt.display}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </>
+                );
+              })()}
             </div>
 
             <div className="quickview-desc-text">
