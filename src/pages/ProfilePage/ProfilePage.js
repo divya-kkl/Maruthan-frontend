@@ -318,66 +318,68 @@ const ProfilePage = () => {
                                 <div className="order-item-details" style={{ flex: 1, textAlign: 'left' }}>
                                   <h4 style={{ margin: '0 0 5px 0', fontSize: '14px', color: '#1e293b', fontWeight: '600' }}>{item.name}</h4>
                                   <p style={{ margin: 0, fontSize: '12px', color: '#64748b' }}>Qty: {item.quantity}</p>
-                                  {userReview ? (
-                                    <div className="user-submitted-review-box">
-                                      <span className="user-review-badge">Your Review</span>
-                                      <div className="user-review-stars" style={{ display: 'flex', gap: '2px' }}>
-                                        {[1, 2, 3, 4, 5].map((star) => (
-                                          <span 
-                                            key={star} 
-                                            className={`user-review-star ${star <= userReview.rating ? 'filled' : ''}`}
-                                            style={{ color: star <= userReview.rating ? '#ffc107' : '#cbd5e0', fontSize: '18px' }}
-                                          >
-                                            ★
-                                          </span>
-                                        ))}
+                                  {order.status?.toLowerCase() === 'delivered' && (
+                                    userReview ? (
+                                      <div className="user-submitted-review-box">
+                                        <span className="user-review-badge">Your Review</span>
+                                        <div className="user-review-stars" style={{ display: 'flex', gap: '2px' }}>
+                                          {[1, 2, 3, 4, 5].map((star) => (
+                                            <span 
+                                              key={star} 
+                                              className={`user-review-star ${star <= userReview.rating ? 'filled' : ''}`}
+                                              style={{ color: star <= userReview.rating ? '#ffc107' : '#cbd5e0', fontSize: '18px' }}
+                                            >
+                                              ★
+                                            </span>
+                                          ))}
+                                        </div>
+                                        <p className="user-review-comment">
+                                          "{userReview.comment}"
+                                        </p>
+                                        <button 
+                                          type="button"
+                                          className="edit-review-inline-btn"
+                                          onClick={() => handleOpenReviewModal(item, order.id, userReview.rating, userReview.comment, userReview.id)}
+                                          style={{
+                                            marginTop: '6px',
+                                            background: 'none',
+                                            border: 'none',
+                                            color: '#1a365d',
+                                            fontWeight: '600',
+                                            fontSize: '11px',
+                                            cursor: 'pointer',
+                                            padding: 0,
+                                            textDecoration: 'underline',
+                                            textAlign: 'left',
+                                            alignSelf: 'flex-start'
+                                          }}
+                                        >
+                                          Edit Review
+                                        </button>
                                       </div>
-                                      <p className="user-review-comment">
-                                        "{userReview.comment}"
-                                      </p>
-                                      <button 
-                                        type="button"
-                                        className="edit-review-inline-btn"
-                                        onClick={() => handleOpenReviewModal(item, order.id, userReview.rating, userReview.comment, userReview.id)}
-                                        style={{
-                                          marginTop: '6px',
-                                          background: 'none',
-                                          border: 'none',
-                                          color: '#1a365d',
-                                          fontWeight: '600',
-                                          fontSize: '11px',
-                                          cursor: 'pointer',
-                                          padding: 0,
-                                          textDecoration: 'underline',
-                                          textAlign: 'left',
-                                          alignSelf: 'flex-start'
-                                        }}
-                                      >
-                                        Edit Review
-                                      </button>
-                                    </div>
-                                  ) : (
-                                    <div className="order-item-feedback-box">
-                                      <span className="feedback-title">How was the product?</span>
-                                      <div className="feedback-stars-row">
-                                        {[
-                                          { val: 1, label: 'Very Bad' },
-                                          { val: 2, label: 'Bad' },
-                                          { val: 3, label: 'Ok-Ok' },
-                                          { val: 4, label: 'Good' },
-                                          { val: 5, label: 'Very Good' }
-                                        ].map((starObj) => (
-                                          <div 
-                                            key={starObj.val} 
-                                            className="feedback-star-col"
-                                            onClick={() => handleOpenReviewModal(item, order.id, starObj.val)}
-                                          >
-                                            <span className="feedback-star-outline">☆</span>
-                                            <span className="feedback-star-label">{starObj.label}</span>
-                                          </div>
-                                        ))}
+                                    ) : (
+                                      <div className="order-item-feedback-box">
+                                        <span className="feedback-title">How was the product?</span>
+                                        <div className="feedback-stars-row">
+                                          {[
+                                            { val: 1, label: 'Very Bad' },
+                                            { val: 2, label: 'Bad' },
+                                            { val: 3, label: 'Ok-Ok' },
+                                            { val: 4, label: 'Good' },
+                                            { val: 5, label: 'Very Good' }
+                                          ].map((starObj) => (
+                                            <div 
+                                              key={starObj.val} 
+                                              className="feedback-star-col"
+                                              onClick={() => handleOpenReviewModal(item, order.id, starObj.val)}
+                                            >
+                                              <span className="feedback-star-outline">☆</span>
+                                              <span className="feedback-star-label">{starObj.label}</span>
+                                            </div>
+                                          ))}
+                                        </div>
                                       </div>
-                                    </div>
+                                    )
                                   )}
                                 </div>
                               </div>

@@ -329,27 +329,40 @@ const ProductPage = () => {
             })()}</strong>
           </div>
           <div className="size-options">
-            {ALL_SIZES.map(sizeOption => {
-              const matchingVariant = product?.variants?.find(v => 
-                v.size?.toLowerCase() === sizeOption.key.toLowerCase() || 
-                v.size?.toLowerCase() === sizeOption.display.toLowerCase()
-              );
-              const isAvailable = !!matchingVariant;
-              const isActive = selectedSize?.toLowerCase() === sizeOption.key.toLowerCase() || selectedSize?.toLowerCase() === sizeOption.display.toLowerCase();
+            {(() => {
+              const availableSizes = (product?.variants || []).reduce((acc, variant) => {
+                if (!variant.size) return acc;
+                const exists = acc.some(item => item.rawSize.toLowerCase() === variant.size.toLowerCase());
+                if (!exists) {
+                  const matched = ALL_SIZES.find(s => s.key.toLowerCase() === variant.size.toLowerCase() || s.display.toLowerCase() === variant.size.toLowerCase());
+                  acc.push({
+                    key: matched ? matched.key : variant.size,
+                    display: matched ? matched.display : variant.size,
+                    rawSize: variant.size,
+                    orderIndex: matched ? ALL_SIZES.findIndex(s => s.key === matched.key) : 99
+                  });
+                }
+                return acc;
+              }, []).sort((a, b) => a.orderIndex - b.orderIndex);
 
-              return (
-                <button 
-                  key={sizeOption.key}
-                  className={`size-option ${isActive ? 'active' : ''}`}
-                  onClick={() => {
-                    if (isAvailable) dispatch(setSelectedSize(matchingVariant.size));
-                  }}
-                  disabled={!isAvailable}
-                >
-                  {sizeOption.display}
-                </button>
-              );
-            })}
+              return availableSizes.map(sizeOpt => {
+                const isActive = selectedSize?.toLowerCase() === sizeOpt.rawSize.toLowerCase() || 
+                                 selectedSize?.toLowerCase() === sizeOpt.key.toLowerCase() || 
+                                 selectedSize?.toLowerCase() === sizeOpt.display.toLowerCase();
+
+                return (
+                  <button 
+                    key={sizeOpt.key}
+                    className={`size-option ${isActive ? 'active' : ''}`}
+                    onClick={() => {
+                      dispatch(setSelectedSize(sizeOpt.rawSize));
+                    }}
+                  >
+                    {sizeOpt.display}
+                  </button>
+                );
+              });
+            })()}
           </div>
         </div>
 
@@ -477,95 +490,72 @@ const ProductPage = () => {
       <h2 className="reviews-section-title">Customer Ratings & Reviews</h2>
       
       <div className="reviews-dashboard">
-        {/* Left Side: Summary Card */}
-        <div className="overall-rating-card" style={{
-          border: '1px solid #e0e0e0',
-          borderRadius: '16px',
-          padding: '20px 15px',
-          backgroundColor: '#fff',
-          width: '100%',
-          maxWidth: '160px',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          boxShadow: '0 2px 10px rgba(0, 0, 0, 0.04)',
-          boxSizing: 'border-box',
-          margin: '0 auto'
-        }}>
-          <div className="rating-pill" style={{
-            backgroundColor: '#26a541',
-            color: '#fff',
-            borderRadius: '10px',
-            padding: '8px 16px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '6px',
-            marginBottom: '15px',
-            width: 'fit-content'
-          }}>
-            <span style={{ fontSize: '26px', fontWeight: '700', lineHeight: '1' }}>{(reviewAverage || 0).toFixed(1)}</span>
-            <span style={{ fontSize: '20px', lineHeight: '1' }}>★</span>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', textAlign: 'center' }}>
-            <div style={{ fontSize: '12px', color: '#878787', fontWeight: '500' }}>
-              {(reviewCount || 0).toLocaleString('en-IN')} ratings
+        <div className="reviews-top-summary">
+          {/* Left Side: Summary Card */}
+          <div className="overall-rating-card">
+            <div className="rating-pill">
+              <span style={{ fontSize: '26px', fontWeight: '700', lineHeight: '1' }}>{(reviewAverage || 0).toFixed(1)}</span>
+              <span style={{ fontSize: '20px', lineHeight: '1' }}>★</span>
             </div>
-            <div style={{ fontSize: '12px', color: '#878787', fontWeight: '500' }}>
-              {(reviews ? reviews.length : 0).toLocaleString('en-IN')} reviews
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', textAlign: 'center' }}>
+              <div style={{ fontSize: '13px', color: '#475569', fontWeight: '600' }}>
+                {(reviewCount || 0).toLocaleString('en-IN')} ratings
+              </div>
+              <div style={{ fontSize: '12px', color: '#94a3b8', fontWeight: '500' }}>
+                {(reviews ? reviews.length : 0).toLocaleString('en-IN')} reviews
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Middle/Distribution List */}
-        <div className="rating-distribution-card" style={{ padding: '0 10px', width: '100%' }}>
-          <div className="rating-distribution-list">
-            {[
-              { starsCount: 5, label: 'Very Good', color: '#26a541' },
-              { starsCount: 4, label: 'Good', color: '#84c225' },
-              { starsCount: 3, label: 'Ok-Ok', color: '#ffc107' },
-              { starsCount: 2, label: 'Bad', color: '#ff5722' },
-              { starsCount: 1, label: 'Very Bad', color: '#ff3d00' }
-            ].map((item) => {
-              const count = ratingDistribution[item.starsCount - 1];
-              const pct = getPercentage(count);
-              return (
-                <div key={item.starsCount} className="distribution-row" style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '12px', fontSize: '13px' }}>
-                  <span className="distribution-label" style={{ width: '80px', color: '#333', fontWeight: '500', textAlign: 'left' }}>{item.label}</span>
-                  <div className="distribution-bar-bg" style={{ flex: 1, height: '6px', backgroundColor: '#f0f0f0', borderRadius: '3px', overflow: 'hidden' }}>
-                    <div className="distribution-bar-fill" style={{ width: `${pct}%`, height: '100%', backgroundColor: item.color, borderRadius: '3px' }}></div>
+          {/* Middle/Distribution List */}
+          <div className="rating-distribution-card">
+            <div className="rating-distribution-list">
+              {[
+                { starsCount: 5, label: 'Very Good', color: 'linear-gradient(90deg, #10b981, #059669)' },
+                { starsCount: 4, label: 'Good', color: 'linear-gradient(90deg, #22c55e, #16a34a)' },
+                { starsCount: 3, label: 'Ok-Ok', color: 'linear-gradient(90deg, #eab308, #ca8a04)' },
+                { starsCount: 2, label: 'Bad', color: 'linear-gradient(90deg, #f97316, #ea580c)' },
+                { starsCount: 1, label: 'Very Bad', color: 'linear-gradient(90deg, #ef4444, #dc2626)' }
+              ].map((item) => {
+                const count = ratingDistribution[item.starsCount - 1];
+                const pct = getPercentage(count);
+                return (
+                  <div key={item.starsCount} className="distribution-row">
+                    <span className="distribution-label">{item.label}</span>
+                    <div className="distribution-bar-bg">
+                      <div className="distribution-bar-fill" style={{ width: `${pct}%`, background: item.color }}></div>
+                    </div>
+                    <span className="distribution-count">{count}</span>
                   </div>
-                  <span className="distribution-count" style={{ width: '40px', color: '#878787', textAlign: 'right', fontWeight: '500' }}>{count}</span>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
 
         {/* Right Side: Reviews List */}
-        <div className="reviews-list-card" style={{ gridColumn: '1 / span 2', marginTop: '20px' }}>
+        <div className="reviews-list-card">
           {reviews && reviews.length > 0 ? (
             <div className="reviews-list">
               {reviews.map((rev) => (
-                <div key={rev.id} className="review-item-card" style={{ borderBottom: '1px solid #eee', paddingBottom: '20px', marginBottom: '20px' }}>
-                  <div className="review-item-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px', marginBottom: '10px' }}>
-                    <div className="review-user-info" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                      <div className="review-user-avatar" style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#e6edf7', color: '#1a365d', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '16px' }}>
+                <div key={rev.id} className="review-item-card">
+                  <div className="review-item-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px', marginBottom: '12px' }}>
+                    <div className="review-user-info" style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                      <div className="review-user-avatar">
                         {rev.userName ? rev.userName.charAt(0).toUpperCase() : 'C'}
                       </div>
                       <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <span className="review-user-name" style={{ fontWeight: '600', fontSize: '14px', color: '#333' }}>{rev.userName || 'Customer'}</span>
-                        <span className="review-verified-badge" style={{ fontSize: '11px', color: '#2e7d32', fontWeight: '500' }}>✓ Verified Purchase</span>
+                        <span className="review-user-name" style={{ fontWeight: '700', fontSize: '15px', color: '#0f172a' }}>{rev.userName || 'Customer'}</span>
+                        <span className="review-verified-badge">✓ Verified Purchase</span>
                       </div>
                     </div>
-                    <div className="review-item-rating-date" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                      <div className="review-item-stars" style={{ display: 'flex', gap: '2px' }}>
+                    <div className="review-item-rating-date" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
+                      <div className="review-item-stars" style={{ display: 'flex', gap: '3px' }}>
                         {[1, 2, 3, 4, 5].map((star) => (
                           <AiFillStar 
                             key={star} 
-                            color={star <= Math.round(rev.rating) ? '#ffc107' : '#e4e5e9'} 
-                            style={{ fontSize: '14px' }}
+                            color={star <= Math.round(rev.rating) ? '#f59e0b' : '#e2e8f0'} 
+                            style={{ fontSize: '16px' }}
                           />
                         ))}
                       </div>

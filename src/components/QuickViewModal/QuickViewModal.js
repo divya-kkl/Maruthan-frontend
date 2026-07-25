@@ -133,28 +133,40 @@ const QuickViewModal = ({ product, onClose }) => {
                 </div>
               </div>
               <div className="size-buttons">
-                {ALL_SIZES.map(sizeOption => {
-                  const matchingVariant = product?.variants?.find(
-                    v => v.size?.toLowerCase() === sizeOption.key.toLowerCase() || v.size?.toLowerCase() === sizeOption.display.toLowerCase()
-                  );
-                  const isAvailable = !!matchingVariant;
-                  const isActive = selectedSize?.toLowerCase() === sizeOption.key.toLowerCase() || selectedSize?.toLowerCase() === sizeOption.display.toLowerCase();
+                {(() => {
+                  const availableSizes = (product?.variants || []).reduce((acc, variant) => {
+                    if (!variant.size) return acc;
+                    const exists = acc.some(item => item.rawSize.toLowerCase() === variant.size.toLowerCase());
+                    if (!exists) {
+                      const matched = ALL_SIZES.find(s => s.key.toLowerCase() === variant.size.toLowerCase() || s.display.toLowerCase() === variant.size.toLowerCase());
+                      acc.push({
+                        key: matched ? matched.key : variant.size,
+                        display: matched ? matched.display : variant.size,
+                        rawSize: variant.size,
+                        orderIndex: matched ? ALL_SIZES.findIndex(s => s.key === matched.key) : 99
+                      });
+                    }
+                    return acc;
+                  }, []).sort((a, b) => a.orderIndex - b.orderIndex);
 
-                  return (
-                    <button
-                      key={sizeOption.key}
-                      className={`size-btn ${isActive ? 'active' : ''}`}
-                      disabled={!isAvailable}
-                      onClick={() => {
-                        if (isAvailable) {
-                          setSelectedSize(matchingVariant.size);
-                        }
-                      }}
-                    >
-                      {sizeOption.display}
-                    </button>
-                  );
-                })}
+                  return availableSizes.map(sizeOpt => {
+                    const isActive = selectedSize?.toLowerCase() === sizeOpt.rawSize.toLowerCase() || 
+                                     selectedSize?.toLowerCase() === sizeOpt.key.toLowerCase() || 
+                                     selectedSize?.toLowerCase() === sizeOpt.display.toLowerCase();
+
+                    return (
+                      <button
+                        key={sizeOpt.key}
+                        className={`size-btn ${isActive ? 'active' : ''}`}
+                        onClick={() => {
+                          setSelectedSize(sizeOpt.rawSize);
+                        }}
+                      >
+                        {sizeOpt.display}
+                      </button>
+                    );
+                  });
+                })()}
               </div>
             </div>
 
