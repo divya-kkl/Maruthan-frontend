@@ -459,6 +459,7 @@ const Checkout = ({ onNavigate }) => {
                 </div>
                 <div className="summary-item-info">
                   <span className="summary-item-name">{item.product.name}</span>
+                  {item.size && <span className="summary-item-size">Size: {item.size}</span>}
                   <span className="summary-item-price">
                     Rs. {(item.product.price * item.quantity).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                   </span>

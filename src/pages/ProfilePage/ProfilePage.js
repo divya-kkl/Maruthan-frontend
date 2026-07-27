@@ -317,7 +317,7 @@ const ProfilePage = () => {
                                 <img src={item.image} alt={item.name} style={{ width: '64px', height: '64px', objectFit: 'cover', borderRadius: '6px', marginRight: '15px', flexShrink: 0 }} onError={(e) => { e.target.src = "https://placehold.co/64x64/e8e8e8/8a2b8f?text=Item" }} />
                                 <div className="order-item-details" style={{ flex: 1, textAlign: 'left' }}>
                                   <h4 style={{ margin: '0 0 5px 0', fontSize: '14px', color: '#1e293b', fontWeight: '600' }}>{item.name}</h4>
-                                  <p style={{ margin: 0, fontSize: '12px', color: '#64748b' }}>Qty: {item.quantity}</p>
+                                  <p style={{ margin: 0, fontSize: '12px', color: '#64748b' }}>Qty: {item.quantity}{item.size ? ` | Size: ${item.size}` : ''}</p>
                                   {order.status?.toLowerCase() === 'delivered' && (
                                     userReview ? (
                                       <div className="user-submitted-review-box">
