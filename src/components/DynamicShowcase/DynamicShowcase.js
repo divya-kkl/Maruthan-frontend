@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import '../ProductShowcase/ProductShowcase.css';
 import { useNavigate } from 'react-router-dom';
 import QuickViewModal from '../QuickViewModal/QuickViewModal';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProductsByTag } from '../../redux/Slice/tagProductsSlice';
+import { fetchProductsByTag, openQuickView, closeQuickView } from '../../redux/Slice/tagProductsSlice';
 
 const DynamicShowcase = ({ tagCode, tagName }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [selectedProduct, setSelectedProduct] = useState(null);
   
-  const { productsByTag, status } = useSelector(state => state.tagProducts);
+  const { productsByTag, status, selectedProduct } = useSelector(state => state.tagProducts);
   
   useEffect(() => {
     if (tagCode) {
@@ -21,7 +20,7 @@ const DynamicShowcase = ({ tagCode, tagName }) => {
   const products = productsByTag[tagCode] || [];
   const loading = status === 'loading' || status === 'idle';
 
-  const openQuickView = (product) => { setSelectedProduct(product); };
+  const handleOpenQuickView = (product) => { dispatch(openQuickView(product)); };
 
   const displayProducts = products.length > 0 ? [...products].reverse().slice(0, 5) : [];
 
@@ -77,7 +76,7 @@ const DynamicShowcase = ({ tagCode, tagName }) => {
                 <div className="showcase-price">
                   Rs. {Number(product.price).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                 </div>
-                <button className="select-options-btn" onClick={() => openQuickView(product)}>Select Options</button>
+                <button className="select-options-btn" onClick={() => handleOpenQuickView(product)}>Select Options</button>
               </div>
             </div>
           ))
@@ -94,7 +93,7 @@ const DynamicShowcase = ({ tagCode, tagName }) => {
         )}
       </div>
 
-      {selectedProduct && <QuickViewModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
+      {selectedProduct && <QuickViewModal product={selectedProduct} onClose={() => dispatch(closeQuickView())} />}
     </section>
   );
 };

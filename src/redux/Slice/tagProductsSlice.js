@@ -53,8 +53,16 @@ const tagProductsSlice = createSlice({
     productsByTag: {}, // stores products by tag code: { 'cotton': [...], 'newborn': [...] }
     status: 'idle',
     error: null,
+    selectedProduct: null,
   },
-  reducers: {},
+  reducers: {
+    openQuickView: (state, action) => {
+      state.selectedProduct = action.payload;
+    },
+    closeQuickView: (state) => {
+      state.selectedProduct = null;
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchProductsByTag.pending, (state) => {
@@ -71,4 +79,5 @@ const tagProductsSlice = createSlice({
   }
 });
 
+export const { openQuickView, closeQuickView } = tagProductsSlice.actions;
 export default tagProductsSlice.reducer;
