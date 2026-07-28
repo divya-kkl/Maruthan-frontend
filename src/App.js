@@ -50,9 +50,10 @@ const SignInWrapper = () => {
 };
 
 
-const CategoryPageWrapper = () => {
-  const { categoryCode } = useParams();
-  return <CategoryPage key={categoryCode} />;
+const CategoryPageWrapper = ({ type = 'category' }) => {
+  const { categoryCode, tagCode } = useParams();
+  const activeCode = type === 'tag' ? tagCode : categoryCode;
+  return <CategoryPage key={activeCode} type={type} />;
 };
 
 const BottomSections = () => {
@@ -157,7 +158,8 @@ function App() {
               <Route path="/order-success/:orderId" element={<OrderSuccessPage />} />
               <Route path="/order-details/:orderId" element={<OrderSuccessPage />} />
               <Route path="/product/:id" element={<ProductPage />} />
-              <Route path="/categories/:categoryCode" element={<CategoryPageWrapper />} />
+              <Route path="/categories/:categoryCode" element={<CategoryPageWrapper type="category" />} />
+              <Route path="/tags/:tagCode" element={<CategoryPageWrapper type="tag" />} />
               <Route path="/stores" element={<OurStoresPage />} />
               <Route path="/login" element={<SignInWrapper />} />
               <Route path="/profile" element={<ProfilePage />} />

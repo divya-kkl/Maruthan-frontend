@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
 import Hero from '../../components/Hero/Hero';
 import ProductShowcase from '../../components/ProductShowcase/ProductShowcase';
 import ProductCarousel from '../../components/ProductCarousel/ProductCarousel';
@@ -13,7 +15,16 @@ import LovedByCustomers from '../../components/LovedByCustomers/LovedByCustomers
 import CustomerFavorites from '../../components/CustomerFavorites/CustomerFavorites';
 import OurStores from '../../components/OurStores/OurStores';
 
+
 const HomePage = () => {
+  const dispatch = useDispatch();
+
+
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
+
+  
   return (
     <div style={{ position: 'relative', minHeight: '100vh' }}>
       <div>

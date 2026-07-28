@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import './RelatedProducts.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
-import QuickViewModal from '../QuickViewModal/QuickViewModal';
-
+import { openQuickView as openGlobalQuickView } from '../../redux/Slice/tagProductsSlice';
 const RelatedProducts = ({ title = "New Arrivals" }) => {
   const dispatch = useDispatch();
   const { product, status } = useSelector((state) => state.product);
   
-  const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
     if (status === 'idle') {
@@ -20,11 +18,11 @@ const RelatedProducts = ({ title = "New Arrivals" }) => {
   const displayProducts = product ? product.slice(0, 10) : [];
 
   const openQuickView = (product) => {
-    setSelectedProduct({
+    dispatch(openGlobalQuickView({
       ...product,
       image: product.images && product.images.length > 0 ? product.images[0] : '/images/placeholder.png',
       originalPrice: product.mrp
-    });
+    }));
   };
 
   const truncate = (str, n) => {
@@ -64,8 +62,6 @@ const RelatedProducts = ({ title = "New Arrivals" }) => {
           ))
         )}
       </div>
-      
-      {selectedProduct && <QuickViewModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
     </section>
   );
 };

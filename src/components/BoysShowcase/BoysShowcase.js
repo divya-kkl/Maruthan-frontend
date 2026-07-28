@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import './BoysShowcase.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchCategories } from '../../redux/Slice/headerSlice';
 import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
+import { fetchProductsByTag, openQuickView as openGlobalQuickView } from '../../redux/Slice/tagProductsSlice';
 import { useNavigate } from 'react-router-dom';
-import QuickViewModal from '../QuickViewModal/QuickViewModal';
 
 const BoysShowcase = () => {
   const dispatch = useDispatch();
   const { categories, loading: catLoading } = useSelector((state) => state.category);
   const { product: allProducts, status: productStatus } = useSelector((state) => state.product);
+  const { productsByTag, status: tagStatus } = useSelector((state) => state.tagProducts);
 
-  const loading = productStatus === 'loading' || productStatus === 'idle' || catLoading;
+  const loading = (productStatus === 'loading' || productStatus === 'idle' || catLoading) && tagStatus !== 'succeeded';
 
   let boysProducts = [];
   if (allProducts && allProducts.length > 0) {
@@ -31,16 +32,38 @@ const BoysShowcase = () => {
     }
   }
 
-  const products = boysProducts.length > 0 ? [...boysProducts].reverse().slice(0, 5) : [];
+
+  const taggedProducts = productsByTag['BOYS ETHNIC WEAR COLLECTION'] || [];
+
+  const combinedProducts = [...taggedProducts];
+  const uniqueProductsMap = new Map();
+  combinedProducts.forEach(p => {
+    if (!uniqueProductsMap.has(p.id)) {
+      uniqueProductsMap.set(p.id, p);
+    }
+  });
+
+  const products = Array.from(uniqueProductsMap.values()).slice(0, 5);
 
   const navigate = useNavigate();
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const openQuickView = (product) => { setSelectedProduct(product); };
+  const openQuickView = (product) => { dispatch(openGlobalQuickView(product)); };
 
   useEffect(() => {
     dispatch(fetchCategories());
     dispatch(fetchProducts());
+    dispatch(fetchProductsByTag({ code: 'BOYS ETHNIC WEAR COLLECTION', limit: 5 }));
   }, [dispatch]);
+
+  if (tagStatus === 'failed') {
+    return (
+      <section className="boys-showcase-section">
+        <div className="boys-container" style={{ textAlign: 'center', padding: '50px 0' }}>
+          <h2 style={{ fontSize: '1.5rem', marginBottom: '10px', color: '#ff4d4f' }}>Oops! Something went wrong.</h2>
+          <p style={{ fontSize: '1rem', color: '#666' }}>Failed to load products. Please try refreshing the page.</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="boys-section">
@@ -106,7 +129,6 @@ const BoysShowcase = () => {
             </button>
           )}
         </div>
-        {selectedProduct && <QuickViewModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
       </div>
     </section>
   );

@@ -1,23 +1,49 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import './NewbornShowcase.css';
 import { useNavigate } from 'react-router-dom';
-import QuickViewModal from '../QuickViewModal/QuickViewModal';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
+import { fetchProductsByTag } from '../../redux/Slice/tagProductsSlice';
 
 
 const NewbornShowcase = () => {
   const dispatch = useDispatch();
-  const  { product, status:productStatus} = useSelector ((state) => state.product);
-  const  products = product && product.length > 0 ? [...product].reverse().slice( 0,8 ) : [];
-  const loading = productStatus === 'loading';
+  const { status: productStatus } = useSelector((state) => state.product);
+  const { productsByTag, status: tagStatus } = useSelector((state) => state.tagProducts);
   const navigate = useNavigate();
-  const [selectedProduct, setSelectedProduct] = useState(null);
+
+  const loading = (productStatus === 'loading' || productStatus === 'idle') && tagStatus !== 'succeeded';
+
+
+  const taggedProducts = productsByTag['NEWBORN PATTU FROCK'] || [];
+
+  // Combine tagged products first, then generic products, removing duplicates by ID
+  const combinedProducts = [...taggedProducts];
+  const uniqueProductsMap = new Map();
+  combinedProducts.forEach(p => {
+    if (!uniqueProductsMap.has(p.id)) {
+      uniqueProductsMap.set(p.id, p);
+    }
+  });
+
+  const displayProducts = Array.from(uniqueProductsMap.values()).slice(0, 8);
 
 
   useEffect(() => {
-    dispatch(fetchProducts())
+    dispatch(fetchProducts());
+    dispatch(fetchProductsByTag({ code: 'NEWBORN PATTU FROCK', limit: 8 }));
   }, [dispatch]);
+
+  if (tagStatus === 'failed') {
+    return (
+      <section className="newborn-showcase-section">
+        <div className="newborn-container" style={{ textAlign: 'center', padding: '50px 0' }}>
+          <h2 style={{ fontSize: '1.5rem', marginBottom: '10px', color: '#ff4d4f' }}>Oops! Something went wrong.</h2>
+          <p style={{ fontSize: '1rem', color: '#666' }}>Failed to load products. Please try refreshing the page.</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="newborn-showcase-section">
@@ -41,8 +67,8 @@ const NewbornShowcase = () => {
                 </div>
               </div>
             ))
-          ) : products.length > 0 ? (
-            products.map((product) => (
+          ) : displayProducts.length > 0 ? (
+            displayProducts.map((product) => (
               <div className="newborn-card" key={product.id}>
                 <div className="newborn-image-wrapper" style={{ cursor: 'pointer' }} onClick={() => navigate(`/product/${product.id}`)}>
                   <img
@@ -58,7 +84,7 @@ const NewbornShowcase = () => {
                   <div className="newborn-price">
                     Rs. {Number(product.price).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                   </div>
-                 
+
                 </div>
               </div>
             ))
@@ -71,12 +97,11 @@ const NewbornShowcase = () => {
           {loading ? (
             <div className="shimmer-button" style={{ width: '150px', margin: '0 auto', borderRadius: '4px' }}></div>
           ) : (
-            <button className="newborn-view-all-btn" onClick={() => navigate('/categories/NEWBORN')}>
+            <button className="newborn-view-all-btn" onClick={() => navigate('/categories/GIRLS')}>
               View All
             </button>
           )}
         </div>
-        {selectedProduct && <QuickViewModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
       </div>
     </section>
   );

@@ -2,10 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import './ProductCarousel.css';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import QuickViewModal from '../QuickViewModal/QuickViewModal';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchBanner } from '../../redux/Slice/bannerSlice';
 import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
+import { fetchProductsByTag, openQuickView as openGlobalQuickView } from '../../redux/Slice/tagProductsSlice';
 
 const CarouselCard = ({ product, openQuickView }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -44,20 +44,32 @@ const CarouselCard = ({ product, openQuickView }) => {
 const ProductCarousel = () => {
   const dispatch = useDispatch();
 
-  const { product, status: productStatus } = useSelector((state) => state.product);
+  const { status: productStatus } = useSelector((state) => state.product);
+  const { productsByTag, status: tagStatus } = useSelector((state) => state.tagProducts);
   const { banner } = useSelector((state) => state.banner);
 
-  const [selectedProduct, setSelectedProduct] = useState(null);
   const scrollContainerRef = useRef(null);
   const navigate = useNavigate();
 
-  const loading = productStatus === 'loading' || productStatus === 'idle';
-  const products = product && product.length > 0 ? [...product].reverse() : [];
+  const loading = (productStatus === 'loading' || productStatus === 'idle') && tagStatus !== 'succeeded';
+
+
+  const taggedProducts = productsByTag['EXCLUSIVE PATTU PAVADAI COLLECTIONS'] || [];
+
+  const combinedProducts = [...taggedProducts];
+  const uniqueProductsMap = new Map();
+  combinedProducts.forEach(p => {
+    if (!uniqueProductsMap.has(p.id)) {
+      uniqueProductsMap.set(p.id, p);
+    }
+  });
+
+  const products = Array.from(uniqueProductsMap.values());
 
   const bannerData = banner && banner.length > 0 ? banner.find((b) => b.bannerType === 'SECOND') : null;
 
   const openQuickView = (product) => {
-    setSelectedProduct(product);
+    dispatch(openGlobalQuickView(product));
   };
 
   const scrollLeft = () => {
@@ -88,8 +100,20 @@ const ProductCarousel = () => {
 
   useEffect(() => {
     dispatch(fetchProducts());
+    dispatch(fetchProductsByTag({ code: 'EXCLUSIVE PATTU PAVADAI COLLECTIONS', limit: 10 }));
     dispatch(fetchBanner());
   }, [dispatch]);
+
+  if (tagStatus === 'failed') {
+    return (
+      <section className="product-carousel-section">
+        <div className="carousel-container" style={{ textAlign: 'center', padding: '50px 0' }}>
+          <h2 style={{ fontSize: '1.5rem', marginBottom: '10px', color: '#ff4d4f' }}>Oops! Something went wrong.</h2>
+          <p style={{ fontSize: '1rem', color: '#666' }}>Failed to load products. Please try refreshing the page.</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <>
@@ -150,7 +174,6 @@ const ProductCarousel = () => {
             )}
           </div>
         </div>
-        {selectedProduct && <QuickViewModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
       </section>
 
       {/* Girls Wear Banner Section (Second Image) */}

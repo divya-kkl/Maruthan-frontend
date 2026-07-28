@@ -23,6 +23,50 @@ const GET_PRODUCTS_BY_CATEGORY = gql`
         }
         description
         material
+        createdAt
+        updatedAt
+        embellishment
+        neck
+        sleeves
+        closure
+        lining
+        washCare
+        ironCare
+        createdAt
+        updatedAt
+      }
+      filters {
+        sizes { name count }
+        colors { name count }
+        brands { name count }
+        stock { inStock outOfStock }
+        price { min max }
+      }
+      totalCount
+    }
+  }
+`;
+
+const GET_PRODUCTS_BY_TAG = gql`
+  query GetProductsByTagCode($code: String!, $sort: String, $filters: ProductFilterInput, $page: Int, $limit: Int) {
+    getProductsByTagCode(code: $code, sort: $sort, filters: $filters, page: $page, limit: $limit) {
+      products {
+        id
+        name
+        price
+        mrp
+        discountPercentage
+        images
+        brand
+        productCategoriesID
+        productCategoriesCode
+        variants {
+          color
+          size
+          stock
+        }
+        description
+        material
         embellishment
         neck
         sleeves
@@ -47,22 +91,29 @@ const GET_PRODUCTS_BY_CATEGORY = gql`
 
 export const fetchCategoryProducts = createAsyncThunk(
   'categoryProducts/fetchCategoryProducts',
-  async ({ categoryCode, sort, page, limit, filters, isNewQuery }, { rejectWithValue }) => {
+  async ({ code, type, sort, page, limit, filters, isNewQuery }, { rejectWithValue }) => {
     try {
       const client = new GraphQLClient(GRAPHQL_ENDPOINT);
-      const data = await client.request(GET_PRODUCTS_BY_CATEGORY, {
-        code: categoryCode,
+      const query = type === 'tag' ? GET_PRODUCTS_BY_TAG : GET_PRODUCTS_BY_CATEGORY;
+      const data = await client.request(query, {
+        code: code,
         sort,
         page,
         limit,
         filters,
       });
 
-      if (data.getProductsByCategoryCode) {
+      const responseKey = type === 'tag' ? 'getProductsByTagCode' : 'getProductsByCategoryCode';
+      const responseData = data[responseKey];
+
+      if (responseData) {
+        let fetchedProducts = responseData.products || [];
+        fetchedProducts = [...fetchedProducts];
+
         return {
-          products: data.getProductsByCategoryCode.products || [],
-          filters: data.getProductsByCategoryCode.filters || null,
-          totalCount: data.getProductsByCategoryCode.totalCount || 0,
+          products: fetchedProducts,
+          filters: responseData.filters || null,
+          totalCount: responseData.totalCount || 0,
           isNewQuery,
           limit
         };
@@ -116,15 +167,15 @@ const categoryProductsSlice = createSlice({
         state.loading = false;
         state.loadingMore = false;
         const { products, filters, totalCount, isNewQuery, limit } = action.payload;
-        
+
         if (isNewQuery) {
           state.products = products;
         } else {
           state.products = [...state.products, ...products];
         }
-        
+
         state.hasMore = products.length === limit;
-        
+
         // Calculate total count properly if backend didn't send it correctly
         if (totalCount) {
           state.totalCount = totalCount;
@@ -135,7 +186,7 @@ const categoryProductsSlice = createSlice({
         if (filters) {
           // Only update filterData if sizes are empty OR it's a new query (to prevent resetting available filters while browsing)
           if (state.filterData.sizes.length === 0 || isNewQuery) {
-             state.filterData = filters;
+            state.filterData = filters;
           }
         }
       })

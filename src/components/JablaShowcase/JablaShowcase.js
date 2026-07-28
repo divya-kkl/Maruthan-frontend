@@ -1,22 +1,49 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import './JablaShowcase.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
+import { fetchProductsByTag, openQuickView as openGlobalQuickView } from '../../redux/Slice/tagProductsSlice';
 import { useNavigate } from 'react-router-dom';
-import QuickViewModal from '../QuickViewModal/QuickViewModal';
 
 const JablaShowcase = () => {
   const dispatch = useDispatch();
-  const { product, status: productStatus } = useSelector((state) => state.product);
-  const loading = productStatus === 'loading' || productStatus === 'idle';
-  const products = product && product.length > 0 ? [...product].reverse().slice(0, 5) : [];
+  const { status: productStatus } = useSelector((state) => state.product);
+  const { productsByTag, status: tagStatus } = useSelector((state) => state.tagProducts);
+
+  const loading = (productStatus === 'loading' || productStatus === 'idle') && tagStatus !== 'succeeded';
+
+
+  const taggedProducts = productsByTag['JABLA, CO-OD & FROCK'] || [];
+
+  // Combine tagged products first, then generic products, removing duplicates by ID
+  const combinedProducts = [...taggedProducts];
+  const uniqueProductsMap = new Map();
+  combinedProducts.forEach(p => {
+    if (!uniqueProductsMap.has(p.id)) {
+      uniqueProductsMap.set(p.id, p);
+    }
+  });
+
+  const products = Array.from(uniqueProductsMap.values()).slice(0, 5);
+
   const navigate = useNavigate();
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const openQuickView = (product) => { setSelectedProduct(product); };
+  const openQuickView = (product) => { dispatch(openGlobalQuickView(product)); };
 
   useEffect(() => {
-    dispatch(fetchProducts())
+    dispatch(fetchProducts());
+    dispatch(fetchProductsByTag({ code: 'JABLA, CO-OD & FROCK', limit: 5 }));
   }, [dispatch]);
+
+  if (tagStatus === 'failed') {
+    return (
+      <section className="jabla-showcase-section">
+        <div className="jabla-container" style={{ textAlign: 'center', padding: '50px 0' }}>
+          <h2 style={{ fontSize: '1.5rem', marginBottom: '10px', color: '#ff4d4f' }}>Oops! Something went wrong.</h2>
+          <p style={{ fontSize: '1rem', color: '#666' }}>Failed to load products. Please try refreshing the page.</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="jabla-section">
@@ -82,7 +109,6 @@ const JablaShowcase = () => {
             </button>
           )}
         </div>
-        {selectedProduct && <QuickViewModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
       </div>
     </section>
   );

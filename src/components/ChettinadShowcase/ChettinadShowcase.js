@@ -1,25 +1,38 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import './ChettinadShowcase.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
+import { fetchProductsByTag, openQuickView as openGlobalQuickView, setActiveIndex as setGlobalActiveIndex } from '../../redux/Slice/tagProductsSlice';
 import { useNavigate } from 'react-router-dom';
-import QuickViewModal from '../QuickViewModal/QuickViewModal';
 
 
 
 const ChettinadShowcase = () => {
   const dispatch = useDispatch();
-  const { product, status: productStatus } = useSelector((state) => state.product);
-  const loading = productStatus === 'loading' || productStatus === 'idle';
-  const products = product && product.length > 0 ? [...product].reverse().slice(0, 5) : [];
-  const [activeIndex, setActiveIndex] = useState(0);
+  const { status: productStatus } = useSelector((state) => state.product);
+  const { productsByTag, status: tagStatus, activeIndices } = useSelector((state) => state.tagProducts);
+
+  const loading = (productStatus === 'loading' || productStatus === 'idle') && tagStatus !== 'succeeded';
+
+
+  const taggedProducts = productsByTag['CHETTINAD COTTON'] || [];
+
+  const combinedProducts = [...taggedProducts];
+  const uniqueProductsMap = new Map();
+  combinedProducts.forEach(p => {
+    if (!uniqueProductsMap.has(p.id)) {
+      uniqueProductsMap.set(p.id, p);
+    }
+  });
+
+  const products = Array.from(uniqueProductsMap.values()).slice(0, 5);
+  const activeIndex = activeIndices?.['chettinad'] || 0;
   const scrollRef = useRef(null);
   const navigate = useNavigate();
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const openQuickView = (product) => { setSelectedProduct(product); };
+  const openQuickView = (product) => { dispatch(openGlobalQuickView(product)); };
 
   const handleDotClick = (index) => {
-    setActiveIndex(index);
+    dispatch(setGlobalActiveIndex({ section: 'chettinad', index }));
     if (scrollRef.current && scrollRef.current.children[index]) {
       const child = scrollRef.current.children[index];
       scrollRef.current.scrollTo({
@@ -45,15 +58,26 @@ const ChettinadShowcase = () => {
       });
 
       if (closestIndex !== activeIndex) {
-        setActiveIndex(closestIndex);
+        dispatch(setGlobalActiveIndex({ section: 'chettinad', index: closestIndex }));
       }
     }
   };
 
   useEffect(() => {
-    dispatch(fetchProducts())
+    dispatch(fetchProducts());
+    dispatch(fetchProductsByTag({ code: 'CHETTINAD COTTON', limit: 5 }));
   }, [dispatch]);
 
+  if (tagStatus === 'failed') {
+    return (
+      <section className="chettinad-section">
+        <div classsName="chettinad-container" style={{ textAlign: 'center', pedding: '50px 0', color: 'red' }}>
+          <h2>OOps! Something went wrong.</h2>
+          <p>Failed to load products. Please try refreshing the page.</p>
+        </div>
+      </section>
+    )
+  }
   return (
     <section className="chettinad-section">
       <div className="chettinad-container">
@@ -125,7 +149,6 @@ const ChettinadShowcase = () => {
             </button>
           )}
         </div>
-        {selectedProduct && <QuickViewModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
       </div>
     </section>
   );

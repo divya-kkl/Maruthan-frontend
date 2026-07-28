@@ -1,22 +1,47 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import './CottonFrockShowcase.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
+import { fetchProductsByTag, openQuickView as openGlobalQuickView } from '../../redux/Slice/tagProductsSlice';
 import { useNavigate } from 'react-router-dom';
-import QuickViewModal from '../QuickViewModal/QuickViewModal';
 
 const CottonFrockShowcase = () => {
   const dispatch = useDispatch();
-  const { product, status: productStatus } = useSelector((state) => state.product);
-  const loading = productStatus === "loading" || productStatus === 'idel';
-  const products = product && product.length > 0 ? [...product].reverse().slice(0, 5) : [];
+  const { status: productStatus } = useSelector((state) => state.product);
+  const { productsByTag, status: tagStatus } = useSelector((state) => state.tagProducts);
+
+  const loading = (productStatus === 'loading' || productStatus === 'idle' || productStatus === 'idel') && tagStatus !== 'succeeded';
+
+
+  const taggedProducts = productsByTag['COTTON & MODERN FROCK'] || [];
+
+  const combinedProducts = [...taggedProducts];
+  const uniqueProductsMap = new Map();
+  combinedProducts.forEach(p => {
+    if (!uniqueProductsMap.has(p.id)) {
+      uniqueProductsMap.set(p.id, p);
+    }
+  });
+
+  const products = Array.from(uniqueProductsMap.values()).slice(0, 5);
   const navigate = useNavigate();
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const openQuickView = (product) => { setSelectedProduct(product); };
+  const openQuickView = (product) => { dispatch(openGlobalQuickView(product)); };
 
   useEffect(() => {
-    dispatch(fetchProducts())
+    dispatch(fetchProducts());
+    dispatch(fetchProductsByTag({ code: 'COTTON & MODERN FROCK', limit: 5 }));
   }, [dispatch]);
+
+  if (tagStatus === 'failed') {
+    return (
+      <section className="cotton-frock-showcase-section">
+        <div className="cotton-frock-container" style={{ textAlign: 'center', padding: '50px 0' }}>
+          <h2 style={{ fontSize: '1.5rem', marginBottom: '10px', color: '#ff4d4f' }}>Oops! Something went wrong.</h2>
+          <p style={{ fontSize: '1rem', color: '#666' }}>Failed to load products. Please try refreshing the page.</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="cotton-frock-section">
@@ -82,7 +107,6 @@ const CottonFrockShowcase = () => {
             </button>
           )}
         </div>
-        {selectedProduct && <QuickViewModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
       </div>
     </section>
   );

@@ -2,18 +2,44 @@ import React, { useEffect } from 'react';
 import './CustomerFavorites.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
+import { fetchProductsByTag } from '../../redux/Slice/tagProductsSlice';
 import { FaInstagram, FaHeart } from 'react-icons/fa';
 
 const CustomerFavorites = ({ title = "Loved by Our Little Customers 💛" }) => {
-  const { product, status: productStatus } = useSelector((state) => state.product);
-  const loading = productStatus === 'loading';
-  const products = product && product.length > 0 ? [...product].reverse().slice(0, 5) : [];
+  const { status: productStatus } = useSelector((state) => state.product);
+  const { productsByTag, status: tagStatus } = useSelector((state) => state.tagProducts);
+  const loading = (productStatus === 'loading' || productStatus === 'idle') && tagStatus !== 'succeeded';
+
+  
+  const taggedProducts = productsByTag['Loved by Our Little Customers'] || [];
+
+  const combinedProducts = [...taggedProducts];
+  const uniqueProductsMap = new Map();
+  combinedProducts.forEach(p => {
+    if (!uniqueProductsMap.has(p.id)) {
+      uniqueProductsMap.set(p.id, p);
+    }
+  });
+
+  const products = Array.from(uniqueProductsMap.values()).slice(0, 5);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchProducts());
+    dispatch(fetchProductsByTag({ code: 'Loved by Our Little Customers', limit: 5 }));
   }, [dispatch]);
+
+  if (tagStatus === 'failed') {
+    return (
+      <section className="customer-favorites-section">
+        <div className="customer-favorites-container" style={{ textAlign: 'center', padding: '50px 0' }}>
+          <h2 style={{ fontSize: '1.5rem', marginBottom: '10px', color: '#ff4d4f' }}>Oops! Something went wrong.</h2>
+          <p style={{ fontSize: '1rem', color: '#666' }}>Failed to load products. Please try refreshing the page.</p>
+        </div>
+      </section>
+    );
+  }
 
   // Use product name for description, limit length
   const truncate = (str, n) => {

@@ -1,33 +1,60 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import './ProductShowcase.css';
 import { useNavigate } from 'react-router-dom';
-import QuickViewModal from '../QuickViewModal/QuickViewModal';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
-
+import { fetchProductsByTag, openQuickView as openGlobalQuickView } from '../../redux/Slice/tagProductsSlice';
 
 
 const ProductShowcase = () => {
 
 
   const dispatch = useDispatch();
-  const { product, status } = useSelector((state) => state.product);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const { status: productStatus } = useSelector((state) => state.product);
+  const { productsByTag, status: tagStatus } = useSelector((state) => state.tagProducts);
   const navigate = useNavigate();
-  const loading = status === 'loading' || status === 'idle';
-  const displayProducts = product && product.length > 0 ? [...product].reverse().slice(0, 5) : [];
+
+  const loading = (productStatus === 'loading' || productStatus === 'idle') && tagStatus !== 'succeeded';
+
+ 
+  const taggedProducts = productsByTag['TRADITIONAL GOWNS'] || [];
+
+  // Combine tagged products first, then generic products, removing duplicates by ID
+  const combinedProducts = [...taggedProducts];
+  const uniqueProductsMap = new Map();
+  combinedProducts.forEach(p => {
+    if (!uniqueProductsMap.has(p.id)) {
+      uniqueProductsMap.set(p.id, p);
+    }
+  });
+
+  const displayProducts = Array.from(uniqueProductsMap.values()).slice(0, 5);
 
 
   useEffect(() => {
-    dispatch(fetchProducts())
+    dispatch(fetchProducts());
+    dispatch(fetchProductsByTag({ code: 'TRADITIONAL GOWNS', limit: 5 }));
   }, [dispatch]);
 
+  if (tagStatus === 'failed') {
+    return (
+      <section className="product-showcase-section">
+        <div className="showcase-header">
+          <div style={{ textAlign: 'center', padding: '50px 0', width: '100%' }}>
+            <h2 style={{ fontSize: '1.5rem', marginBottom: '10px', color: '#ff4d4f' }}>Oops! Something went wrong.</h2>
+            <p style={{ fontSize: '1rem', color: '#666' }}>Failed to load products. Please try refreshing the page.</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   const openQuickView = (product) => {
-    setSelectedProduct({
+    dispatch(openGlobalQuickView({
       ...product,
       image: product.images && product.images.length > 0 ? product.images[0] : '/images/placeholder.png',
       originalPrice: product.mrp
-    });
+    }));
   };
 
   return (
@@ -94,7 +121,6 @@ const ProductShowcase = () => {
         )}
       </div>
 
-      {selectedProduct && <QuickViewModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
     </section>
   );
 };
