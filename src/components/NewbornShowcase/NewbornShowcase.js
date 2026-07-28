@@ -4,19 +4,38 @@ import { useNavigate } from 'react-router-dom';
 import QuickViewModal from '../QuickViewModal/QuickViewModal';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
+import { fetchProductsByTag } from '../../redux/Slice/tagProductsSlice';
 
 
 const NewbornShowcase = () => {
   const dispatch = useDispatch();
-  const  { product, status:productStatus} = useSelector ((state) => state.product);
-  const  products = product && product.length > 0 ? [...product].reverse().slice( 0,8 ) : [];
-  const loading = productStatus === 'loading';
+  const { product, status: productStatus } = useSelector((state) => state.product);
+  const { productsByTag, status: tagStatus } = useSelector((state) => state.tagProducts);
   const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState(null);
 
+  const loading = (productStatus === 'loading' || productStatus === 'idle') && tagStatus !== 'succeeded';
+
+  const genericProducts = product && product.length > 0 
+    ? [...product].filter(p => !p.tags || p.tags.length === 0).reverse() 
+    : [];
+  const taggedProducts = productsByTag['newborn'] || [];
+
+  // Combine tagged products first, then generic products, removing duplicates by ID
+  const combinedProducts = [...taggedProducts, ...genericProducts];
+  const uniqueProductsMap = new Map();
+  combinedProducts.forEach(p => {
+    if (!uniqueProductsMap.has(p.id)) {
+      uniqueProductsMap.set(p.id, p);
+    }
+  });
+
+  const displayProducts = Array.from(uniqueProductsMap.values()).slice(0, 8);
+
 
   useEffect(() => {
-    dispatch(fetchProducts())
+    dispatch(fetchProducts());
+    dispatch(fetchProductsByTag({ code: 'newborn', limit: 8 }));
   }, [dispatch]);
 
   return (
@@ -41,8 +60,8 @@ const NewbornShowcase = () => {
                 </div>
               </div>
             ))
-          ) : products.length > 0 ? (
-            products.map((product) => (
+          ) : displayProducts.length > 0 ? (
+            displayProducts.map((product) => (
               <div className="newborn-card" key={product.id}>
                 <div className="newborn-image-wrapper" style={{ cursor: 'pointer' }} onClick={() => navigate(`/product/${product.id}`)}>
                   <img

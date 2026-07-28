@@ -2,17 +2,34 @@ import React, { useEffect } from 'react';
 import './CustomerFavorites.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
+import { fetchProductsByTag } from '../../redux/Slice/tagProductsSlice';
 import { FaInstagram, FaHeart } from 'react-icons/fa';
 
 const CustomerFavorites = ({ title = "Loved by Our Little Customers 💛" }) => {
   const { product, status: productStatus } = useSelector((state) => state.product);
-  const loading = productStatus === 'loading';
-  const products = product && product.length > 0 ? [...product].reverse().slice(0, 5) : [];
+  const { productsByTag, status: tagStatus } = useSelector((state) => state.tagProducts);
+  const loading = (productStatus === 'loading' || productStatus === 'idle') && tagStatus !== 'succeeded';
+
+  const genericProducts = product && product.length > 0 
+    ? [...product].filter(p => !p.tags || p.tags.length === 0).reverse() 
+    : [];
+  const taggedProducts = productsByTag['loved'] || [];
+
+  const combinedProducts = [...taggedProducts, ...genericProducts];
+  const uniqueProductsMap = new Map();
+  combinedProducts.forEach(p => {
+    if (!uniqueProductsMap.has(p.id)) {
+      uniqueProductsMap.set(p.id, p);
+    }
+  });
+
+  const products = Array.from(uniqueProductsMap.values()).slice(0, 5);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchProducts());
+    dispatch(fetchProductsByTag({ code: 'loved', limit: 5 }));
   }, [dispatch]);
 
   // Use product name for description, limit length

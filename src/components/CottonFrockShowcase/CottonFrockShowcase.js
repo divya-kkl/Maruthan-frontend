@@ -2,20 +2,38 @@ import React, { useState, useEffect } from 'react';
 import './CottonFrockShowcase.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
+import { fetchProductsByTag } from '../../redux/Slice/tagProductsSlice';
 import { useNavigate } from 'react-router-dom';
 import QuickViewModal from '../QuickViewModal/QuickViewModal';
 
 const CottonFrockShowcase = () => {
   const dispatch = useDispatch();
   const { product, status: productStatus } = useSelector((state) => state.product);
-  const loading = productStatus === "loading" || productStatus === 'idel';
-  const products = product && product.length > 0 ? [...product].reverse().slice(0, 5) : [];
+  const { productsByTag, status: tagStatus } = useSelector((state) => state.tagProducts);
+
+  const loading = (productStatus === 'loading' || productStatus === 'idle' || productStatus === 'idel') && tagStatus !== 'succeeded';
+
+  const genericProducts = product && product.length > 0 
+    ? [...product].filter(p => !p.tags || p.tags.length === 0).reverse() 
+    : [];
+  const taggedProducts = productsByTag['cotton'] || [];
+
+  const combinedProducts = [...taggedProducts, ...genericProducts];
+  const uniqueProductsMap = new Map();
+  combinedProducts.forEach(p => {
+    if (!uniqueProductsMap.has(p.id)) {
+      uniqueProductsMap.set(p.id, p);
+    }
+  });
+
+  const products = Array.from(uniqueProductsMap.values()).slice(0, 5);
   const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState(null);
   const openQuickView = (product) => { setSelectedProduct(product); };
 
   useEffect(() => {
-    dispatch(fetchProducts())
+    dispatch(fetchProducts());
+    dispatch(fetchProductsByTag({ code: 'cotton', limit: 5 }));
   }, [dispatch]);
 
   return (

@@ -6,6 +6,7 @@ import QuickViewModal from '../QuickViewModal/QuickViewModal';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchBanner } from '../../redux/Slice/bannerSlice';
 import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
+import { fetchProductsByTag } from '../../redux/Slice/tagProductsSlice';
 
 const CarouselCard = ({ product, openQuickView }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -45,14 +46,29 @@ const ProductCarousel = () => {
   const dispatch = useDispatch();
 
   const { product, status: productStatus } = useSelector((state) => state.product);
+  const { productsByTag, status: tagStatus } = useSelector((state) => state.tagProducts);
   const { banner } = useSelector((state) => state.banner);
 
   const [selectedProduct, setSelectedProduct] = useState(null);
   const scrollContainerRef = useRef(null);
   const navigate = useNavigate();
 
-  const loading = productStatus === 'loading' || productStatus === 'idle';
-  const products = product && product.length > 0 ? [...product].reverse() : [];
+  const loading = (productStatus === 'loading' || productStatus === 'idle') && tagStatus !== 'succeeded';
+  
+  const genericProducts = product && product.length > 0 
+    ? [...product].filter(p => !p.tags || p.tags.length === 0).reverse() 
+    : [];
+  const taggedProducts = productsByTag['pattu-pavadai'] || [];
+  
+  const combinedProducts = [...taggedProducts, ...genericProducts];
+  const uniqueProductsMap = new Map();
+  combinedProducts.forEach(p => {
+    if (!uniqueProductsMap.has(p.id)) {
+      uniqueProductsMap.set(p.id, p);
+    }
+  });
+  
+  const products = Array.from(uniqueProductsMap.values());
 
   const bannerData = banner && banner.length > 0 ? banner.find((b) => b.bannerType === 'SECOND') : null;
 
@@ -88,6 +104,7 @@ const ProductCarousel = () => {
 
   useEffect(() => {
     dispatch(fetchProducts());
+    dispatch(fetchProductsByTag({ code: 'pattu-pavadai', limit: 10 }));
     dispatch(fetchBanner());
   }, [dispatch]);
 

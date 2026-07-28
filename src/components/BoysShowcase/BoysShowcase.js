@@ -3,6 +3,7 @@ import './BoysShowcase.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchCategories } from '../../redux/Slice/headerSlice';
 import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
+import { fetchProductsByTag } from '../../redux/Slice/tagProductsSlice';
 import { useNavigate } from 'react-router-dom';
 import QuickViewModal from '../QuickViewModal/QuickViewModal';
 
@@ -10,8 +11,9 @@ const BoysShowcase = () => {
   const dispatch = useDispatch();
   const { categories, loading: catLoading } = useSelector((state) => state.category);
   const { product: allProducts, status: productStatus } = useSelector((state) => state.product);
+  const { productsByTag, status: tagStatus } = useSelector((state) => state.tagProducts);
 
-  const loading = productStatus === 'loading' || productStatus === 'idle' || catLoading;
+  const loading = (productStatus === 'loading' || productStatus === 'idle' || catLoading) && tagStatus !== 'succeeded';
 
   let boysProducts = [];
   if (allProducts && allProducts.length > 0) {
@@ -31,7 +33,20 @@ const BoysShowcase = () => {
     }
   }
 
-  const products = boysProducts.length > 0 ? [...boysProducts].reverse().slice(0, 5) : [];
+  const genericProducts = boysProducts.length > 0 
+    ? [...boysProducts].filter(p => !p.tags || p.tags.length === 0).reverse() 
+    : [];
+  const taggedProducts = productsByTag['boy'] || [];
+
+  const combinedProducts = [...taggedProducts, ...genericProducts];
+  const uniqueProductsMap = new Map();
+  combinedProducts.forEach(p => {
+    if (!uniqueProductsMap.has(p.id)) {
+      uniqueProductsMap.set(p.id, p);
+    }
+  });
+
+  const products = Array.from(uniqueProductsMap.values()).slice(0, 5);
 
   const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -40,6 +55,7 @@ const BoysShowcase = () => {
   useEffect(() => {
     dispatch(fetchCategories());
     dispatch(fetchProducts());
+    dispatch(fetchProductsByTag({ code: 'boy', limit: 5 }));
   }, [dispatch]);
 
   return (

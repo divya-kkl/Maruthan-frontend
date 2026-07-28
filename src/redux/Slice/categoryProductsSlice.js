@@ -45,24 +45,70 @@ const GET_PRODUCTS_BY_CATEGORY = gql`
   }
 `;
 
+const GET_PRODUCTS_BY_TAG = gql`
+  query GetProductsByTagCode($code: String!, $sort: String, $filters: ProductFilterInput, $page: Int, $limit: Int) {
+    getProductsByTagCode(code: $code, sort: $sort, filters: $filters, page: $page, limit: $limit) {
+      products {
+        id
+        name
+        price
+        mrp
+        discountPercentage
+        images
+        brand
+        productCategoriesID
+        productCategoriesCode
+        variants {
+          color
+          size
+          stock
+        }
+        description
+        material
+        embellishment
+        neck
+        sleeves
+        closure
+        lining
+        washCare
+        ironCare
+        createdAt
+        updatedAt
+      }
+      filters {
+        sizes { name count }
+        colors { name count }
+        brands { name count }
+        stock { inStock outOfStock }
+        price { min max }
+      }
+      totalCount
+    }
+  }
+`;
+
 export const fetchCategoryProducts = createAsyncThunk(
   'categoryProducts/fetchCategoryProducts',
-  async ({ categoryCode, sort, page, limit, filters, isNewQuery }, { rejectWithValue }) => {
+  async ({ code, type, sort, page, limit, filters, isNewQuery }, { rejectWithValue }) => {
     try {
       const client = new GraphQLClient(GRAPHQL_ENDPOINT);
-      const data = await client.request(GET_PRODUCTS_BY_CATEGORY, {
-        code: categoryCode,
+      const query = type === 'tag' ? GET_PRODUCTS_BY_TAG : GET_PRODUCTS_BY_CATEGORY;
+      const data = await client.request(query, {
+        code: code,
         sort,
         page,
         limit,
         filters,
       });
 
-      if (data.getProductsByCategoryCode) {
+      const responseKey = type === 'tag' ? 'getProductsByTagCode' : 'getProductsByCategoryCode';
+      const responseData = data[responseKey];
+
+      if (responseData) {
         return {
-          products: data.getProductsByCategoryCode.products || [],
-          filters: data.getProductsByCategoryCode.filters || null,
-          totalCount: data.getProductsByCategoryCode.totalCount || 0,
+          products: responseData.products || [],
+          filters: responseData.filters || null,
+          totalCount: responseData.totalCount || 0,
           isNewQuery,
           limit
         };

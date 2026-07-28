@@ -1,53 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import './ProductShowcase.css';
+import '../ProductShowcase/ProductShowcase.css';
 import { useNavigate } from 'react-router-dom';
 import QuickViewModal from '../QuickViewModal/QuickViewModal';
-import { useSelector, useDispatch } from 'react-redux';
-import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchProductsByTag } from '../../redux/Slice/tagProductsSlice';
 
-
-
-const ProductShowcase = () => {
-
-
-  const dispatch = useDispatch();
-  const { product, status: productStatus } = useSelector((state) => state.product);
-  const { productsByTag, status: tagStatus } = useSelector((state) => state.tagProducts);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+const DynamicShowcase = ({ tagCode, tagName }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [selectedProduct, setSelectedProduct] = useState(null);
   
-  const loading = (productStatus === 'loading' || productStatus === 'idle') && tagStatus !== 'succeeded';
+  const { productsByTag, status } = useSelector(state => state.tagProducts);
   
-  const genericProducts = product && product.length > 0 
-    ? [...product].filter(p => !p.tags || p.tags.length === 0).reverse() 
-    : [];
-  const taggedProducts = productsByTag['TRADITIONAL GOWNS'] || [];
-  
-  // Combine tagged products first, then generic products, removing duplicates by ID
-  const combinedProducts = [...taggedProducts, ...genericProducts];
-  const uniqueProductsMap = new Map();
-  combinedProducts.forEach(p => {
-    if (!uniqueProductsMap.has(p.id)) {
-      uniqueProductsMap.set(p.id, p);
-    }
-  });
-  
-  const displayProducts = Array.from(uniqueProductsMap.values()).slice(0, 5);
-
-
   useEffect(() => {
-    dispatch(fetchProducts());
-    dispatch(fetchProductsByTag({ code: 'TRADITIONAL GOWNS', limit: 5 }));
-  }, [dispatch]);
+    if (tagCode) {
+      dispatch(fetchProductsByTag({ code: tagCode, limit: 10 }));
+    }
+  }, [dispatch, tagCode]);
 
-  const openQuickView = (product) => {
-    setSelectedProduct({
-      ...product,
-      image: product.images && product.images.length > 0 ? product.images[0] : '/images/placeholder.png',
-      originalPrice: product.mrp
-    });
-  };
+  const products = productsByTag[tagCode] || [];
+  const loading = status === 'loading' || status === 'idle';
+
+  const openQuickView = (product) => { setSelectedProduct(product); };
+
+  const displayProducts = products.length > 0 ? [...products].reverse().slice(0, 5) : [];
+
+  if (!loading && displayProducts.length === 0) {
+    return null; // Don't show the section if there are no products
+  }
 
   return (
     <section className="product-showcase-section">
@@ -59,8 +39,7 @@ const ProductShowcase = () => {
           </div>
         ) : (
           <>
-            <h2 className="showcase-title">Traditional gowns</h2>
-            <p className="showcase-subtitle">Loved by parents for its timeless tradition and comfort!</p>
+            <h2 className="showcase-title">{tagName}</h2>
           </>
         )}
       </div>
@@ -77,7 +56,7 @@ const ProductShowcase = () => {
               </div>
             </div>
           ))
-        ) : displayProducts.length > 0 ? (
+        ) : (
           displayProducts.map((product) => (
             <div className="product-card" key={product.id}>
               <div className="product-image-wrapper" style={{ cursor: 'pointer' }} onClick={() => navigate(`/product/${product.id}`)}>
@@ -85,6 +64,10 @@ const ProductShowcase = () => {
                   src={product.images && product.images.length > 0 ? product.images[0] : '/images/placeholder.png'}
                   alt={product.name}
                   className="product-image"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "/images/placeholder.png";
+                  }}
                 />
               </div>
               <div className="product-info">
@@ -98,8 +81,6 @@ const ProductShowcase = () => {
               </div>
             </div>
           ))
-        ) : (
-          <p>No products found.</p>
         )}
       </div>
 
@@ -107,7 +88,7 @@ const ProductShowcase = () => {
         {loading ? (
           <div className="shimmer-button" style={{ width: '150px', margin: '0 auto', borderRadius: '4px' }}></div>
         ) : (
-          <button className="shop-more-btn" onClick={() => navigate('/categories/GIRLS')}>
+          <button className="shop-more-btn" onClick={() => navigate(`/tags/${tagCode}`)}>
             View All
           </button>
         )}
@@ -118,4 +99,4 @@ const ProductShowcase = () => {
   );
 };
 
-export default ProductShowcase;
+export default DynamicShowcase;

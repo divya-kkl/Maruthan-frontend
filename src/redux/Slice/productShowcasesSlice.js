@@ -42,6 +42,11 @@ const GET_PRODUCTS = gql`
       ironCare
       createdAt
       updatedAt
+      tags {
+        id
+        name
+        code
+      }
     }
   }
 }`;

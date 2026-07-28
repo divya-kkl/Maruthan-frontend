@@ -5,8 +5,9 @@ import './CategoryPage.css';
 import QuickViewModal from '../../components/QuickViewModal/QuickViewModal';
 import { fetchCategoryProducts, resetCategoryProducts } from '../../redux/Slice/categoryProductsSlice';
 
-const CategoryPage = () => {
-  const { categoryCode } = useParams();
+const CategoryPage = ({ type = 'category' }) => {
+  const { categoryCode, tagCode } = useParams();
+  const activeCode = type === 'tag' ? tagCode : categoryCode;
   const navigate = useNavigate();
   const dispatch = useDispatch();
   
@@ -121,9 +122,10 @@ const CategoryPage = () => {
       } : null
     };
 
-    if (categoryCode) {
+    if (activeCode) {
       dispatch(fetchCategoryProducts({
-        categoryCode,
+        code: activeCode,
+        type,
         sort,
         page,
         limit: itemsPerPage,
@@ -131,7 +133,7 @@ const CategoryPage = () => {
         isNewQuery: page === 1
       }));
     }
-  }, [categoryCode, sort, activeFiltersKey, page, dispatch, itemsPerPage]);
+  }, [activeCode, type, sort, activeFiltersKey, page, dispatch, itemsPerPage]);
 
   
   useEffect(() => {
@@ -178,7 +180,8 @@ const CategoryPage = () => {
     });
   };
 
-  const formattedCategoryName = categoryCode ? categoryCode.charAt(0).toUpperCase() + categoryCode.slice(1).toLowerCase() : '';
+  const formattedName = activeCode ? activeCode.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ') : '';
+  const prefixTitle = type === 'tag' ? 'Tag_' : 'Best sellers_';
 
   const hasActiveFilters = 
     activeFilters.sizes.length > 0 ||
@@ -201,11 +204,11 @@ const CategoryPage = () => {
 
       {/* Breadcrumbs */}
       <div className="category-breadcrumbs">
-        <Link to="/">Home</Link> - Best sellers_{formattedCategoryName}
+        <Link to="/">Home</Link> - {prefixTitle}{formattedName}
       </div>
 
       {/* Main Title */}
-      <h1 className="category-page-title">Best sellers_{formattedCategoryName}</h1>
+      <h1 className="category-page-title">{prefixTitle}{formattedName}</h1>
 
       {/* Layout Grid (Sidebar + Content) */}
       <div className="category-main-layout">
