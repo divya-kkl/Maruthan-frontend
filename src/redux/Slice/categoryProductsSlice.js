@@ -24,6 +24,7 @@ const GET_PRODUCTS_BY_CATEGORY = gql`
         description
         material
         createdAt
+        updatedAt
         embellishment
         neck
         sleeves
@@ -108,8 +109,10 @@ export const fetchCategoryProducts = createAsyncThunk(
       if (responseData) {
         let fetchedProducts = responseData.products || [];
         fetchedProducts = [...fetchedProducts].sort((a, b) => {
-          const dateA = new Date(Number(a.createdAt) || a.createdAt).getTime();
-          const dateB = new Date(Number(b.createdAt) || b.createdAt).getTime();
+          const timeA = a.updatedAt || a.createdAt;
+          const timeB = b.updatedAt || b.createdAt;
+          const dateA = new Date(Number(timeA) || timeA).getTime();
+          const dateB = new Date(Number(timeB) || timeB).getTime();
           return dateB - dateA;
         });
 

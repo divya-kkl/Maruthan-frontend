@@ -62,8 +62,10 @@ export const fetchProducts = createAsyncThunk(
       const data = await client.request(GET_PRODUCTS);
       const products = (data.getProduct?.products || []);
       let productsList = [...products].sort((a, b) => {
-        const dateA = new Date(Number(a.createdAt) || a.createdAt).getTime();
-        const dateB = new Date(Number(b.createdAt) || b.createdAt).getTime();
+        const timeA = a.updatedAt || a.createdAt;
+        const timeB = b.updatedAt || b.createdAt;
+        const dateA = new Date(Number(timeA) || timeA).getTime();
+        const dateB = new Date(Number(timeB) || timeB).getTime();
         return dateB - dateA;
       });
 
