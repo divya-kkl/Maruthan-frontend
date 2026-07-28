@@ -10,14 +10,14 @@ const JablaShowcase = () => {
   const dispatch = useDispatch();
   const { product, status: productStatus } = useSelector((state) => state.product);
   const { productsByTag, status: tagStatus } = useSelector((state) => state.tagProducts);
-  
+
   const loading = (productStatus === 'loading' || productStatus === 'idle') && tagStatus !== 'succeeded';
-  
-  const genericProducts = product && product.length > 0 
-    ? [...product].filter(p => !p.tags || p.tags.length === 0).reverse() 
+
+  const genericProducts = product && product.length > 0
+    ? [...product].filter(p => !p.tags || p.tags.length === 0)
     : [];
-  const taggedProducts = productsByTag['jabla'] || [];
-  
+  const taggedProducts = productsByTag['JABLA, CO-OD & FROCK'] || [];
+
   // Combine tagged products first, then generic products, removing duplicates by ID
   const combinedProducts = [...taggedProducts, ...genericProducts];
   const uniqueProductsMap = new Map();
@@ -26,16 +26,16 @@ const JablaShowcase = () => {
       uniqueProductsMap.set(p.id, p);
     }
   });
-  
+
   const products = Array.from(uniqueProductsMap.values()).slice(0, 5);
-  
+
   const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState(null);
   const openQuickView = (product) => { setSelectedProduct(product); };
 
   useEffect(() => {
     dispatch(fetchProducts());
-    dispatch(fetchProductsByTag({ code: 'jabla', limit: 5 }));
+    dispatch(fetchProductsByTag({ code: 'JABLA, CO-OD & FROCK', limit: 5 }));
   }, [dispatch]);
 
   return (

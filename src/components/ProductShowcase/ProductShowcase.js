@@ -16,14 +16,14 @@ const ProductShowcase = () => {
   const { productsByTag, status: tagStatus } = useSelector((state) => state.tagProducts);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const navigate = useNavigate();
-  
+
   const loading = (productStatus === 'loading' || productStatus === 'idle') && tagStatus !== 'succeeded';
-  
-  const genericProducts = product && product.length > 0 
-    ? [...product].filter(p => !p.tags || p.tags.length === 0).reverse() 
+
+  const genericProducts = product && product.length > 0
+    ? [...product].filter(p => !p.tags || p.tags.length === 0)
     : [];
   const taggedProducts = productsByTag['TRADITIONAL GOWNS'] || [];
-  
+
   // Combine tagged products first, then generic products, removing duplicates by ID
   const combinedProducts = [...taggedProducts, ...genericProducts];
   const uniqueProductsMap = new Map();
@@ -32,7 +32,7 @@ const ProductShowcase = () => {
       uniqueProductsMap.set(p.id, p);
     }
   });
-  
+
   const displayProducts = Array.from(uniqueProductsMap.values()).slice(0, 5);
 
 

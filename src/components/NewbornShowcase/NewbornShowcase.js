@@ -16,10 +16,10 @@ const NewbornShowcase = () => {
 
   const loading = (productStatus === 'loading' || productStatus === 'idle') && tagStatus !== 'succeeded';
 
-  const genericProducts = product && product.length > 0 
-    ? [...product].filter(p => !p.tags || p.tags.length === 0).reverse() 
+  const genericProducts = product && product.length > 0
+    ? [...product].filter(p => !p.tags || p.tags.length === 0)
     : [];
-  const taggedProducts = productsByTag['newborn'] || [];
+  const taggedProducts = productsByTag['NEWBORN PATTU FROCK'] || [];
 
   // Combine tagged products first, then generic products, removing duplicates by ID
   const combinedProducts = [...taggedProducts, ...genericProducts];
@@ -35,7 +35,7 @@ const NewbornShowcase = () => {
 
   useEffect(() => {
     dispatch(fetchProducts());
-    dispatch(fetchProductsByTag({ code: 'newborn', limit: 8 }));
+    dispatch(fetchProductsByTag({ code: 'NEWBORN PATTU FROCK', limit: 8 }));
   }, [dispatch]);
 
   return (
@@ -77,7 +77,7 @@ const NewbornShowcase = () => {
                   <div className="newborn-price">
                     Rs. {Number(product.price).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                   </div>
-                 
+
                 </div>
               </div>
             ))

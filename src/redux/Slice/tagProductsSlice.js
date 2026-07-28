@@ -28,6 +28,7 @@ export const GET_PRODUCTS_BY_TAG = gql`
         description
         rating
         numReviews
+        createdAt
       }
     }
   }
@@ -40,7 +41,16 @@ export const fetchProductsByTag = createAsyncThunk(
       const client = new GraphQLClient(GRAPHQL_ENDPOINT);
       const variables = { code, limit };
       const data = await client.request(GET_PRODUCTS_BY_TAG, variables);
-      return { code, products: data.getProductsByTagCode?.products || [] };
+      let products = data.getProductsByTagCode?.products || [];
+      
+      // Explicitly sort by createdTime (createdAt) descending in the frontend
+      products = [...products].sort((a, b) => {
+        const dateA = new Date(Number(a.createdAt) || a.createdAt).getTime();
+        const dateB = new Date(Number(b.createdAt) || b.createdAt).getTime();
+        return dateB - dateA;
+      });
+
+      return { code, products };
     } catch (err) {
       return rejectWithValue(err.message);
     }

@@ -10,7 +10,7 @@ const PromoCarousel = () => {
   const { product, status: productStatus } = useSelector((state) => state.product);
   const navigate = useNavigate();
   const loading = productStatus === 'loading' || productStatus === 'idle';
-  const products = product && product.length > 0 ? [...product].reverse().slice(0, 5) : [];
+  const products = product && product.length > 0 ? [...product].slice(0, 5) : [];
   useEffect(() => {
     dispatch(fetchProducts())
   }, [dispatch]);

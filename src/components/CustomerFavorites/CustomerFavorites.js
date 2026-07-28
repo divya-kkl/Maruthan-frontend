@@ -10,8 +10,8 @@ const CustomerFavorites = ({ title = "Loved by Our Little Customers 💛" }) => 
   const { productsByTag, status: tagStatus } = useSelector((state) => state.tagProducts);
   const loading = (productStatus === 'loading' || productStatus === 'idle') && tagStatus !== 'succeeded';
 
-  const genericProducts = product && product.length > 0 
-    ? [...product].filter(p => !p.tags || p.tags.length === 0).reverse() 
+  const genericProducts = product && product.length > 0
+    ? [...product].filter(p => !p.tags || p.tags.length === 0)
     : [];
   const taggedProducts = productsByTag['loved'] || [];
 

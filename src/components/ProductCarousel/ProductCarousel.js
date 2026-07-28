@@ -54,12 +54,12 @@ const ProductCarousel = () => {
   const navigate = useNavigate();
 
   const loading = (productStatus === 'loading' || productStatus === 'idle') && tagStatus !== 'succeeded';
-  
-  const genericProducts = product && product.length > 0 
-    ? [...product].filter(p => !p.tags || p.tags.length === 0).reverse() 
+
+  const genericProducts = product && product.length > 0
+    ? [...product].filter(p => !p.tags || p.tags.length === 0)
     : [];
-  const taggedProducts = productsByTag['pattu-pavadai'] || [];
-  
+  const taggedProducts = productsByTag['EXCLUSIVE PATTU PAVADAI COLLECTIONS'] || [];
+
   const combinedProducts = [...taggedProducts, ...genericProducts];
   const uniqueProductsMap = new Map();
   combinedProducts.forEach(p => {
@@ -67,7 +67,7 @@ const ProductCarousel = () => {
       uniqueProductsMap.set(p.id, p);
     }
   });
-  
+
   const products = Array.from(uniqueProductsMap.values());
 
   const bannerData = banner && banner.length > 0 ? banner.find((b) => b.bannerType === 'SECOND') : null;
@@ -104,7 +104,7 @@ const ProductCarousel = () => {
 
   useEffect(() => {
     dispatch(fetchProducts());
-    dispatch(fetchProductsByTag({ code: 'pattu-pavadai', limit: 10 }));
+    dispatch(fetchProductsByTag({ code: 'EXCLUSIVE PATTU PAVADAI COLLECTIONS', limit: 10 }));
     dispatch(fetchBanner());
   }, [dispatch]);
 

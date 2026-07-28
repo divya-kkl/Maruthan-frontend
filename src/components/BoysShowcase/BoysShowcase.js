@@ -33,10 +33,10 @@ const BoysShowcase = () => {
     }
   }
 
-  const genericProducts = boysProducts.length > 0 
-    ? [...boysProducts].filter(p => !p.tags || p.tags.length === 0).reverse() 
+  const genericProducts = boysProducts.length > 0
+    ? [...boysProducts].filter(p => !p.tags || p.tags.length === 0)
     : [];
-  const taggedProducts = productsByTag['boy'] || [];
+  const taggedProducts = productsByTag['BOYS ETHNIC WEAR COLLECTION'] || [];
 
   const combinedProducts = [...taggedProducts, ...genericProducts];
   const uniqueProductsMap = new Map();
@@ -55,7 +55,7 @@ const BoysShowcase = () => {
   useEffect(() => {
     dispatch(fetchCategories());
     dispatch(fetchProducts());
-    dispatch(fetchProductsByTag({ code: 'boy', limit: 5 }));
+    dispatch(fetchProductsByTag({ code: 'BOYS ETHNIC WEAR COLLECTION', limit: 5 }));
   }, [dispatch]);
 
   return (

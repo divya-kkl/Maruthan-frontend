@@ -23,6 +23,7 @@ const GET_PRODUCTS_BY_CATEGORY = gql`
         }
         description
         material
+        createdAt
         embellishment
         neck
         sleeves
@@ -105,8 +106,15 @@ export const fetchCategoryProducts = createAsyncThunk(
       const responseData = data[responseKey];
 
       if (responseData) {
+        let fetchedProducts = responseData.products || [];
+        fetchedProducts = [...fetchedProducts].sort((a, b) => {
+          const dateA = new Date(Number(a.createdAt) || a.createdAt).getTime();
+          const dateB = new Date(Number(b.createdAt) || b.createdAt).getTime();
+          return dateB - dateA;
+        });
+
         return {
-          products: responseData.products || [],
+          products: fetchedProducts,
           filters: responseData.filters || null,
           totalCount: responseData.totalCount || 0,
           isNewQuery,
@@ -162,15 +170,15 @@ const categoryProductsSlice = createSlice({
         state.loading = false;
         state.loadingMore = false;
         const { products, filters, totalCount, isNewQuery, limit } = action.payload;
-        
+
         if (isNewQuery) {
           state.products = products;
         } else {
           state.products = [...state.products, ...products];
         }
-        
+
         state.hasMore = products.length === limit;
-        
+
         // Calculate total count properly if backend didn't send it correctly
         if (totalCount) {
           state.totalCount = totalCount;
@@ -181,7 +189,7 @@ const categoryProductsSlice = createSlice({
         if (filters) {
           // Only update filterData if sizes are empty OR it's a new query (to prevent resetting available filters while browsing)
           if (state.filterData.sizes.length === 0 || isNewQuery) {
-             state.filterData = filters;
+            state.filterData = filters;
           }
         }
       })

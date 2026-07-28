@@ -8,9 +8,9 @@ import { fetchProductsByTag, openQuickView, closeQuickView } from '../../redux/S
 const DynamicShowcase = ({ tagCode, tagName }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  
+
   const { productsByTag, status, selectedProduct } = useSelector(state => state.tagProducts);
-  
+
   useEffect(() => {
     if (tagCode) {
       dispatch(fetchProductsByTag({ code: tagCode, limit: 10 }));
@@ -22,7 +22,7 @@ const DynamicShowcase = ({ tagCode, tagName }) => {
 
   const handleOpenQuickView = (product) => { dispatch(openQuickView(product)); };
 
-  const displayProducts = products.length > 0 ? [...products].reverse().slice(0, 5) : [];
+  const displayProducts = products.length > 0 ? [...products].slice(0, 5) : [];
 
   if (!loading && displayProducts.length === 0) {
     return null; // Don't show the section if there are no products

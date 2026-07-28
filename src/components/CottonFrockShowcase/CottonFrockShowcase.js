@@ -13,10 +13,10 @@ const CottonFrockShowcase = () => {
 
   const loading = (productStatus === 'loading' || productStatus === 'idle' || productStatus === 'idel') && tagStatus !== 'succeeded';
 
-  const genericProducts = product && product.length > 0 
-    ? [...product].filter(p => !p.tags || p.tags.length === 0).reverse() 
+  const genericProducts = product && product.length > 0
+    ? [...product].filter(p => !p.tags || p.tags.length === 0)
     : [];
-  const taggedProducts = productsByTag['cotton'] || [];
+  const taggedProducts = productsByTag['COTTON & MODERN FROCK'] || [];
 
   const combinedProducts = [...taggedProducts, ...genericProducts];
   const uniqueProductsMap = new Map();
@@ -33,7 +33,7 @@ const CottonFrockShowcase = () => {
 
   useEffect(() => {
     dispatch(fetchProducts());
-    dispatch(fetchProductsByTag({ code: 'cotton', limit: 5 }));
+    dispatch(fetchProductsByTag({ code: 'COTTON & MODERN FROCK', limit: 5 }));
   }, [dispatch]);
 
   return (
