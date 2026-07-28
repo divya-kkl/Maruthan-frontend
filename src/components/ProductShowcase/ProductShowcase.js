@@ -41,6 +41,19 @@ const ProductShowcase = () => {
     dispatch(fetchProductsByTag({ code: 'TRADITIONAL GOWNS', limit: 5 }));
   }, [dispatch]);
 
+  if (tagStatus === 'failed') {
+    return (
+      <section className="product-showcase-section">
+        <div className="showcase-header">
+          <div style={{ textAlign: 'center', padding: '50px 0', width: '100%' }}>
+            <h2 style={{ fontSize: '1.5rem', marginBottom: '10px', color: '#ff4d4f' }}>Oops! Something went wrong.</h2>
+            <p style={{ fontSize: '1rem', color: '#666' }}>Failed to load products. Please try refreshing the page.</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   const openQuickView = (product) => {
     setSelectedProduct({
       ...product,

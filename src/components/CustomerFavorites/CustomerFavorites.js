@@ -32,6 +32,17 @@ const CustomerFavorites = ({ title = "Loved by Our Little Customers 💛" }) => 
     dispatch(fetchProductsByTag({ code: 'loved', limit: 5 }));
   }, [dispatch]);
 
+  if (tagStatus === 'failed') {
+    return (
+      <section className="customer-favorites-section">
+        <div className="customer-favorites-container" style={{ textAlign: 'center', padding: '50px 0' }}>
+          <h2 style={{ fontSize: '1.5rem', marginBottom: '10px', color: '#ff4d4f' }}>Oops! Something went wrong.</h2>
+          <p style={{ fontSize: '1rem', color: '#666' }}>Failed to load products. Please try refreshing the page.</p>
+        </div>
+      </section>
+    );
+  }
+
   // Use product name for description, limit length
   const truncate = (str, n) => {
     return (str.length > n) ? str.substr(0, n - 1) + '...' : str;

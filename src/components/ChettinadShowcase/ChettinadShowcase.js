@@ -71,7 +71,17 @@ const ChettinadShowcase = () => {
     dispatch(fetchProducts());
     dispatch(fetchProductsByTag({ code: 'CHETTINAD COTTON', limit: 5 }));
   }, [dispatch]);
-
+  
+  if(tagStatus === 'failed'){
+    return (
+      <section className="chettinad-section">
+        <div classsName="chettinad-container" style={{ textAlign: 'center', pedding: '50px 0', color: 'red'}}>
+          <h2>OOps! Something went wrong.</h2>
+          <p>Failed to load products. Please try refreshing the page.</p>
+        </div>
+      </section>
+    )
+  }
   return (
     <section className="chettinad-section">
       <div className="chettinad-container">

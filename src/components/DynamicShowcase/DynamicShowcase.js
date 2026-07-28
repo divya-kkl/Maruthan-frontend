@@ -28,6 +28,19 @@ const DynamicShowcase = ({ tagCode, tagName }) => {
     return null; // Don't show the section if there are no products
   }
 
+  if (status === 'failed') {
+    return (
+      <section className="product-showcase-section">
+        <div className="showcase-header">
+          <div style={{ textAlign: 'center', padding: '50px 0', color: '#ff4d4f', width: '100%' }}>
+            <h2 style={{ fontSize: '1.5rem', marginBottom: '10px' }}>Oops! Something went wrong.</h2>
+            <p style={{ fontSize: '1rem', color: '#666' }}>Failed to load products. Please try refreshing the page.</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+  
   return (
     <section className="product-showcase-section">
       <div className="showcase-header">

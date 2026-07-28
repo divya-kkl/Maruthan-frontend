@@ -108,13 +108,7 @@ export const fetchCategoryProducts = createAsyncThunk(
 
       if (responseData) {
         let fetchedProducts = responseData.products || [];
-        fetchedProducts = [...fetchedProducts].sort((a, b) => {
-          const timeA = a.updatedAt || a.createdAt;
-          const timeB = b.updatedAt || b.createdAt;
-          const dateA = new Date(Number(timeA) || timeA).getTime();
-          const dateB = new Date(Number(timeB) || timeB).getTime();
-          return dateB - dateA;
-        });
+        fetchedProducts = [...fetchedProducts];
 
         return {
           products: fetchedProducts,
