@@ -60,6 +60,7 @@ const tagProductsSlice = createSlice({
     status: 'idle',
     error: null,
     selectedProduct: null,
+    activeIndices: {}, // stores active index for each carousel: { 'chettinad': 0, 'newborn': 0 }
   },
   reducers: {
     openQuickView: (state, action) => {
@@ -67,6 +68,10 @@ const tagProductsSlice = createSlice({
     },
     closeQuickView: (state) => {
       state.selectedProduct = null;
+    },
+    setActiveIndex: (state, action) => {
+      const { section, index } = action.payload;
+      state.activeIndices[section] = index;
     }
   },
   extraReducers: (builder) => {
@@ -85,5 +90,5 @@ const tagProductsSlice = createSlice({
   }
 });
 
-export const { openQuickView, closeQuickView } = tagProductsSlice.actions;
+export const { openQuickView, closeQuickView, setActiveIndex } = tagProductsSlice.actions;
 export default tagProductsSlice.reducer;

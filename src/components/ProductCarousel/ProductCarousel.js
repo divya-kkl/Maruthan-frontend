@@ -2,11 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import './ProductCarousel.css';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import QuickViewModal from '../QuickViewModal/QuickViewModal';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchBanner } from '../../redux/Slice/bannerSlice';
 import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
-import { fetchProductsByTag } from '../../redux/Slice/tagProductsSlice';
+import { fetchProductsByTag, openQuickView as openGlobalQuickView } from '../../redux/Slice/tagProductsSlice';
 
 const CarouselCard = ({ product, openQuickView }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -45,22 +44,19 @@ const CarouselCard = ({ product, openQuickView }) => {
 const ProductCarousel = () => {
   const dispatch = useDispatch();
 
-  const { product, status: productStatus } = useSelector((state) => state.product);
+  const { status: productStatus } = useSelector((state) => state.product);
   const { productsByTag, status: tagStatus } = useSelector((state) => state.tagProducts);
   const { banner } = useSelector((state) => state.banner);
 
-  const [selectedProduct, setSelectedProduct] = useState(null);
   const scrollContainerRef = useRef(null);
   const navigate = useNavigate();
 
   const loading = (productStatus === 'loading' || productStatus === 'idle') && tagStatus !== 'succeeded';
 
-  const genericProducts = product && product.length > 0
-    ? [...product].filter(p => !p.tags || p.tags.length === 0)
-    : [];
+
   const taggedProducts = productsByTag['EXCLUSIVE PATTU PAVADAI COLLECTIONS'] || [];
 
-  const combinedProducts = [...taggedProducts, ...genericProducts];
+  const combinedProducts = [...taggedProducts];
   const uniqueProductsMap = new Map();
   combinedProducts.forEach(p => {
     if (!uniqueProductsMap.has(p.id)) {
@@ -73,7 +69,7 @@ const ProductCarousel = () => {
   const bannerData = banner && banner.length > 0 ? banner.find((b) => b.bannerType === 'SECOND') : null;
 
   const openQuickView = (product) => {
-    setSelectedProduct(product);
+    dispatch(openGlobalQuickView(product));
   };
 
   const scrollLeft = () => {
@@ -178,7 +174,6 @@ const ProductCarousel = () => {
             )}
           </div>
         </div>
-        {selectedProduct && <QuickViewModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
       </section>
 
       {/* Girls Wear Banner Section (Second Image) */}

@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import './CategoryPage.css';
-import QuickViewModal from '../../components/QuickViewModal/QuickViewModal';
 import { fetchCategoryProducts, resetCategoryProducts } from '../../redux/Slice/categoryProductsSlice';
+import { openQuickView as openGlobalQuickView } from '../../redux/Slice/tagProductsSlice';
 
 const CategoryPage = ({ type = 'category' }) => {
   const { categoryCode, tagCode } = useParams();
@@ -20,7 +20,6 @@ const CategoryPage = ({ type = 'category' }) => {
     totalCount,
   } = useSelector((state) => state.categoryProducts);
 
-  const [selectedProduct, setSelectedProduct] = useState(null);
   const [sort, setSort] = useState('features');
   const [page, setPage] = useState(1);
   const [hasScrolled, setHasScrolled] = useState(false);
@@ -173,11 +172,11 @@ const CategoryPage = ({ type = 'category' }) => {
   }, [hasMore, loadingMore, hasScrolled]);
 
   const openQuickView = (product) => {
-    setSelectedProduct({
+    dispatch(openGlobalQuickView({
       ...product,
       image: product.images && product.images.length > 0 ? product.images[0] : '/images/placeholder.png',
       originalPrice: product.mrp
-    });
+    }));
   };
 
   const formattedName = activeCode ? activeCode.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ') : '';
@@ -593,7 +592,6 @@ const CategoryPage = ({ type = 'category' }) => {
         </div>
       </div>
 
-      {selectedProduct && <QuickViewModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
     </div>
   );
 };

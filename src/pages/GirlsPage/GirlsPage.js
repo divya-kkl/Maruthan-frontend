@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import './GirlsPage.css';
-import QuickViewModal from '../../components/QuickViewModal/QuickViewModal';
 import { fetchCategoryProducts, resetCategoryProducts } from '../../redux/Slice/categoryProductsSlice';
+import { openQuickView as openGlobalQuickView } from '../../redux/Slice/tagProductsSlice';
 
 const GirlsPage = () => {
   const navigate = useNavigate();
@@ -17,7 +17,6 @@ const GirlsPage = () => {
     totalCount,
   } = useSelector((state) => state.categoryProducts);
 
-  const [selectedProduct, setSelectedProduct] = useState(null);
   const [page, setPage] = useState(1);
   const [hasScrolled, setHasScrolled] = useState(false);
   const itemsPerPage = 12;
@@ -86,11 +85,11 @@ const GirlsPage = () => {
   }, [hasMore, loadingMore, hasScrolled]);
 
   const openQuickView = (product) => {
-    setSelectedProduct({
+    dispatch(openGlobalQuickView({
       ...product,
       image: product.images && product.images.length > 0 ? product.images[0] : '/images/placeholder.png',
       originalPrice: product.mrp
-    });
+    }));
   };
 
   return (
@@ -288,7 +287,6 @@ const GirlsPage = () => {
         </div>
       </div>
 
-      {selectedProduct && <QuickViewModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
     </div>
   );
 };

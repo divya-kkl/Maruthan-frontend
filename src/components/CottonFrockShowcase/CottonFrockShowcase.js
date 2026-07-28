@@ -1,24 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import './CottonFrockShowcase.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
-import { fetchProductsByTag } from '../../redux/Slice/tagProductsSlice';
+import { fetchProductsByTag, openQuickView as openGlobalQuickView } from '../../redux/Slice/tagProductsSlice';
 import { useNavigate } from 'react-router-dom';
-import QuickViewModal from '../QuickViewModal/QuickViewModal';
 
 const CottonFrockShowcase = () => {
   const dispatch = useDispatch();
-  const { product, status: productStatus } = useSelector((state) => state.product);
+  const { status: productStatus } = useSelector((state) => state.product);
   const { productsByTag, status: tagStatus } = useSelector((state) => state.tagProducts);
 
   const loading = (productStatus === 'loading' || productStatus === 'idle' || productStatus === 'idel') && tagStatus !== 'succeeded';
 
-  const genericProducts = product && product.length > 0
-    ? [...product].filter(p => !p.tags || p.tags.length === 0)
-    : [];
+
   const taggedProducts = productsByTag['COTTON & MODERN FROCK'] || [];
 
-  const combinedProducts = [...taggedProducts, ...genericProducts];
+  const combinedProducts = [...taggedProducts];
   const uniqueProductsMap = new Map();
   combinedProducts.forEach(p => {
     if (!uniqueProductsMap.has(p.id)) {
@@ -28,8 +25,7 @@ const CottonFrockShowcase = () => {
 
   const products = Array.from(uniqueProductsMap.values()).slice(0, 5);
   const navigate = useNavigate();
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const openQuickView = (product) => { setSelectedProduct(product); };
+  const openQuickView = (product) => { dispatch(openGlobalQuickView(product)); };
 
   useEffect(() => {
     dispatch(fetchProducts());
@@ -111,7 +107,6 @@ const CottonFrockShowcase = () => {
             </button>
           )}
         </div>
-        {selectedProduct && <QuickViewModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
       </div>
     </section>
   );

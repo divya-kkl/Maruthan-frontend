@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import './NewbornShowcase.css';
 import { useNavigate } from 'react-router-dom';
-import QuickViewModal from '../QuickViewModal/QuickViewModal';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
 import { fetchProductsByTag } from '../../redux/Slice/tagProductsSlice';
@@ -9,20 +8,17 @@ import { fetchProductsByTag } from '../../redux/Slice/tagProductsSlice';
 
 const NewbornShowcase = () => {
   const dispatch = useDispatch();
-  const { product, status: productStatus } = useSelector((state) => state.product);
+  const { status: productStatus } = useSelector((state) => state.product);
   const { productsByTag, status: tagStatus } = useSelector((state) => state.tagProducts);
   const navigate = useNavigate();
-  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const loading = (productStatus === 'loading' || productStatus === 'idle') && tagStatus !== 'succeeded';
 
-  const genericProducts = product && product.length > 0
-    ? [...product].filter(p => !p.tags || p.tags.length === 0)
-    : [];
+
   const taggedProducts = productsByTag['NEWBORN PATTU FROCK'] || [];
 
   // Combine tagged products first, then generic products, removing duplicates by ID
-  const combinedProducts = [...taggedProducts, ...genericProducts];
+  const combinedProducts = [...taggedProducts];
   const uniqueProductsMap = new Map();
   combinedProducts.forEach(p => {
     if (!uniqueProductsMap.has(p.id)) {
@@ -101,12 +97,11 @@ const NewbornShowcase = () => {
           {loading ? (
             <div className="shimmer-button" style={{ width: '150px', margin: '0 auto', borderRadius: '4px' }}></div>
           ) : (
-            <button className="newborn-view-all-btn" onClick={() => navigate('/categories/NEWBORN')}>
+            <button className="newborn-view-all-btn" onClick={() => navigate('/categories/GIRLS')}>
               View All
             </button>
           )}
         </div>
-        {selectedProduct && <QuickViewModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
       </div>
     </section>
   );

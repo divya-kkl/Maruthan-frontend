@@ -31,7 +31,7 @@
 
 .boys-grid {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 20px;
   overflow-x: auto;
   padding-bottom: 30px;
@@ -45,8 +45,9 @@
 }
 
 .boys-card {
-  flex: 1;
+  flex: 0 0 calc(20% - 16px);
   min-width: 200px;
+  max-width: calc(20% - 16px);
   background-color: transparent;
   display: flex;
   flex-direction: column;

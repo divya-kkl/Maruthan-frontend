@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import './BoysShowcase.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchCategories } from '../../redux/Slice/headerSlice';
 import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
-import { fetchProductsByTag } from '../../redux/Slice/tagProductsSlice';
+import { fetchProductsByTag, openQuickView as openGlobalQuickView } from '../../redux/Slice/tagProductsSlice';
 import { useNavigate } from 'react-router-dom';
-import QuickViewModal from '../QuickViewModal/QuickViewModal';
 
 const BoysShowcase = () => {
   const dispatch = useDispatch();
@@ -33,12 +32,10 @@ const BoysShowcase = () => {
     }
   }
 
-  const genericProducts = boysProducts.length > 0
-    ? [...boysProducts].filter(p => !p.tags || p.tags.length === 0)
-    : [];
+
   const taggedProducts = productsByTag['BOYS ETHNIC WEAR COLLECTION'] || [];
 
-  const combinedProducts = [...taggedProducts, ...genericProducts];
+  const combinedProducts = [...taggedProducts];
   const uniqueProductsMap = new Map();
   combinedProducts.forEach(p => {
     if (!uniqueProductsMap.has(p.id)) {
@@ -49,8 +46,7 @@ const BoysShowcase = () => {
   const products = Array.from(uniqueProductsMap.values()).slice(0, 5);
 
   const navigate = useNavigate();
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const openQuickView = (product) => { setSelectedProduct(product); };
+  const openQuickView = (product) => { dispatch(openGlobalQuickView(product)); };
 
   useEffect(() => {
     dispatch(fetchCategories());
@@ -133,7 +129,6 @@ const BoysShowcase = () => {
             </button>
           )}
         </div>
-        {selectedProduct && <QuickViewModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />}
       </div>
     </section>
   );

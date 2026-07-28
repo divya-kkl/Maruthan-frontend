@@ -6,16 +6,14 @@ import { fetchProductsByTag } from '../../redux/Slice/tagProductsSlice';
 import { FaInstagram, FaHeart } from 'react-icons/fa';
 
 const CustomerFavorites = ({ title = "Loved by Our Little Customers 💛" }) => {
-  const { product, status: productStatus } = useSelector((state) => state.product);
+  const { status: productStatus } = useSelector((state) => state.product);
   const { productsByTag, status: tagStatus } = useSelector((state) => state.tagProducts);
   const loading = (productStatus === 'loading' || productStatus === 'idle') && tagStatus !== 'succeeded';
 
-  const genericProducts = product && product.length > 0
-    ? [...product].filter(p => !p.tags || p.tags.length === 0)
-    : [];
-  const taggedProducts = productsByTag['loved'] || [];
+  
+  const taggedProducts = productsByTag['Loved by Our Little Customers'] || [];
 
-  const combinedProducts = [...taggedProducts, ...genericProducts];
+  const combinedProducts = [...taggedProducts];
   const uniqueProductsMap = new Map();
   combinedProducts.forEach(p => {
     if (!uniqueProductsMap.has(p.id)) {
@@ -29,7 +27,7 @@ const CustomerFavorites = ({ title = "Loved by Our Little Customers 💛" }) => 
 
   useEffect(() => {
     dispatch(fetchProducts());
-    dispatch(fetchProductsByTag({ code: 'loved', limit: 5 }));
+    dispatch(fetchProductsByTag({ code: 'Loved by Our Little Customers', limit: 5 }));
   }, [dispatch]);
 
   if (tagStatus === 'failed') {
