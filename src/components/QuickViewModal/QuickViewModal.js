@@ -24,8 +24,7 @@ const QuickViewModal = ({ product, onClose }) => {
         if (!exists) {
           const matched = ALL_SIZES.find(s => 
             s.key.toLowerCase() === variant.size.toLowerCase() || 
-            s.display.toLowerCase() === variant.size.toLowerCase() ||
-            s.display.toLowerCase().includes(variant.size.toLowerCase())
+            s.display.toLowerCase() === variant.size.toLowerCase()
           );
           acc.push({
             key: matched ? matched.key : variant.size,
@@ -141,8 +140,7 @@ const QuickViewModal = ({ product, onClose }) => {
                   if (!exists) {
                     const matched = ALL_SIZES.find(s => 
                       s.key.toLowerCase() === variant.size.toLowerCase() || 
-                      s.display.toLowerCase() === variant.size.toLowerCase() ||
-                      s.display.toLowerCase().includes(variant.size.toLowerCase())
+                      s.display.toLowerCase() === variant.size.toLowerCase()
                     );
                     acc.push({
                       key: matched ? matched.key : variant.size,
