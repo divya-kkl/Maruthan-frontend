@@ -35,9 +35,8 @@
 }
 
 .chettinad-card {
-  flex: 0 0 calc(20% - 16px);
-  min-width: 200px;
-  max-width: calc(20% - 16px);
+  flex: 1;
+  min-width: 220px;
   background-color: transparent;
   display: flex;
   flex-direction: column;
