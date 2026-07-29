@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./CheckoutPage.css";
 import { useSelector, useDispatch } from "react-redux";
 import { removeFromCart } from "../../redux/Slice/cartSlice";
-import { fetchSavedAddresses, fetchPaymentMethods, placeOrder, createRazorpayOrder, resetOrderSuccess } from "../../redux/Slice/checkoutSlice";
+import { fetchSavedAddresses, fetchPaymentMethods, placeOrder, createRazorpayOrder, resetOrderSuccess, setValidationErrors, setSubmitError } from "../../redux/Slice/checkoutSlice";
 
 
 
@@ -14,7 +14,7 @@ const Checkout = ({ onNavigate }) => {
   const getCartTotal = () => cartItems.reduce((total, item) => total + (item.product.price * item.quantity), 0);
 
   const [loading] = useState(false);
-  const { savedAddresses, loadingAddresses, paymentMethods, isPlacingOrder, orderSuccessData, error } = useSelector(state => state.checkout);
+  const { savedAddresses, loadingAddresses, paymentMethods, isPlacingOrder, orderSuccessData, error, validationErrors, submitError } = useSelector(state => state.checkout);
 
   const [formData, setFormData] = useState({
     addressType: "Home",
@@ -77,9 +77,9 @@ const Checkout = ({ onNavigate }) => {
          navigate("/login");
       }
     } else if (error) {
-      alert("Failed to place order: " + (error || "Please try again."));
+      dispatch(setSubmitError("Failed to place order: " + (error || "Please try again.")));
     }
-  }, [error, navigate, onNavigate]);
+  }, [error, navigate, onNavigate, dispatch]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -106,6 +106,10 @@ const Checkout = ({ onNavigate }) => {
     e.preventDefault();
     if (!cartItems || cartItems.length === 0) return;
 
+    dispatch(setValidationErrors({}));
+    dispatch(setSubmitError(""));
+    let errors = {};
+
     const deliveryAddress = selectedAddressIndex === 'new'
       ? {
           addressType: formData.addressType,
@@ -125,6 +129,23 @@ const Checkout = ({ onNavigate }) => {
           country: savedAddresses[selectedAddressIndex].country,
           phone: savedAddresses[selectedAddressIndex].phone,
         };
+
+    if (selectedAddressIndex !== 'new') {
+       if (!deliveryAddress.phone || deliveryAddress.phone.trim() === '') {
+           errors.addressSelection = "Phone number is missing in this saved address. Please add a new address.";
+       }
+    } else {
+       if (!formData.name || formData.name.trim() === '') errors.name = "Full name is required";
+       if (!formData.phone || formData.phone.length !== 10) errors.phone = "Valid 10-digit phone number is required";
+       if (!formData.street || formData.street.trim() === '') errors.street = "Street address is required";
+       if (!formData.city || formData.city.trim() === '') errors.city = "City is required";
+       if (!formData.state || formData.state.trim() === '') errors.state = "State is required";
+    }
+
+    if (Object.keys(errors).length > 0) {
+        dispatch(setValidationErrors(errors));
+        return;
+    }
 
       const input = {
         deliveryCharge: deliveryCharge || 0,
@@ -285,6 +306,12 @@ const Checkout = ({ onNavigate }) => {
             </div>
           ) : null}
 
+          {validationErrors.addressSelection && (
+             <div style={{ color: '#dc3545', marginTop: '10px', fontSize: '14px', fontWeight: '500' }}>
+                {validationErrors.addressSelection}
+             </div>
+          )}
+
           {selectedAddressIndex === 'new' && (
             <div className="new-address-form">
               <div className="form-row">
@@ -298,6 +325,7 @@ const Checkout = ({ onNavigate }) => {
                 placeholder="Enter your full name"
                 required
               />
+              {validationErrors.name && <span style={{color: '#dc3545', fontSize: '13px', marginTop:'5px', display:'block'}}>{validationErrors.name}</span>}
             </div>
             <div className="form-group">
               <label>Phone Number *</label>
@@ -313,6 +341,7 @@ const Checkout = ({ onNavigate }) => {
                 title="Please enter a valid 10-digit phone number"
                 required
               />
+              {validationErrors.phone && <span style={{color: '#dc3545', fontSize: '13px', marginTop:'5px', display:'block'}}>{validationErrors.phone}</span>}
             </div>
           </div>
 
@@ -326,6 +355,7 @@ const Checkout = ({ onNavigate }) => {
               placeholder="House no, Building, Street, Area"
               required
             />
+            {validationErrors.street && <span style={{color: '#dc3545', fontSize: '13px', marginTop:'5px', display:'block'}}>{validationErrors.street}</span>}
           </div>
 
           <div className="form-row">
@@ -339,6 +369,7 @@ const Checkout = ({ onNavigate }) => {
                 placeholder="City"
                 required
               />
+              {validationErrors.city && <span style={{color: '#dc3545', fontSize: '13px', marginTop:'5px', display:'block'}}>{validationErrors.city}</span>}
             </div>
             <div className="form-group">
               <label>State *</label>
@@ -350,6 +381,7 @@ const Checkout = ({ onNavigate }) => {
                 placeholder="State"
                 required
               />
+              {validationErrors.state && <span style={{color: '#dc3545', fontSize: '13px', marginTop:'5px', display:'block'}}>{validationErrors.state}</span>}
             </div>
           </div>
 
@@ -498,6 +530,12 @@ const Checkout = ({ onNavigate }) => {
                </span>
              </div>
           </div>
+
+          {submitError && (
+             <div style={{ color: '#dc3545', marginBottom: '15px', textAlign: 'center', fontSize: '15px', fontWeight: 'bold' }}>
+                {submitError}
+             </div>
+          )}
 
           <button
             type="submit"

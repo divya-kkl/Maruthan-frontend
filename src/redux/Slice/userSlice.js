@@ -277,6 +277,9 @@ const userSlice = createSlice({
     resetAuthError: (state) => {
       state.authError = null;
     },
+    setAuthError: (state, action) => {
+      state.authError = action.payload;
+    },
     resetRegistrationSuccess: (state) => {
       state.registrationSuccess = false;
     }
@@ -340,6 +343,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUser, logout, resetAuthError, resetRegistrationSuccess } = userSlice.actions;
+export const { setUser, logout, resetAuthError, setAuthError, resetRegistrationSuccess } = userSlice.actions;
 
 export default userSlice.reducer;
