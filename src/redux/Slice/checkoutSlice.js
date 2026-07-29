@@ -104,6 +104,7 @@ const GET_ORDER_BY_ID = gql`
         image
         quantity
         price
+        size
       }
     }
   }

@@ -149,6 +149,7 @@ const OrderSuccessPage = () => {
                             Rs. {(item.price * item.quantity).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                           </span>
                         </div>
+                        {item.size && <span className="premium-item-size" style={{ fontSize: '13px', color: '#666', marginTop: '2px', display: 'block' }}>Size: {item.size}</span>}
                         {isDetailsMode && (
                           orderDetails?.status?.toLowerCase() === 'delivered' && (
                             userReview ? (
