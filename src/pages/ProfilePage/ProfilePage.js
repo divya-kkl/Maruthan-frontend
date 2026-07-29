@@ -267,7 +267,16 @@ const ProfilePage = () => {
               ) : (
                 <div className="orders-list">
                   {orders.map(order => (
-                    <div className="order-card" key={order.id}>
+                    <div 
+                      className="order-card" 
+                      key={order.id} 
+                      onClick={() => {
+                        if (order.items && order.items.length > 0) {
+                          navigate(`/product/${order.items[0].productId}`);
+                        }
+                      }}
+                      style={{ cursor: 'pointer' }}
+                    >
                       <div className="order-header">
                         <span className="order-number">Order #{order.orderNumber}</span>
                         <span className="order-date">
@@ -339,7 +348,7 @@ const ProfilePage = () => {
                                         <button 
                                           type="button"
                                           className="edit-review-inline-btn"
-                                          onClick={() => handleOpenReviewModal(item, order.id, userReview.rating, userReview.comment, userReview.id)}
+                                          onClick={(e) => { e.stopPropagation(); handleOpenReviewModal(item, order.id, userReview.rating, userReview.comment, userReview.id); }}
                                           style={{
                                             marginTop: '6px',
                                             background: 'none',
@@ -371,7 +380,7 @@ const ProfilePage = () => {
                                             <div 
                                               key={starObj.val} 
                                               className="feedback-star-col"
-                                              onClick={() => handleOpenReviewModal(item, order.id, starObj.val)}
+                                              onClick={(e) => { e.stopPropagation(); handleOpenReviewModal(item, order.id, starObj.val); }}
                                             >
                                               <span className="feedback-star-outline">☆</span>
                                               <span className="feedback-star-label">{starObj.label}</span>
@@ -393,7 +402,7 @@ const ProfilePage = () => {
 
                       <div className="order-footer">
                         <span>Total: <strong>Rs. {order.totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</strong></span>
-                        <button className="view-order-btn" onClick={() => navigate(`/order-details/${order.id}`)}>
+                        <button className="view-order-btn" onClick={(e) => { e.stopPropagation(); navigate(`/order-details/${order.id}`); }}>
                           View Details
                         </button>
                       </div>
