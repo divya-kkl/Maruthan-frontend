@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import './App.css';
 import TopBanner from './components/TopBanner/TopBanner';
 import Header from './components/Header/Header';
@@ -25,6 +26,8 @@ import WhatsAppFloat from './components/WhatsAppFloat/WhatsAppFloat';
 
 import OurStoresPage from './pages/OurStoresPage/OurStoresPage';
 import ProductPage from './pages/ProductPage/ProductPage';
+import QuickViewModal from './components/QuickViewModal/QuickViewModal';
+import { closeQuickView } from './redux/Slice/tagProductsSlice';
 
 
 const ScrollToTop = () => {
@@ -72,6 +75,9 @@ const BottomSections = () => {
 let appHasLoadedOnce = false;
 
 function App() {
+  const dispatch = useDispatch();
+  const { selectedProduct } = useSelector((state) => state.tagProducts);
+
   const [globalLoading, setGlobalLoading] = useState(() => {
     return !appHasLoadedOnce;
   });
@@ -177,6 +183,12 @@ function App() {
             <Footer />
           <WhatsAppFloat />
         </div>
+        {selectedProduct && (
+          <QuickViewModal 
+            product={selectedProduct} 
+            onClose={() => dispatch(closeQuickView())} 
+          />
+        )}
       </div>
     </Router>
   );
