@@ -259,6 +259,7 @@ const initialState = {
   error: null,
   authError: null,
   registrationSuccess: false,
+  showPassword: false,
 };
 
 const userSlice = createSlice({
@@ -273,6 +274,12 @@ const userSlice = createSlice({
       state.orders = [];
       localStorage.removeItem('token');
       localStorage.removeItem('user');
+    },
+    setAuthError: (state, action) => {
+      state.authError = action.payload;
+    },
+    togglePasswordVisibility: (state) => {
+      state.showPassword = !state.showPassword;
     },
     resetAuthError: (state) => {
       state.authError = null;
@@ -340,6 +347,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUser, logout, resetAuthError, resetRegistrationSuccess } = userSlice.actions;
+export const { setUser, logout, resetAuthError, setAuthError, togglePasswordVisibility, resetRegistrationSuccess } = userSlice.actions;
 
 export default userSlice.reducer;
