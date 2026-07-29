@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./CheckoutPage.css";
 import { useSelector, useDispatch } from "react-redux";
-import { removeFromCart } from "../../redux/Slice/cartSlice";
+import { removeFromCart, fetchDeliveryCharge } from "../../redux/Slice/cartSlice";
 import { fetchSavedAddresses, fetchPaymentMethods, placeOrder, createRazorpayOrder, resetOrderSuccess } from "../../redux/Slice/checkoutSlice";
 
 
@@ -36,6 +36,7 @@ const Checkout = ({ onNavigate }) => {
     window.scrollTo(0, 0);
     dispatch(fetchSavedAddresses());
     dispatch(fetchPaymentMethods());
+    dispatch(fetchDeliveryCharge());
   }, [dispatch]);
 
   // Set default payment method and select first saved address if available
