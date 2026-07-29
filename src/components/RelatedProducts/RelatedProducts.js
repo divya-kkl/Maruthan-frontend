@@ -6,7 +6,7 @@ import { openQuickView as openGlobalQuickView } from '../../redux/Slice/tagProdu
 const RelatedProducts = ({ title = "New Arrivals" }) => {
   const dispatch = useDispatch();
   const { product, status } = useSelector((state) => state.product);
-  
+
 
   useEffect(() => {
     if (status === 'idle') {
@@ -38,10 +38,10 @@ const RelatedProducts = ({ title = "New Arrivals" }) => {
           displayProducts.map((product) => (
             <div className="rp-card" key={product.id}>
               <div className="rp-image-wrapper" onClick={() => openQuickView(product)}>
-                <img 
-                  src={product.images && product.images.length > 0 ? product.images[0] : '/images/placeholder.png'} 
-                  alt={product.name} 
-                  className="rp-image" 
+                <img
+                  src={product.images && product.images.length > 0 ? product.images[0] : '/images/placeholder.png'}
+                  alt={product.name}
+                  className="rp-image"
                 />
               </div>
               <div className="rp-info">
@@ -51,8 +51,8 @@ const RelatedProducts = ({ title = "New Arrivals" }) => {
                 <p className="rp-price">
                   Rs. {Number(product.price).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                 </p>
-                <button 
-                  className="rp-select-btn" 
+                <button
+                  className="rp-select-btn"
                   onClick={() => openQuickView(product)}
                 >
                   Select Options
