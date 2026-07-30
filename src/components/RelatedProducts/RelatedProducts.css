@@ -109,3 +109,36 @@
 .rp-view-all-btn:hover {
   background-color: #0a1f40;
 }
+
+@media (max-width: 1024px) {
+  .related-products-grid {
+    grid-template-columns: repeat(4, 1fr);
+    padding: 0 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .related-products-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .related-products-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 0 10px;
+  }
+  
+  .rp-name {
+    font-size: 13px;
+  }
+  
+  .rp-price {
+    font-size: 13px;
+  }
+  
+  .rp-info {
+    padding: 10px;
+  }
+}
