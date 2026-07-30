@@ -30,6 +30,7 @@ const GET_ORDERS = gql`
           image
           price
           quantity
+          size
         }
       }
     }

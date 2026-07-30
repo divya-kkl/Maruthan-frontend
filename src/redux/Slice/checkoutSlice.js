@@ -104,6 +104,7 @@ const GET_ORDER_BY_ID = gql`
         image
         quantity
         price
+        size
       }
     }
   }
@@ -237,10 +238,18 @@ const checkoutSlice = createSlice({
     error: null,
     orderDetails: null,
     loadingOrderDetails: true,
+    validationErrors: {},
+    submitError: "",
   },
   reducers: {
     resetOrderSuccess: (state) => {
       state.orderSuccessData = null;
+    },
+    setValidationErrors: (state, action) => {
+      state.validationErrors = action.payload;
+    },
+    setSubmitError: (state, action) => {
+      state.submitError = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -292,5 +301,5 @@ const checkoutSlice = createSlice({
   },
 });
 
-export const { resetOrderSuccess } = checkoutSlice.actions;
+export const { resetOrderSuccess, setValidationErrors, setSubmitError } = checkoutSlice.actions;
 export default checkoutSlice.reducer;

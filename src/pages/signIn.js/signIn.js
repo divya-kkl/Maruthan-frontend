@@ -38,14 +38,27 @@ const SignIn = ({ onBack, onSignIn, onGuest }) => {
   }, [registrationSuccess, dispatch]);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
     if (error) dispatch(resetAuthError());
+
+    if (name === 'phone_number') {
+      const sanitized = value.replace(/[^0-9]/g, '');
+      if (sanitized.length > 10) return;
+      setFormData({ ...formData, [name]: sanitized });
+      return;
+    }
+
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleAuth = async () => {
     dispatch(resetAuthError());
 
     if (isRegisterMode) {
+      if (!formData.phone_number || formData.phone_number.length !== 10) {
+        dispatch(setAuthError("Please enter a valid 10-digit phone number."));
+        return;
+      }
       await dispatch(registerUserThunk(formData));
     } else {
       const resultAction = await dispatch(loginUserThunk({
