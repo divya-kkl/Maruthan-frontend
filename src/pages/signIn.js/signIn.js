@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUserThunk, registerUserThunk, resetAuthError, resetRegistrationSuccess, togglePasswordVisibility } from '../../redux/Slice/userSlice';
+import { loginUserThunk, registerUserThunk, resetAuthError, setAuthError, resetRegistrationSuccess, togglePasswordVisibility } from '../../redux/Slice/userSlice';
 import './signIn.css';
 import eyeOpenIcon from '../../assets/icons/eye-open.svg';
 import eyeClosedIcon from '../../assets/icons/eye-closed.svg';
