@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUserThunk, registerUserThunk, resetAuthError, setAuthError, resetRegistrationSuccess } from '../../redux/Slice/userSlice';
+import { loginUserThunk, registerUserThunk, resetAuthError, resetRegistrationSuccess, togglePasswordVisibility } from '../../redux/Slice/userSlice';
 import './signIn.css';
+import eyeOpenIcon from '../../assets/icons/eye-open.svg';
+import eyeClosedIcon from '../../assets/icons/eye-closed.svg';
 
 const SignIn = ({ onBack, onSignIn, onGuest }) => {
   const [isRegisterMode, setIsRegisterMode] = useState(false);
@@ -19,7 +21,7 @@ const SignIn = ({ onBack, onSignIn, onGuest }) => {
   });
 
   const dispatch = useDispatch();
-  const { loadingAuth: loading, authError: error, registrationSuccess } = useSelector(state => state.user);
+  const { loadingAuth: loading, authError: error, registrationSuccess, showPassword } = useSelector(state => state.user);
 
   useEffect(() => {
     dispatch(resetAuthError());
@@ -104,14 +106,27 @@ const SignIn = ({ onBack, onSignIn, onGuest }) => {
               onChange={handleChange}
             />
 
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              className="auth-input"
-              value={formData.password}
-              onChange={handleChange}
-            />
+            <div style={{ position: 'relative', width: '100%' }}>
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Password"
+                className="auth-input"
+                value={formData.password}
+                onChange={handleChange}
+                style={{ width: '100%', paddingRight: '40px', boxSizing: 'border-box' }}
+              />
+              <span
+                onClick={() => dispatch(togglePasswordVisibility())}
+                className="password-eye-icon"
+              >
+                {!showPassword ? (
+                  <img src={eyeClosedIcon} alt="Hide password" style={{ width: '20px', height: '20px' }} />
+                ) : (
+                  <img src={eyeOpenIcon} alt="Show password" style={{ width: '20px', height: '20px' }} />
+                )}
+              </span>
+            </div>
 
             {isRegisterMode && (
               <>

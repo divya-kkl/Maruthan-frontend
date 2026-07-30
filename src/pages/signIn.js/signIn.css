@@ -285,3 +285,19 @@
     min-height: 0;
   }
 }
+
+.password-eye-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s ease;
+}
+
+.password-eye-icon:hover {
+  color: #4b5563;
+}
