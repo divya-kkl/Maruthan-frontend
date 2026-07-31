@@ -255,8 +255,8 @@ const ProductPage = () => {
             {[1, 2, 3, 4, 5].map((star) => (
               <AiFillStar 
                 key={star} 
-                color={star <= Math.round(reviewAverage || 0) ? '#ffc107' : '#e4e5e9'} 
-                style={{ fontSize: '16px' }}
+                color={star <= Math.round(reviewAverage || 0) ? '#ffc107' : '#c0c0c0'} 
+                style={{ fontSize: '16px', filter: star <= Math.round(reviewAverage || 0) ? 'none' : 'drop-shadow(1px 0px 0px #888) drop-shadow(-1px 0px 0px #888) drop-shadow(0px 1px 0px #888) drop-shadow(0px -1px 0px #888)' }}
               />
             ))}
           </div>
@@ -612,8 +612,8 @@ const ProductPage = () => {
                         {[1, 2, 3, 4, 5].map((star) => (
                           <AiFillStar 
                             key={star} 
-                            color={star <= Math.round(rev.rating) ? '#f59e0b' : '#e2e8f0'} 
-                            style={{ fontSize: '16px' }}
+                            color={star <= Math.round(rev.rating) ? '#f59e0b' : '#c0c0c0'} 
+                            style={{ fontSize: '16px', filter: star <= Math.round(rev.rating) ? 'none' : 'drop-shadow(1px 0px 0px #888) drop-shadow(-1px 0px 0px #888) drop-shadow(0px 1px 0px #888) drop-shadow(0px -1px 0px #888)' }}
                           />
                         ))}
                       </div>
@@ -632,7 +632,7 @@ const ProductPage = () => {
             </div>
           ) : (
             <div className="empty-reviews-state" style={{ textAlign: 'center', padding: '40px 20px', color: '#888' }}>
-              <div className="empty-reviews-icon" style={{ fontSize: '48px', color: '#ddd', marginBottom: '15px' }}>★</div>
+              <div className="empty-reviews-icon" style={{ fontSize: '54px', color: '#c0c0c0', WebkitTextStroke: '2px #888', marginBottom: '15px' }}>★</div>
               <h3 style={{ margin: '0 0 8px 0', color: '#444' }}>No Reviews Yet</h3>
               <p style={{ margin: 0, fontSize: '14px', color: '#777', maxWidth: '360px', marginLeft: 'auto', marginRight: 'auto', lineHeight: '1.5' }}>
                 Be the first to share your thoughts on this product! Submit a review from your "My Orders" page after purchasing.
