@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import {  useEffect } from 'react';
 import './QuickViewModal.css';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../../redux/Slice/cartSlice';
-import { ALL_SIZES } from '../../redux/Slice/productDetailsSlice';
+import { ALL_SIZES, setSelectedSize, setQuantity, setActiveImage } from '../../redux/Slice/productDetailsSlice';
 import { useNavigate } from 'react-router-dom';
 import { FiChevronLeft, FiChevronRight, FiShare2 } from 'react-icons/fi';
 
 const QuickViewModal = ({ product, onClose }) => {
-  const [selectedSize, setSelectedSize] = useState('');
-  const [quantity, setQuantity] = useState(1);
   const dispatch = useDispatch();
+  const selectedSize = useSelector((state) => state.productDetails.selectedSize);
+  const quantity = useSelector((state) => state.productDetails.quantity);
+  const activeImage = useSelector((state) => state.productDetails.activeImage);
   const navigate = useNavigate();
-  const [activeImage, setActiveImage] = useState(product?.images?.[0] || '/images/placeholder.png');
 
   useEffect(() => {
     if (product) {
       if (product.images && product.images.length > 0) {
-        setActiveImage(product.images[0]);
+        dispatch(setActiveImage(product.images[0]));
       }
       const available = (product?.variants || []).reduce((acc, variant) => {
         if (!variant.size) return acc;
@@ -36,24 +36,24 @@ const QuickViewModal = ({ product, onClose }) => {
         return acc;
       }, []).sort((a, b) => a.orderIndex - b.orderIndex);
 
-      if (available.length > 0) {
-        setSelectedSize(available[0].rawSize);
+      if (available.length > 0 && !selectedSize) {
+        dispatch(setSelectedSize(available[0].rawSize));
       }
     }
-  }, [product]);
+  }, [product, dispatch, selectedSize]);
 
   const handlePrevImage = () => {
     if (!product || !product.images || product.images.length <= 1) return;
     const currentIndex = Math.max(0, product.images.indexOf(activeImage));
     const prevIndex = (currentIndex - 1 + product.images.length) % product.images.length;
-    setActiveImage(product.images[prevIndex]);
+    dispatch(setActiveImage(product.images[prevIndex]));
   };
 
   const handleNextImage = () => {
     if (!product || !product.images || product.images.length <= 1) return;
     const currentIndex = Math.max(0, product.images.indexOf(activeImage));
     const nextIndex = (currentIndex + 1) % product.images.length;
-    setActiveImage(product.images[nextIndex]);
+    dispatch(setActiveImage(product.images[nextIndex]));
   };
 
   // Prevent background scrolling when modal is open
@@ -95,6 +95,9 @@ const QuickViewModal = ({ product, onClose }) => {
   };
 
   if (!product) return null;
+
+  const selectedVariant = product.variants?.find(v => v.size === selectedSize);
+  const currentStock = selectedVariant ? selectedVariant.stock : (product.variants?.[0]?.stock || 0);
 
   return (
     <div className="quickview-overlay" onClick={onClose}>
@@ -188,13 +191,21 @@ const QuickViewModal = ({ product, onClose }) => {
                                          selectedSize?.toLowerCase() === sizeOpt.display.toLowerCase() ||
                                          (!selectedSize && activeOpt?.rawSize === sizeOpt.rawSize);
 
+                        const variantForSize = product.variants?.find(v => v.size === sizeOpt.rawSize);
+                        const isOutOfStock = variantForSize ? variantForSize.stock <= 0 : true;
+
                         return (
                           <button
                             key={sizeOpt.key}
-                            className={`size-btn ${isActive ? 'active' : ''}`}
+                            className={`size-btn ${isActive ? 'active' : ''} ${isOutOfStock ? 'out-of-stock-size' : ''}`}
                             onClick={() => {
-                              setSelectedSize(sizeOpt.rawSize);
+                              if (!isOutOfStock) {
+                                dispatch(setSelectedSize(sizeOpt.rawSize));
+                              }
                             }}
+                            disabled={isOutOfStock}
+                            title={isOutOfStock ? 'Out of stock' : ''}
+                            style={isOutOfStock ? { textDecoration: 'line-through', opacity: 0.5, cursor: 'not-allowed' } : {}}
                           >
                             {sizeOpt.display}
                           </button>
@@ -227,25 +238,41 @@ const QuickViewModal = ({ product, onClose }) => {
             </div>
 
             <div className="quickview-action-group">
-              <div className="qty-row">
-                <div className="qty-selector">
-                  <button className="qty-btn" onClick={() => setQuantity(Math.max(1, quantity - 1))}>&minus;</button>
-                  <span className="qty-num">{quantity}</span>
+              {currentStock > 0 ? (
+                <>
+                  <div className="qty-row">
+                    <div className="qty-selector">
+                      <button className="qty-btn" onClick={() => dispatch(setQuantity(Math.max(1, quantity - 1)))}>&minus;</button>
+                      <span className="qty-num">{quantity}</span>
+                      <button 
+                        className="qty-btn" 
+                        onClick={() => dispatch(setQuantity(Math.min(5, quantity + 1)))}
+                        disabled={quantity >= 5}
+                        style={{ opacity: quantity >= 5 ? 0.5 : 1, cursor: quantity >= 5 ? 'not-allowed' : 'pointer' }}
+                      >+</button>
+                    </div>
+                    <button
+                      className="add-cart-btn"
+                      onClick={handleAddToCart}
+                    >
+                      Add to Cart
+                    </button>
+                  </div>
                   <button 
-                    className="qty-btn" 
-                    onClick={() => setQuantity(prev => Math.min(5, prev + 1))}
-                    disabled={quantity >= 5}
-                    style={{ opacity: quantity >= 5 ? 0.5 : 1, cursor: quantity >= 5 ? 'not-allowed' : 'pointer' }}
-                  >+</button>
-                </div>
-                <button
-                  className="add-cart-btn"
-                  onClick={handleAddToCart}
+                    className="buy-now-btn" 
+                    onClick={handleBuyNow}
+                  >
+                    Buy it now
+                  </button>
+                </>
+              ) : (
+                <button 
+                  className="buy-now-btn" 
+                  style={{ width: '100%', marginTop: '0' }}
                 >
-                  Add to Cart
+                  Coming soon
                 </button>
-              </div>
-              <button className="buy-now-btn" onClick={handleBuyNow}>Buy it now</button>
+              )}
             </div>
 
             <a 
