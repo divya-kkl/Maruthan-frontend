@@ -7,7 +7,7 @@ import { FaFacebookF, FaTwitter, FaPinterestP } from 'react-icons/fa';
 import SizeChart from '../../components/SizeChart/SizeChart';
 import RelatedProducts from '../../components/RelatedProducts/RelatedProducts';
 import { addToCart } from '../../redux/Slice/cartSlice';
-import { fetchProductById, resetProductDetails, setSelectedSize, ALL_SIZES } from '../../redux/Slice/productDetailsSlice';
+import { fetchProductById, resetProductDetails, setSelectedSize, setQuantity, setActiveImage, ALL_SIZES } from '../../redux/Slice/productDetailsSlice';
 import { fetchProductReviews } from '../../redux/Slice/reviewSlice';
 import { fetchFAQ } from '../../redux/Slice/FAQSlice';
 import './ProductPage.css';
@@ -17,10 +17,9 @@ const ProductPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { product, loading, error, selectedSize } = useSelector((state) => state.productDetails);
+  const { product, loading, error, selectedSize, quantity, activeImage } = useSelector((state) => state.productDetails);
   const { reviews, averageRating: reviewAverage, totalCount: reviewCount } = useSelector((state) => state.reviews);
   const faqs = useSelector((state) => state.FAQ.FAQ) || [];
-  const [activeImage, setActiveImage] = useState('');
   const [imageLoaded, setImageLoaded] = useState(false);
   const imageRef = useRef(null);
   const reviewsSectionRef = useRef(null);
@@ -41,7 +40,6 @@ const ProductPage = () => {
     return () => clearTimeout(timer);
   }, [activeImage]);
 
-  const [quantity, setQuantity] = useState(1);
   const [openFaqs, setOpenFaqs] = useState({});
   const [openAccordions, setOpenAccordions] = useState([]);
   const [shareSent, setShareSent] = useState(false);
@@ -50,7 +48,7 @@ const ProductPage = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    setQuantity(1);
+    dispatch(setQuantity(1));
     setIsZoomed(false);
     
     if (id) {
@@ -70,7 +68,7 @@ const ProductPage = () => {
   useEffect(() => {
     if (product) {
       if (product.images && product.images.length > 0) {
-        setActiveImage(product.images[0]);
+        dispatch(setActiveImage(product.images[0]));
       }
       const available = (product?.variants || []).reduce((acc, variant) => {
         if (!variant.size) return acc;
@@ -141,13 +139,13 @@ const ProductPage = () => {
     if (!product || !product.images || product.images.length <= 1) return;
     const currentIndex = Math.max(0, product.images.indexOf(activeImage));
     const prevIndex = (currentIndex - 1 + product.images.length) % product.images.length;
-    setActiveImage(product.images[prevIndex]);
+    dispatch(setActiveImage(product.images[prevIndex]));
   };
   const handleNextImage = () => {
     if (!product || !product.images || product.images.length <= 1) return;
     const currentIndex = Math.max(0, product.images.indexOf(activeImage));
     const nextIndex = (currentIndex + 1) % product.images.length;
-    setActiveImage(product.images[nextIndex]);
+    dispatch(setActiveImage(product.images[nextIndex]));
   };
 
   if (loading) {
@@ -213,7 +211,7 @@ const ProductPage = () => {
                 src={img} 
                 alt={`${product.name} thumbnail ${index + 1}`}
                 className={`thumbnail ${activeImage === img ? 'active' : ''}`}
-                onClick={() => setActiveImage(img)}
+                onClick={() => dispatch(setActiveImage(img))}
               />
             ))
           ) : (
@@ -379,13 +377,21 @@ const ProductPage = () => {
                                      selectedSize?.toLowerCase() === sizeOpt.display.toLowerCase() ||
                                      (!selectedSize && activeOpt?.rawSize === sizeOpt.rawSize);
 
+                    const variantForSize = product.variants?.find(v => v.size === sizeOpt.rawSize);
+                    const isOutOfStock = variantForSize ? variantForSize.stock <= 0 : true;
+
                     return (
                       <button 
                         key={sizeOpt.key}
-                        className={`size-option ${isActive ? 'active' : ''}`}
+                        className={`size-option ${isActive ? 'active' : ''} ${isOutOfStock ? 'out-of-stock-size' : ''}`}
                         onClick={() => {
-                          dispatch(setSelectedSize(sizeOpt.rawSize));
+                          if (!isOutOfStock) {
+                            dispatch(setSelectedSize(sizeOpt.rawSize));
+                          }
                         }}
+                        disabled={isOutOfStock}
+                        title={isOutOfStock ? 'Out of stock' : ''}
+                        style={isOutOfStock ? { textDecoration: 'line-through', opacity: 0.5, cursor: 'not-allowed' } : {}}
                       >
                         {sizeOpt.display}
                       </button>
@@ -398,18 +404,39 @@ const ProductPage = () => {
         </div>
 
         <div className="product-actions">
-          <div className="qty-selector">
-            <button className="qty-btn" onClick={() => setQuantity(Math.max(1, quantity - 1))}>&minus;</button>
-            <input type="text" className="qty-input" value={quantity} readOnly />
+          {currentStock > 0 ? (
+            <>
+              <div className="qty-selector">
+                <button className="qty-btn" onClick={() => dispatch(setQuantity(Math.max(1, quantity - 1)))}>&minus;</button>
+                <input type="text" className="qty-input" value={quantity} readOnly />
+                <button 
+                  className="qty-btn" 
+                  onClick={() => dispatch(setQuantity(Math.min(5, quantity + 1)))}
+                  disabled={quantity >= 5}
+                  style={{ opacity: quantity >= 5 ? 0.5 : 1, cursor: quantity >= 5 ? 'not-allowed' : 'pointer' }}
+                >+</button>
+              </div>
+              <button 
+                className="add-to-cart-btn" 
+                onClick={handleAddToCart}
+              >
+                Add to Cart
+              </button>
+              <button 
+                className="buy-now-btn" 
+                onClick={handleBuyNow}
+              >
+                Buy it now
+              </button>
+            </>
+          ) : (
             <button 
-              className="qty-btn" 
-              onClick={() => setQuantity(prev => Math.min(5, prev + 1))}
-              disabled={quantity >= 5}
-              style={{ opacity: quantity >= 5 ? 0.5 : 1, cursor: quantity >= 5 ? 'not-allowed' : 'pointer' }}
-            >+</button>
-          </div>
-          <button className="add-to-cart-btn" onClick={handleAddToCart}>Add to Cart</button>
-          <button className="buy-now-btn" onClick={handleBuyNow}>Buy it now</button>
+              className="buy-now-btn" 
+              style={{ width: '100%', marginTop: '0' }}
+            >
+              Coming soon
+            </button>
+          )}
         </div>
 
         <div className="product-accordions">

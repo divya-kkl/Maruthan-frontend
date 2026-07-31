@@ -57,6 +57,8 @@ const productDetailsSlice = createSlice({
     loading: true,
     error: null,
     selectedSize: '',
+    quantity: 1,
+    activeImage: '',
   },
   reducers: {
     resetProductDetails: (state) => {
@@ -64,9 +66,17 @@ const productDetailsSlice = createSlice({
       state.loading = true;
       state.error = null;
       state.selectedSize = '';
+      state.quantity = 1;
+      state.activeImage = '';
     },
     setSelectedSize: (state, action) => {
       state.selectedSize = action.payload;
+    },
+    setQuantity: (state, action) => {
+      state.quantity = action.payload;
+    },
+    setActiveImage: (state, action) => {
+      state.activeImage = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -89,6 +99,6 @@ const productDetailsSlice = createSlice({
   }
 });
 
-export const { resetProductDetails, setSelectedSize } = productDetailsSlice.actions;
+export const { resetProductDetails, setSelectedSize, setQuantity, setActiveImage } = productDetailsSlice.actions;
 
 export default productDetailsSlice.reducer;
