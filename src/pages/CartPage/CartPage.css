@@ -283,3 +283,86 @@
     font-weight: bold;
   }
 }
+
+
+/* Coupon Section */
+.coupon-section {
+  margin-bottom: 25px;
+}
+
+.coupon-section label {
+  display: block;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #333;
+  margin-bottom: 10px;
+  font-family: 'Times New Roman', Times, serif;
+  font-weight: bold;
+}
+
+.coupon-input-group {
+  display: flex;
+  position: relative;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  border-radius: 4px;
+}
+
+.coupon-input {
+  flex: 1;
+  padding: 14px 15px;
+  border: 2px dashed #cbd5e1;
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+  background-color: #f8fafc;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 14px;
+  color: #333;
+  transition: all 0.2s ease;
+}
+
+.coupon-input:focus {
+  outline: none;
+  border-color: #1a365d;
+  background-color: #fff;
+}
+
+.coupon-apply-btn {
+  background-color: #1a365d;
+  color: white;
+  border: none;
+  padding: 0 25px;
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  border-radius: 0 4px 4px 0;
+  font-family: 'Times New Roman', Times, serif;
+  transition: background-color 0.2s;
+}
+
+.coupon-apply-btn:hover:not(:disabled) {
+  background-color: #122643;
+}
+
+.coupon-apply-btn:disabled {
+  background-color: #a0aec0;
+  cursor: not-allowed;
+}
+
+.coupon-error-text {
+  color: #e53e3e;
+  margin: 8px 0 0 0;
+  font-size: 13px;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.coupon-applied-text {
+  color: #38a169;
+  font-size: 15px;
+  font-weight: bold;
+  font-family: 'Times New Roman', Times, serif;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

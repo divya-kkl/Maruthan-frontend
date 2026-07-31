@@ -10,8 +10,23 @@ import { fetchSavedAddresses, fetchPaymentMethods, placeOrder, createRazorpayOrd
 const Checkout = ({ onNavigate }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { cartItems, deliveryCharge } = useSelector(state => state.cart);
+  const { cartItems, deliveryCharge, coupon } = useSelector(state => state.cart);
   const getCartTotal = () => cartItems.reduce((total, item) => total + (item.product.price * item.quantity), 0);
+
+  const getDiscount = () => {
+    if (!coupon) return 0;
+    const subtotal = getCartTotal();
+    let discount = 0;
+    if (coupon.type === 'PERCENTAGE') {
+      discount = subtotal * (coupon.value / 100);
+    } else if (coupon.type === 'FLAT') {
+      discount = coupon.value;
+    }
+    return discount > subtotal ? subtotal : discount;
+  };
+
+  const discount = getDiscount();
+  const finalTotalAmount = getCartTotal() - discount + (deliveryCharge || 0);
 
   const [loading] = useState(false);
   const { savedAddresses, loadingAddresses, paymentMethods, isPlacingOrder, orderSuccessData, error, validationErrors, submitError } = useSelector(state => state.checkout);
@@ -153,6 +168,7 @@ const Checkout = ({ onNavigate }) => {
         paymentMethod: formData.paymentMethod,
         deliveryAddress,
         notes: formData.notes || undefined,
+        couponCode: coupon ? coupon.code : undefined,
       };
 
       // Purely Frontend Razorpay Payment if UPI (Online Delivery)
@@ -166,8 +182,8 @@ const Checkout = ({ onNavigate }) => {
             return;
         }
 
-        // 1. Calculate amount (cart total + delivery charge)
-        const totalAmount = getCartTotal() + (deliveryCharge || 0);
+        // 1. Calculate amount (cart total - discount + delivery charge)
+        const totalAmount = finalTotalAmount;
 
         // 2. Call backend to create Razorpay Order via Redux
         let rzpResponse;
@@ -516,6 +532,18 @@ const Checkout = ({ onNavigate }) => {
                  Rs. {getCartTotal().toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                </span>
              </div>
+             
+             {coupon && (
+               <div className="summary-row" style={{ color: 'green' }}>
+                 <span>
+                   Discount ({coupon.type === 'PERCENTAGE' ? `${coupon.value}%` : `Rs. ${coupon.value}`})
+                 </span>
+                 <span>
+                   - Rs. {discount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                 </span>
+               </div>
+             )}
+
              <div className="summary-row">
                <span>Delivery Charge</span>
                {deliveryCharge > 0 ? (
@@ -528,7 +556,7 @@ const Checkout = ({ onNavigate }) => {
              <div className="summary-total-row">
                <span>Total to Pay</span>
                <span className="total-amount">
-                 Rs. {(getCartTotal() + (deliveryCharge || 0)).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                 Rs. {finalTotalAmount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                </span>
              </div>
           </div>

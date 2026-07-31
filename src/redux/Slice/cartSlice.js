@@ -13,6 +13,20 @@ const GET_DELIVERY_CHARGERS = gql`
   }
 `;
 
+const GET_COUPON_BY_CODE = gql`
+  query GetCouponByCode($code: String!) {
+    getCouponByCode(code: $code) {
+      id
+      name
+      code
+      type
+      value
+      isActive
+      expireDate
+    }
+  }
+`;
+
 export const fetchDeliveryCharge = createAsyncThunk(
   'cart/fetchDeliveryCharge',
   async (_, { rejectWithValue }) => {
@@ -27,9 +41,40 @@ export const fetchDeliveryCharge = createAsyncThunk(
   }
 );
 
+export const fetchCoupon = createAsyncThunk(
+  'cart/fetchCoupon',
+  async (code, { rejectWithValue }) => {
+    try {
+      const client = new GraphQLClient(GRAPHQL_ENDPOINT);
+      const data = await client.request(GET_COUPON_BY_CODE, { code });
+      if (!data.getCouponByCode) {
+        return rejectWithValue("Invalid coupon code");
+      }
+      if (!data.getCouponByCode.isActive) {
+        return rejectWithValue("Coupon is not active");
+      }
+      // Assuming expireDate is a timestamp or date string that can be parsed
+      const expireDate = new Date(Number(data.getCouponByCode.expireDate) || data.getCouponByCode.expireDate);
+      if (expireDate < new Date()) {
+        return rejectWithValue("coupon code expire");
+      }
+      return data.getCouponByCode;
+    } catch (err) {
+      let errorMessage = err.response?.errors?.[0]?.message || "Failed to apply coupon. Please try again.";
+      if (errorMessage.toLowerCase().includes("expired")) {
+        errorMessage = "coupon code expire";
+      }
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
 const initialState = {
   cartItems: [],
   deliveryCharge: 0,
+  coupon: null,
+  couponError: null,
+  couponInput: '',
   loading: false,
   error: null,
 };
@@ -73,6 +118,19 @@ const cartSlice = createSlice({
     },
     clearCart: (state) => {
       state.cartItems = [];
+      state.coupon = null;
+      state.couponError = null;
+    },
+    removeCoupon: (state) => {
+      state.coupon = null;
+      state.couponError = null;
+      state.couponInput = '';
+    },
+    clearCouponError: (state) => {
+      state.couponError = null;
+    },
+    setCouponInput: (state, action) => {
+      state.couponInput = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -87,10 +145,24 @@ const cartSlice = createSlice({
       .addCase(fetchDeliveryCharge.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(fetchCoupon.pending, (state) => {
+        state.loading = true;
+        state.couponError = null;
+      })
+      .addCase(fetchCoupon.fulfilled, (state, action) => {
+        state.loading = false;
+        state.coupon = action.payload;
+        state.couponError = null;
+      })
+      .addCase(fetchCoupon.rejected, (state, action) => {
+        state.loading = false;
+        state.coupon = null;
+        state.couponError = action.payload;
       });
   }
 });
 
-export const { addToCart, updateQuantity, removeFromCart, clearCart } = cartSlice.actions;
+export const { addToCart, updateQuantity, removeFromCart, clearCart, removeCoupon, clearCouponError, setCouponInput } = cartSlice.actions;
 
 export default cartSlice.reducer;

@@ -1,14 +1,38 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateQuantity, removeFromCart } from '../../redux/Slice/cartSlice';
+import { updateQuantity, removeFromCart, fetchCoupon, clearCouponError, setCouponInput } from '../../redux/Slice/cartSlice';
 import { useNavigate } from 'react-router-dom';
 import './CartPage.css';
 
 const CartPage = () => {
   const dispatch = useDispatch();
-  const cartItems = useSelector(state => state.cart.cartItems);
+  const { cartItems, coupon, couponError, loading, couponInput } = useSelector(state => state.cart);
   const cartTotal = cartItems.reduce((total, item) => total + (item.product.price * item.quantity), 0);
   const navigate = useNavigate();
+
+  // Calculate discount
+  let discount = 0;
+  if (coupon) {
+    if (coupon.type === 'PERCENTAGE') {
+      discount = cartTotal * (coupon.value / 100);
+    } else if (coupon.type === 'FLAT') {
+      discount = coupon.value;
+    }
+  }
+
+  // Ensure discount doesn't exceed cartTotal
+  if (discount > cartTotal) {
+    discount = cartTotal;
+  }
+
+  const finalTotal = cartTotal - discount;
+
+  const handleApplyCoupon = () => {
+    if (couponInput.trim()) {
+      dispatch(fetchCoupon(couponInput.trim()));
+    }
+  };
+
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -112,10 +136,59 @@ const CartPage = () => {
             </div>
 
             <div className="cart-summary-block">
+              {/* Coupon Section */}
+              <div className="coupon-section">
+                <label>Coupon Code</label>
+                <div className="coupon-input-group">
+                  <input 
+                    type="text" 
+                    className="coupon-input"
+                    value={coupon ? coupon.code : couponInput}
+                    onChange={(e) => {
+                      if (!coupon) {
+                        dispatch(setCouponInput(e.target.value));
+                        if (couponError) dispatch(clearCouponError());
+                      }
+                    }}
+                    placeholder="Enter coupon code"
+                    disabled={!!coupon}
+                    style={coupon ? { borderColor: '#1a365d', backgroundColor: 'transparent', color: '#000' } : {}}
+                  />
+                  <button 
+                    className="coupon-apply-btn"
+                    onClick={handleApplyCoupon}
+                    disabled={loading || !!coupon || (!coupon && !couponInput.trim())}
+                    style={coupon ? { backgroundColor: 'rgba(26, 54, 93, 0.15)', color: '#000', opacity: 1 } : {}}
+                  >
+                    {loading ? 'APPLYING...' : (coupon ? 'APPLIED' : 'APPLY')}
+                  </button>
+                </div>
+                {couponError && !coupon && <p className="coupon-error-text">{couponError}</p>}
+                {coupon && (
+                  <div className="coupon-applied-text" style={{ marginTop: '10px', color: '#1a365d' }}>
+                    Coupon Applied: {coupon.code}
+                  </div>
+                )}
+              </div>
+
               <div className="subtotal-row">
                 <span>Subtotal</span>
                 <span className="subtotal-price">Rs. {cartTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
               </div>
+              
+              {coupon && (
+                <div className="subtotal-row discount-row">
+                  <span>Discount ({coupon.type === 'PERCENTAGE' ? `${coupon.value}%` : `Rs. ${coupon.value}`})</span>
+                  <span>- Rs. {discount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
+                </div>
+              )}
+
+              {coupon && (
+                <div className="subtotal-row" style={{ fontWeight: 'bold', fontSize: '18px', marginTop: '10px', borderTop: '1px solid #eee', paddingTop: '10px' }}>
+                  <span>Total</span>
+                  <span className="subtotal-price">Rs. {finalTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+                </div>
+              )}
               <p className="tax-shipping-note">Tax included. Shipping calculated at checkout.</p>
               <button className="checkout-btn" onClick={handleCheckout}>Check out</button>
             </div>
