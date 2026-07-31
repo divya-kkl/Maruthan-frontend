@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./CheckoutPage.css";
 import { useSelector, useDispatch } from "react-redux";
 import { removeFromCart,fetchDeliveryCharge  } from "../../redux/Slice/cartSlice";
-import { fetchSavedAddresses, fetchPaymentMethods, placeOrder, createRazorpayOrder, resetOrderSuccess, setValidationErrors, setSubmitError } from "../../redux/Slice/checkoutSlice";
+import { fetchSavedAddresses, fetchPaymentMethods, placeOrder, createRazorpayOrder, resetOrderSuccess, setValidationErrors, setSubmitError, updateCheckoutFormData, setSelectedAddressIndex } from "../../redux/Slice/checkoutSlice";
 
 
 
@@ -14,22 +14,7 @@ const Checkout = ({ onNavigate }) => {
   const getCartTotal = () => cartItems.reduce((total, item) => total + (item.product.price * item.quantity), 0);
 
   const [loading] = useState(false);
-  const { savedAddresses, loadingAddresses, paymentMethods, isPlacingOrder, orderSuccessData, error, validationErrors, submitError } = useSelector(state => state.checkout);
-
-  const [formData, setFormData] = useState({
-    addressType: "Home",
-    name: "",
-    street: "",
-    city: "",
-    state: "",
-    country: "India",
-    phone: "",
-    paymentMethod: "COD",
-    deliveryCharge: 0,
-    notes: "",
-  });
-
-  const [selectedAddressIndex, setSelectedAddressIndex] = useState('new');
+  const { savedAddresses, loadingAddresses, paymentMethods, isPlacingOrder, orderSuccessData, error, validationErrors, submitError, checkoutFormData: formData, selectedAddressIndex } = useSelector(state => state.checkout);
 
   // We no longer fetch from backend directly
   useEffect(() => {
@@ -43,16 +28,20 @@ const Checkout = ({ onNavigate }) => {
   useEffect(() => {
     if (paymentMethods.length > 0) {
       const firstActive = paymentMethods.find(m => m.status === 'ACTIVE');
-      if (firstActive) {
-        setFormData(prev => ({ ...prev, paymentMethod: firstActive.value }));
+      if (firstActive && !formData.paymentMethod) {
+        dispatch(updateCheckoutFormData({ paymentMethod: firstActive.value }));
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paymentMethods]);
 
   useEffect(() => {
     if (savedAddresses.length > 0) {
-      setSelectedAddressIndex(0);
+      if (selectedAddressIndex === 'new' && (!formData.name && !formData.street)) {
+        dispatch(setSelectedAddressIndex(0));
+      }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [savedAddresses]);
 
   // Navigate on successful order
@@ -89,18 +78,18 @@ const Checkout = ({ onNavigate }) => {
       // Only allow numbers for phone
       const sanitized = value.replace(/[^0-9]/g, '');
       if (sanitized.length > 10) return;
-      setFormData((prev) => ({ ...prev, [name]: sanitized }));
+      dispatch(updateCheckoutFormData({ [name]: sanitized }));
       return;
     }
     
     if (name === 'name' || name === 'city' || name === 'state') {
       // Only allow alphabets and spaces for text fields
       const sanitized = value.replace(/[^a-zA-Z\s]/g, '');
-      setFormData((prev) => ({ ...prev, [name]: sanitized }));
+      dispatch(updateCheckoutFormData({ [name]: sanitized }));
       return;
     }
 
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    dispatch(updateCheckoutFormData({ [name]: value }));
   };
 
   const handlePlaceOrder = async (e) => {
@@ -277,7 +266,7 @@ const Checkout = ({ onNavigate }) => {
                     name="addressSelection"
                     value={index}
                     checked={selectedAddressIndex === index}
-                    onChange={() => setSelectedAddressIndex(index)}
+                    onChange={() => dispatch(setSelectedAddressIndex(index))}
                   />
                   <div className="address-details">
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '5px' }}>
@@ -298,7 +287,7 @@ const Checkout = ({ onNavigate }) => {
                   name="addressSelection"
                   value="new"
                   checked={selectedAddressIndex === 'new'}
-                  onChange={() => setSelectedAddressIndex('new')}
+                  onChange={() => dispatch(setSelectedAddressIndex('new'))}
                 />
                 <div className="address-details">
                   <span className="address-type" style={{ background: 'transparent', padding: 0, fontWeight: 'bold' }}>+ Add New Address</span>

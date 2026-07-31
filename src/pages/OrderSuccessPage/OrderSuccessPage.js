@@ -7,6 +7,45 @@ import { createReview, updateReview, fetchAllReviews, openReviewModal, closeRevi
 import './OrderSuccessPage.css';
 import './OrderDetails.css';
 
+const renderOrderStatusStepper = (status) => {
+  const steps = [
+    { label: 'Order Received', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg> },
+    { label: 'In Transit', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg> },
+    { label: 'Delivered', icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> },
+  ];
+
+  let currentStepIndex = 0;
+  const lowerStatus = status?.toLowerCase() || '';
+  if (lowerStatus === 'delivered') {
+    currentStepIndex = 2;
+  } else if (lowerStatus === 'dispatched' || lowerStatus === 'shipped') {
+    currentStepIndex = 1;
+  } else if (lowerStatus === 'cancelled') {
+    return <div className="payment-badge" style={{ color: 'red', background: '#ffebee', border: '1px solid #ffcdd2' }}>CANCELLED</div>;
+  }
+
+  return (
+    <div className="order-status-stepper">
+      {steps.map((step, index) => {
+        const isPast = index <= currentStepIndex;
+        return (
+          <React.Fragment key={step.label}>
+            <div className={`stepper-step ${isPast ? 'active' : ''}`}>
+              <div className="stepper-icon">
+                {step.icon}
+              </div>
+              <div className="stepper-label">{step.label}</div>
+            </div>
+            {index < steps.length - 1 && (
+              <div className={`stepper-line ${index < currentStepIndex ? 'active' : ''}`}></div>
+            )}
+          </React.Fragment>
+        );
+      })}
+    </div>
+  );
+};
+
 const OrderSuccessPage = () => {
   const navigate = useNavigate();
   const { orderId } = useParams();
@@ -268,9 +307,7 @@ const OrderSuccessPage = () => {
               <div className="premium-shipping-card">
                 <h3 className="dashboard-section-title">Order Status</h3>
                 <div className="payment-method-content">
-                  <div className="payment-badge" style={{ textTransform: 'uppercase' }}>
-                    {orderDetails.status}
-                  </div>
+                  {renderOrderStatusStepper(orderDetails.status)}
                 </div>
               </div>
 
