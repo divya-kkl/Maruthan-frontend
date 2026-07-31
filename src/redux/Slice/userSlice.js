@@ -230,8 +230,12 @@ export const registerUserThunk = createAsyncThunk(
   'user/registerUser',
   async (input, { rejectWithValue }) => {
     try {
+      const payload = { ...input };
+      if (payload.pincode) {
+        payload.pincode = parseInt(payload.pincode, 10);
+      }
       const client = new GraphQLClient(GRAPHQL_ENDPOINT);
-      const data = await client.request(REGISTER_MUTATION, { input });
+      const data = await client.request(REGISTER_MUTATION, { input: payload });
       const { user, token } = data.registerUser;
       
       if (token) {
@@ -261,6 +265,19 @@ const initialState = {
   authError: null,
   registrationSuccess: false,
   showPassword: false,
+  authFormData: {
+    username: '',
+    email: '',
+    password: '',
+    phone_number: '',
+    gender: '',
+    address: '',
+    city: '',
+    state: '',
+    country: '',
+    pincode: ''
+  },
+  authFormErrors: {},
 };
 
 const userSlice = createSlice({
@@ -287,6 +304,22 @@ const userSlice = createSlice({
     },
     resetRegistrationSuccess: (state) => {
       state.registrationSuccess = false;
+    },
+    updateAuthField: (state, action) => {
+      const { name, value } = action.payload;
+      state.authFormData[name] = value;
+      if (state.authFormErrors[name]) {
+        state.authFormErrors[name] = null;
+      }
+    },
+    setAuthFormErrors: (state, action) => {
+      state.authFormErrors = action.payload;
+    },
+    resetAuthForm: (state) => {
+      state.authFormData = {
+        username: '', email: '', password: '', phone_number: '', gender: '', address: '', city: '', state: '', country: '', pincode: ''
+      };
+      state.authFormErrors = {};
     }
   },
   extraReducers: (builder) => {
@@ -348,6 +381,16 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUser, logout, resetAuthError, setAuthError, togglePasswordVisibility, resetRegistrationSuccess } = userSlice.actions;
+export const { 
+  setUser, 
+  logout, 
+  resetAuthError, 
+  setAuthError, 
+  togglePasswordVisibility, 
+  resetRegistrationSuccess,
+  updateAuthField,
+  setAuthFormErrors,
+  resetAuthForm
+} = userSlice.actions;
 
 export default userSlice.reducer;
