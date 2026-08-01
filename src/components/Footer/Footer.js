@@ -26,7 +26,7 @@ const Footer = ({ onNavigate }) => {
         {/* Column 1 */}
         <div className="footer-brand">
           <a href="/">
-            <img src={brand.logo} alt="Little RR" className="footer-logo" style={{ maxWidth: '110px', marginTop: '-20px', marginBottom: '10px' }} />
+            <img src={brand.logo} alt="Little RR" className="footer-logo" style={{ maxWidth: '118px', marginTop: '-20px', marginBottom: '10px' }} />
           </a>
           <p className="footer-description" style={{ fontSize: '14px', lineHeight: '1.5', color: '#fff', margin: 0 }}>
             {brand.description}

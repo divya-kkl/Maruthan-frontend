@@ -391,7 +391,7 @@ const ProductPage = () => {
                         }}
                         disabled={isOutOfStock}
                         title={isOutOfStock ? 'Out of stock' : ''}
-                        style={isOutOfStock ? { textDecoration: 'line-through', opacity: 0.5, cursor: 'not-allowed' } : {}}
+                        style={isOutOfStock ? { textDecoration: 'line-through', cursor: 'not-allowed' } : {}}
                       >
                         {sizeOpt.display}
                       </button>
@@ -484,22 +484,7 @@ const ProductPage = () => {
             )}
           </div>
 
-          <div className="accordion-item">
-            <div className="accordion-header" onClick={() => toggleAccordion('store')}>
-              <span>Our Offline Store</span>
-              <span className="accordion-icon">{openAccordions.includes('store') ? '−' : '+'}</span>
-            </div>
-            {openAccordions.includes('store') && (
-              <div className="accordion-content">
-                <p style={{ marginBottom: '15px' }}>Our Little R.R is open every day, except on Diwali and Pongal Holidays. We welcome you throughout the year with the same warmth and service. Experience Quality and Craftsmanship at Our Trusted Offline Stores.</p>
-                <ol style={{ marginLeft: '20px', lineHeight: '1.8' }}>
-                  <li>Velachery, Chennai: <a href="tel:9786221122" style={{ color: 'inherit', textDecoration: 'underline' }}>9786221122</a></li>
-                  <li>RS Puram, Coimbatore: <a href="tel:9786221122" style={{ color: 'inherit', textDecoration: 'underline' }}>9786221122</a></li>
-                  <li>Singanallur, Coimbatore: <a href="tel:9786221122" style={{ color: 'inherit', textDecoration: 'underline' }}>9786221122</a></li>
-                </ol>
-              </div>
-            )}
-          </div>
+
 
         </div>
       </div>
