@@ -240,6 +240,18 @@ const checkoutSlice = createSlice({
     loadingOrderDetails: true,
     validationErrors: {},
     submitError: "",
+    checkoutFormData: {
+      addressType: "Home",
+      name: "",
+      street: "",
+      city: "",
+      state: "",
+      country: "India",
+      phone: "",
+      paymentMethod: "COD",
+      notes: "",
+    },
+    selectedAddressIndex: 'new',
   },
   reducers: {
     resetOrderSuccess: (state) => {
@@ -250,6 +262,12 @@ const checkoutSlice = createSlice({
     },
     setSubmitError: (state, action) => {
       state.submitError = action.payload;
+    },
+    updateCheckoutFormData: (state, action) => {
+      state.checkoutFormData = { ...state.checkoutFormData, ...action.payload };
+    },
+    setSelectedAddressIndex: (state, action) => {
+      state.selectedAddressIndex = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -301,5 +319,5 @@ const checkoutSlice = createSlice({
   },
 });
 
-export const { resetOrderSuccess, setValidationErrors, setSubmitError } = checkoutSlice.actions;
+export const { resetOrderSuccess, setValidationErrors, setSubmitError, updateCheckoutFormData, setSelectedAddressIndex } = checkoutSlice.actions;
 export default checkoutSlice.reducer;

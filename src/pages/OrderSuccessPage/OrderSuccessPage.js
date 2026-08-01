@@ -4,8 +4,50 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearCart } from '../../redux/Slice/cartSlice';
 import { fetchOrderById } from '../../redux/Slice/checkoutSlice';
 import { createReview, updateReview, fetchAllReviews, openReviewModal, closeReviewModal, setReviewRating, setReviewComment } from '../../redux/Slice/reviewSlice';
+import { ReactComponent as OrderReceivedIcon } from '../../assets/icons/order-received.svg';
+import { ReactComponent as InTransitIcon } from '../../assets/icons/in-transit.svg';
+import { ReactComponent as DeliveredIcon } from '../../assets/icons/delivered.svg';
 import './OrderSuccessPage.css';
 import './OrderDetails.css';
+
+const renderOrderStatusStepper = (status) => {
+  const steps = [
+    { label: 'Order Received', icon: <OrderReceivedIcon /> },
+    { label: 'In Transit', icon: <InTransitIcon /> },
+    { label: 'Delivered', icon: <DeliveredIcon /> },
+  ];
+
+  let currentStepIndex = 0;
+  const lowerStatus = status?.toLowerCase() || '';
+  if (lowerStatus === 'delivered') {
+    currentStepIndex = 2;
+  } else if (lowerStatus === 'dispatched' || lowerStatus === 'shipped') {
+    currentStepIndex = 1;
+  } else if (lowerStatus === 'cancelled') {
+    return <div className="payment-badge" style={{ color: 'red', background: '#ffebee', border: '1px solid #ffcdd2' }}>CANCELLED</div>;
+  }
+
+  return (
+    <div className="order-status-stepper">
+      {steps.map((step, index) => {
+        const isPast = index <= currentStepIndex;
+        return (
+          <React.Fragment key={step.label}>
+            <div className={`stepper-step ${isPast ? 'active' : ''}`}>
+              <div className="stepper-icon">
+                {step.icon}
+              </div>
+              <div className="stepper-label">{step.label}</div>
+            </div>
+            {index < steps.length - 1 && (
+              <div className={`stepper-line ${index < currentStepIndex ? 'active' : ''}`}></div>
+            )}
+          </React.Fragment>
+        );
+      })}
+    </div>
+  );
+};
 
 const OrderSuccessPage = () => {
   const navigate = useNavigate();
@@ -268,9 +310,7 @@ const OrderSuccessPage = () => {
               <div className="premium-shipping-card">
                 <h3 className="dashboard-section-title">Order Status</h3>
                 <div className="payment-method-content">
-                  <div className="payment-badge" style={{ textTransform: 'uppercase' }}>
-                    {orderDetails.status}
-                  </div>
+                  {renderOrderStatusStepper(orderDetails.status)}
                 </div>
               </div>
 
