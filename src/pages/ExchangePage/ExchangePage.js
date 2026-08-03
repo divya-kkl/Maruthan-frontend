@@ -54,12 +54,14 @@ const ExchangePage = () => {
 
         <hr className="exchange-divider" />
 
-        <h2 className="exchange-subtitle">Return Address</h2>
+        <h2 className="exchange-subtitle"></h2>
         <p className="exchange-text">
           little RR<br />
-          10C, 5th Street, Vasantha Nagar,<br />
-          Near Shanthi Gears, Singanallur,<br />
-          Coimbatore - 641005.
+        First Floor, D.no 7359,<br />
+         Sornavallinagar Second Street, <br />
+         Thuthi Nagar,
+          Kalayarkoil,<br />
+           Tamil Nadu 630551
         </p>
       </div>
     </div>

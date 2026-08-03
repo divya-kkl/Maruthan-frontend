@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { FiShare2, FiMaximize2, FiTruck, FiTag, FiBox, FiCopy, FiX, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-import { AiFillStar } from 'react-icons/ai';
+import { IoStar, IoStarOutline } from 'react-icons/io5';
 import { FaFacebookF, FaTwitter, FaPinterestP } from 'react-icons/fa';
 import SizeChart from '../../components/SizeChart/SizeChart';
 import RelatedProducts from '../../components/RelatedProducts/RelatedProducts';
@@ -253,11 +253,11 @@ const ProductPage = () => {
         <div className="product-rating" onClick={scrollToReviews} style={{ cursor: 'pointer', width: 'fit-content' }}>
           <div className="stars" style={{ display: 'flex', gap: '2px' }}>
             {[1, 2, 3, 4, 5].map((star) => (
-              <AiFillStar 
-                key={star} 
-                color={star <= Math.round(reviewAverage || 0) ? '#ffc107' : '#c0c0c0'} 
-                style={{ fontSize: '16px', filter: star <= Math.round(reviewAverage || 0) ? 'none' : 'drop-shadow(1px 0px 0px #888) drop-shadow(-1px 0px 0px #888) drop-shadow(0px 1px 0px #888) drop-shadow(0px -1px 0px #888)' }}
-              />
+              star <= Math.round(reviewAverage || 0) ? (
+                <IoStar key={star} color="#ffc107" style={{ fontSize: '16px' }} />
+              ) : (
+                <IoStarOutline key={star} color="#595858ff" style={{ fontSize: '16px' }} />
+              )
             ))}
           </div>
           <span style={{ fontSize: '13px', color: '#666' }}>
@@ -266,8 +266,13 @@ const ProductPage = () => {
         </div>
 
         <div className="product-price-row">
-          <div className="product-price">
-            Rs. {Number(product.price).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+          <div className="product-price" style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
+            <span>Rs. {Number(product.price).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+            {Number(product.mrp) > Number(product.price) && (
+              <span style={{ textDecoration: 'line-through', color: '#888', fontSize: '18px', fontWeight: 'normal' }}>
+                Rs. {Number(product.mrp).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+              </span>
+            )}
           </div>
 
           <div className="product-meta-links">
@@ -450,7 +455,7 @@ const ProductPage = () => {
                 {product.description ? (
                   <div dangerouslySetInnerHTML={{ __html: product.description }} />
                 ) : (
-                  "Dress your little princess in pure elegance with this stunning dress from Prince N Princess - trusted by 10L+ happy parents across India."
+                  "Dress your little princess in pure elegance with this stunning dress from LittleRR - trusted by 10L+ happy parents across India."
                 )}
               </div>
             )}
@@ -595,11 +600,11 @@ const ProductPage = () => {
                     <div className="review-item-rating-date" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
                       <div className="review-item-stars" style={{ display: 'flex', gap: '3px' }}>
                         {[1, 2, 3, 4, 5].map((star) => (
-                          <AiFillStar 
-                            key={star} 
-                            color={star <= Math.round(rev.rating) ? '#f59e0b' : '#c0c0c0'} 
-                            style={{ fontSize: '16px', filter: star <= Math.round(rev.rating) ? 'none' : 'drop-shadow(1px 0px 0px #888) drop-shadow(-1px 0px 0px #888) drop-shadow(0px 1px 0px #888) drop-shadow(0px -1px 0px #888)' }}
-                          />
+                          star <= Math.round(rev.rating) ? (
+                            <IoStar key={star} color="#f59e0b" style={{ fontSize: '16px' }} />
+                          ) : (
+                            <IoStarOutline key={star} color="#4d4b4bff" style={{ fontSize: '16px' }} />
+                          )
                         ))}
                       </div>
                       <span className="review-item-date" style={{ fontSize: '11px', color: '#999', marginTop: '4px' }}>
@@ -617,7 +622,7 @@ const ProductPage = () => {
             </div>
           ) : (
             <div className="empty-reviews-state" style={{ textAlign: 'center', padding: '40px 20px', color: '#888' }}>
-              <div className="empty-reviews-icon" style={{ fontSize: '54px', color: '#c0c0c0', WebkitTextStroke: '2px #888', marginBottom: '15px' }}>★</div>
+              <div className="empty-reviews-icon" style={{ fontSize: '54px', color: '#888888', marginBottom: '15px' }}><IoStarOutline /></div>
               <h3 style={{ margin: '0 0 8px 0', color: '#444' }}>No Reviews Yet</h3>
               <p style={{ margin: 0, fontSize: '14px', color: '#777', maxWidth: '360px', marginLeft: 'auto', marginRight: 'auto', lineHeight: '1.5' }}>
                 Be the first to share your thoughts on this product! Submit a review from your "My Orders" page after purchasing.

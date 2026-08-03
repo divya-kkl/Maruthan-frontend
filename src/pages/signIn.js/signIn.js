@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUserThunk, registerUserThunk, resetAuthError, resetRegistrationSuccess, togglePasswordVisibility, updateAuthField, setAuthFormErrors } from '../../redux/Slice/userSlice';
 import './signIn.css';
-import eyeOpenIcon from '../../assets/icons/eye-open.svg';
-import eyeClosedIcon from '../../assets/icons/eye-closed.svg';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const SignIn = ({ onBack, onSignIn, onGuest }) => {
   const [isRegisterMode, setIsRegisterMode] = useState(false);
@@ -142,9 +141,9 @@ const SignIn = ({ onBack, onSignIn, onGuest }) => {
                 className="password-eye-icon"
               >
                 {!showPassword ? (
-                  <img src={eyeClosedIcon} alt="Hide password" style={{ width: '20px', height: '20px' }} />
+                  <FaEyeSlash style={{ width: '20px', height: '20px', color: '#242424ff' }} />
                 ) : (
-                  <img src={eyeOpenIcon} alt="Show password" style={{ width: '20px', height: '20px' }} />
+                  <FaEye style={{ width: '20px', height: '20px', color: '#242424ff' }} />
                 )}
               </span>
             </div>

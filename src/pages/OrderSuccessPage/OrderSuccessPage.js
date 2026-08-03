@@ -295,6 +295,21 @@ const OrderSuccessPage = () => {
                   <span>Subtotal</span>
                   <span>Rs. {orderDetails.subTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                 </div>
+                {((orderDetails.subTotal + (orderDetails.deliveryCharge || 0)) - orderDetails.totalAmount) > 0 && (
+                  <div className="premium-total-row discount-row">
+                    <span>
+                      Discount {(() => {
+                        const d = (orderDetails.subTotal + (orderDetails.deliveryCharge || 0)) - orderDetails.totalAmount;
+                        const pct = (d / orderDetails.subTotal) * 100;
+                        if (Math.abs(pct - Math.round(pct)) < 0.01 && pct > 0 && pct <= 100) {
+                          return `(${Math.round(pct)}%)`;
+                        }
+                        return `(Rs. ${d})`;
+                      })()}
+                    </span>
+                    <span>- Rs. {((orderDetails.subTotal + (orderDetails.deliveryCharge || 0)) - orderDetails.totalAmount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+                  </div>
+                )}
                 <div className="premium-total-row">
                   <span>Shipping & Handling</span>
                   <span>{orderDetails.deliveryCharge === 0 ? "Complimentary" : `Rs. ${orderDetails.deliveryCharge}`}</span>
@@ -305,7 +320,6 @@ const OrderSuccessPage = () => {
                 </div>
               </div>
             </div>
-
             <div className="order-dashboard-right">
               <div className="premium-shipping-card">
                 <h3 className="dashboard-section-title">Order Status</h3>

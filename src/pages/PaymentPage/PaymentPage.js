@@ -78,7 +78,7 @@ const PaymentPage = () => {
         </p>
         <p className="payment-text">
           📩 Email: info@littlerr.in<br />
-          📞 WhatsApp: +91-99527 78217
+          📞 WhatsApp: +91-9786221122
         </p>
       </div>
     </div>
