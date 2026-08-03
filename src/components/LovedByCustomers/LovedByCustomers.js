@@ -30,10 +30,10 @@ const LovedByCustomers = () => {
         ) : lovedByCustomersBanners.length > 0 ? (
           lovedByCustomersBanners.map((bannerItem, index) => (
             <div className="factory-img-wrapper" key={bannerItem.id || index}>
-              <img 
-                src={bannerItem.backgroundImage} 
-                alt={`Loved by Customers ${index + 1}`} 
-                className="factory-img" 
+              <img
+                src={bannerItem.backgroundImage}
+                alt={`Loved by Customers ${index + 1}`}
+                className="factory-img"
                 onError={(e) => { e.target.src = `/images/im${index + 1}.jpg`; }}
               />
             </div>

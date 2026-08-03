@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react';
 import './RelatedProducts.css';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
 import { openQuickView as openGlobalQuickView } from '../../redux/Slice/tagProductsSlice';
 const RelatedProducts = ({ title = "New Arrivals" }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { product, status } = useSelector((state) => state.product);
 
 
@@ -37,7 +39,7 @@ const RelatedProducts = ({ title = "New Arrivals" }) => {
         ) : (
           displayProducts.map((product) => (
             <div className="rp-card" key={product.id}>
-              <div className="rp-image-wrapper" onClick={() => openQuickView(product)}>
+              <div className="rp-image-wrapper" onClick={() => navigate(`/product/${product.id}`)} style={{ cursor: 'pointer' }}>
                 <img
                   src={product.images && product.images.length > 0 ? product.images[0] : '/images/placeholder.png'}
                   alt={product.name}
@@ -45,7 +47,7 @@ const RelatedProducts = ({ title = "New Arrivals" }) => {
                 />
               </div>
               <div className="rp-info">
-                <p className="rp-name" title={product.name}>
+                <p className="rp-name" title={product.name} onClick={() => navigate(`/product/${product.id}`)} style={{ cursor: 'pointer' }}>
                   {truncate(product.name, 45)}
                 </p>
                 <p className="rp-price">

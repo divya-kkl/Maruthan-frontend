@@ -19,7 +19,7 @@
   width: 59%;
   border-radius: 4px;
   overflow: hidden;
- 
+
 }
 
 .factory-img {
@@ -39,9 +39,9 @@
   font-size: 26px;
   font-weight: bold;
   font-family: sans-serif;
-  text-shadow: 
+  text-shadow:
     0 0 5px rgba(255, 255, 255, 0.8),
-    0 0 15px rgba(0, 255, 255, 0.8), 
+    0 0 15px rgba(0, 255, 255, 0.8),
     0 0 25px #132b58(255, 0, 255, 0.8);
   pointer-events: none;
 }
@@ -62,7 +62,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: #132b58; /* Dark blue color from the image */
+  background-color: #132b58;
+  /* Dark blue color from the image */
   color: #ffffff;
   text-decoration: none;
   padding: 12px 30px;
@@ -86,7 +87,7 @@
     flex-direction: column;
     gap: 15px;
   }
-  
+
   .factory-img-wrapper {
     width: 100%;
   }
@@ -97,4 +98,8 @@
   }
 }
 
-@media (max-width: 768px) { .loved-by-customers-section { padding: 20px 0 !important; } }
+@media (max-width: 768px) {
+  .loved-by-customers-section {
+    padding: 20px 0 !important;
+  }
+}

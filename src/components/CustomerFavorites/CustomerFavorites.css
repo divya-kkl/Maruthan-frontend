@@ -1,13 +1,11 @@
 .customer-favorites-section {
   width: 100%;
-
-  font-family: 'Times New Roman', Times, serif;
-  overflow: hidden;
+  padding: 40px 0;
 }
 
 .customer-favorites-header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
 }
 
 .customer-favorites-title {
@@ -21,19 +19,18 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: #1a365d; /* Purple color */
+  background-color: #1a365d;
   color: #ffffff;
   text-decoration: none;
   padding: 10px 25px;
   border-radius: 30px;
   font-size: 15px;
-  font-family: sans-serif;
   font-weight: 500;
   transition: background-color 0.3s ease;
 }
 
 .customer-favorites-insta-btn:hover {
-  background-color: #1a365d;
+  background-color: #0F2D5C;
 }
 
 .cf-insta-icon {
@@ -41,47 +38,64 @@
   font-size: 18px;
 }
 
-.cf-carousel-container {
+
+.cf-outer {
+  max-width: 1170px;     /* ← 1200px minus 30px padding of the top section */
+  margin: 0 auto;
   width: 100%;
-  overflow: hidden;
-  padding: 10px 0;
+  overflow: hidden;      /* ← Clips cards exactly at the same line as the images above */
+  padding: 0;            /* ← Removed padding so clipping happens at the correct line */
+  box-sizing: border-box;
 }
 
-.cf-carousel-wrapper {
+/*
+  cf-marquee:
+  - display: flex + nowrap → SINGLE ROW
+  - width: max-content    → content width ku stretch aagum
+  - CSS animation         → left-ku move aagum, loop aagidum
+*/
+.cf-marquee {
   display: flex;
+  flex-wrap: nowrap;
+  gap: 20px;
   width: max-content;
-  gap: 20px;
+  padding: 10px 0 16px 0;
+  animation: cf-scroll 25s linear infinite;
 }
 
-.cf-track {
-  display: flex;
-  gap: 20px;
-  animation: scroll-carousel 30s linear infinite;
-}
-
-.cf-carousel-wrapper:hover .cf-track {
+/* Hover aagirum pothu scroll nirkum */
+.cf-outer:hover .cf-marquee {
   animation-play-state: paused;
 }
 
-@keyframes scroll-carousel {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(calc(-100% - 20px)); } /* Shift by exactly its own width plus one gap */
+/* Loop animation: -50% = exactly one full set (because we duplicated products) */
+@keyframes cf-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
+/* ── Card ── */
 .cf-card {
-  width: 280px;
+  width: 230px;
+  min-width: 230px;
   background-color: #fff;
-  border-radius: 12px;
+  border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.09);
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.cf-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.15);
 }
 
 .cf-image-wrapper {
   width: 100%;
-  aspect-ratio: 4 / 5; /* Taller images matching the design */
+  aspect-ratio: 4 / 5;
   overflow: hidden;
 }
 
@@ -89,21 +103,29 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.cf-card:hover .cf-image {
+  transform: scale(1.04);
 }
 
 .cf-info {
-  padding: 15px;
+  padding: 12px 14px 14px 14px;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
 }
 
 .cf-desc {
-  font-size: 18px;
+  font-size: 13px;
   color: #333;
-  line-height: 1.4;
-  margin: 0 0 15px 0;
-  font-family: 'Times New Roman', Times, serif;
+  line-height: 1.45;
+  margin: 0 0 8px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .cf-likes {
@@ -112,17 +134,22 @@
   margin-top: auto;
   font-size: 13px;
   color: #666;
-  font-family: sans-serif;
+  gap: 5px;
+  font-weight: 600;
 }
 
 .cf-heart-icon {
-  color: #1a365d;
-  margin-right: 5px;
+  color: #0F2D5C;
   font-size: 14px;
 }
 
 @media (max-width: 768px) {
+  .cf-outer {
+    padding: 0 30px;
+  }
+
   .cf-card {
-    width: 240px;
+    width: 175px;
+    min-width: 175px;
   }
 }

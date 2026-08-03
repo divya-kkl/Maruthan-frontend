@@ -130,9 +130,13 @@ const QuickViewModal = ({ product, onClose }) => {
           <div className="quickview-details">
             <h2 className="quickview-title">{product.name || product.title}</h2>
             
-            <div className="quickview-price-wrap">
-              <span className="quickview-price">Rs. {product.price}</span>
-              {product.originalPrice && <span className="quickview-old-price">Rs. {product.originalPrice}</span>}
+            <div className="quickview-price-wrap" style={{ display: 'flex', alignItems: 'baseline' }}>
+              <span className="quickview-price">Rs. {Number(product.price).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+              {(Number(product.mrp) > Number(product.price) || Number(product.originalPrice) > Number(product.price)) && (
+                <span className="quickview-old-price">
+                  Rs. {Number(product.mrp || product.originalPrice).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                </span>
+              )}
             </div>
 
             <div className="quickview-size-section">

@@ -30,7 +30,7 @@ const CancellationPage = () => {
         <h2 className="cancellation-subtitle">❌ Order Cancellation</h2>
         <ul className="cancellation-list">
           <li>Orders can be cancelled only before they are shipped.</li>
-          <li>To request a cancellation, please email us at info@littlerr.in and WhatsApp us at +91-9952778217.</li>
+          <li>To request a cancellation, please email us at info@littlerr.in and WhatsApp us at +91-9786221122.</li>
           <li>If the order is eligible for cancellation, the refund will be processed within 4–7 working days to the same account used for payment.</li>
         </ul>
         <p className="cancellation-text cancellation-italic">
@@ -57,7 +57,7 @@ const CancellationPage = () => {
         <p className="cancellation-text">
           For any questions or support, feel free to reach out:<br />
           📧 info@littlerr.in<br />
-          📱 WhatsApp: +91-9952778217
+          📱 WhatsApp: +91-9786221122
         </p>
       </div>
     </div>
