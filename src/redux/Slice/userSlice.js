@@ -255,8 +255,17 @@ export const registerUserThunk = createAsyncThunk(
   }
 );
 
+const getStoredUser = () => {
+  try {
+    const userStr = localStorage.getItem('user');
+    return userStr ? JSON.parse(userStr) : null;
+  } catch (e) {
+    return null;
+  }
+};
+
 const initialState = {
-  user: null,
+  user: getStoredUser(),
   orders: [],
   loadingOrders: false,
   loadingUser: false,

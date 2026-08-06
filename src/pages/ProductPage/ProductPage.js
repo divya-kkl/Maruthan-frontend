@@ -102,17 +102,27 @@ const ProductPage = () => {
     setOpenFaqs(prev => ({ ...prev, [faqId]: !prev[faqId] }));
   };
 
-  const handleAddToCart = () => {
+  const isAdding = useSelector((state) => state.cart.loading);
+
+  const handleAddToCart = async () => {
     if (product && selectedSize) {
-      dispatch(addToCart({ product, quantity, size: selectedSize }));
-      navigate('/cart');
+      try {
+        await dispatch(addToCart({ product, quantity, size: selectedSize })).unwrap();
+        navigate('/cart');
+      } catch (err) {
+        console.error("Failed to add to cart:", err);
+      }
     }
   };
 
-  const handleBuyNow = () => {
+  const handleBuyNow = async () => {
     if (product && selectedSize) {
-      dispatch(addToCart({ product, quantity, size: selectedSize }));
-      navigate('/checkout');
+      try {
+        await dispatch(addToCart({ product, quantity, size: selectedSize })).unwrap();
+        navigate('/checkout');
+      } catch (err) {
+        console.error("Failed to buy now:", err);
+      }
     }
   };
 
@@ -424,14 +434,16 @@ const ProductPage = () => {
               <button 
                 className="add-to-cart-btn" 
                 onClick={handleAddToCart}
+                disabled={isAdding}
               >
-                Add to Cart
+                {isAdding ? "Adding..." : "Add to Cart"}
               </button>
               <button 
                 className="buy-now-btn" 
                 onClick={handleBuyNow}
+                disabled={isAdding}
               >
-                Buy it now
+                {isAdding ? "Processing..." : "Buy it now"}
               </button>
             </>
           ) : (

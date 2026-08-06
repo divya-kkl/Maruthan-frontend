@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateQuantity, removeFromCart, fetchCoupon, clearCouponError, setCouponInput } from '../../redux/Slice/cartSlice';
+import { updateQuantity, removeFromCart, fetchCoupon, clearCouponError, setCouponInput ,fetchDeliveryCharge} from '../../redux/Slice/cartSlice';
 import { useNavigate } from 'react-router-dom';
 import './CartPage.css';
 
@@ -36,7 +36,8 @@ const CartPage = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    dispatch(fetchDeliveryCharge())
+  }, [dispatch]);
 
   const handleCheckout = () => {
     navigate('/checkout');
