@@ -28,6 +28,7 @@ import OurStoresPage from './pages/OurStoresPage/OurStoresPage';
 import ProductPage from './pages/ProductPage/ProductPage';
 import QuickViewModal from './components/QuickViewModal/QuickViewModal';
 import { closeQuickView } from './redux/Slice/tagProductsSlice';
+import { fetchCart } from './redux/Slice/cartSlice';
 
 
 const ScrollToTop = () => {
@@ -77,6 +78,7 @@ let appHasLoadedOnce = false;
 function App() {
   const dispatch = useDispatch();
   const { selectedProduct } = useSelector((state) => state.tagProducts);
+  const user = useSelector((state) => state.user.user);
 
   const [globalLoading, setGlobalLoading] = useState(() => {
     return !appHasLoadedOnce;
@@ -89,6 +91,13 @@ function App() {
       appHasLoadedOnce = true;
     }, 1200);
     return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (user && user.id) {
+      dispatch(fetchCart(user.id));
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

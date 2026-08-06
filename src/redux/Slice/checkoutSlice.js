@@ -152,41 +152,6 @@ export const placeOrder = createAsyncThunk(
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
 
-      // SYNC CART
-      const userStr = localStorage.getItem("user");
-      if (userStr) {
-        const user = JSON.parse(userStr);
-        if (user && user.id) {
-          const CLEAR_CART = gql`
-            mutation ClearCart($userId: ID!) {
-              clearCart(userId: $userId)
-            }
-          `;
-          try {
-            await client.request(CLEAR_CART, { userId: user.id });
-          } catch (e) {
-            console.warn("Backend cart empty or not found. Proceeding to create one.");
-          }
-
-          const ADD_TO_CART = gql`
-            mutation AddToCart($userId: ID!, $shopId: ID!, $productId: ID!, $quantity: Float!, $size: String!) {
-              addToCart(userId: $userId, shopId: $shopId, productId: $productId, quantity: $quantity, size: $size) {
-                id
-              }
-            }
-          `;
-          for (const item of cartItems) {
-            await client.request(ADD_TO_CART, {
-              userId: user.id,
-              shopId: item.product.shopDetails || item.product.shopId || "default",
-              productId: item.product.id || item.product._id,
-              quantity: parseFloat(item.quantity),
-              size: item.size || "Default"
-            });
-          }
-        }
-      }
-
       const data = await client.request(PLACE_ORDER, { input });
       return data.placeOrder;
     } catch (err) {

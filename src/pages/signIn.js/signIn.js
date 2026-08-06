@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUserThunk, registerUserThunk, resetAuthError, resetRegistrationSuccess, togglePasswordVisibility, updateAuthField, setAuthFormErrors } from '../../redux/Slice/userSlice';
+import { syncCartOnLogin } from '../../redux/Slice/cartSlice';
 import './signIn.css';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
@@ -8,6 +9,7 @@ const SignIn = ({ onBack, onSignIn, onGuest }) => {
   const [isRegisterMode, setIsRegisterMode] = useState(false);
   const dispatch = useDispatch();
   const { loadingAuth: loading, authError: error, registrationSuccess, showPassword, authFormData, authFormErrors } = useSelector(state => state.user);
+  const { cartItems } = useSelector(state => state.cart);
 
   useEffect(() => {
     dispatch(resetAuthError());
@@ -79,6 +81,10 @@ const SignIn = ({ onBack, onSignIn, onGuest }) => {
       }));
 
       if (loginUserThunk.fulfilled.match(resultAction)) {
+        const user = resultAction.payload.user;
+        if (user && user.id) {
+          dispatch(syncCartOnLogin({ userId: user.id, localCartItems: cartItems }));
+        }
         onSignIn();
       } else if (resultAction.payload && resultAction.payload.includes("Invalid email or password")) {
          alert("Invalid email or password. If you don't have an account, please register a new one.");

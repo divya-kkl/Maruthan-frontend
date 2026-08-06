@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchUserDetails, fetchUserOrders, updateUserAddress, logout as logoutAction, setUser } from '../../redux/Slice/userSlice';
 import { createReview, updateReview, fetchAllReviews, openReviewModal, closeReviewModal, setReviewRating, setReviewComment } from '../../redux/Slice/reviewSlice';
 import AddAddressModal from '../../components/AddAddressModal/AddAddressModal';
+import { clearLocalCart } from '../../redux/Slice/cartSlice';
 import './ProfilePage.css';
 
 const ProfilePage = () => {
@@ -69,6 +70,7 @@ const ProfilePage = () => {
     localStorage.removeItem('user');
     localStorage.removeItem('guestId');
     dispatch(logoutAction());
+    dispatch(clearLocalCart());
     navigate('/login');
   };
 

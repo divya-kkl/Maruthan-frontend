@@ -1,4 +1,4 @@
-import {  useEffect } from 'react';
+import { useEffect } from 'react';
 import './QuickViewModal.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../../redux/Slice/cartSlice';
@@ -12,6 +12,7 @@ const QuickViewModal = ({ product, onClose }) => {
   const quantity = useSelector((state) => state.productDetails.quantity);
   const activeImage = useSelector((state) => state.productDetails.activeImage);
   const navigate = useNavigate();
+  const isAdding = useSelector((state) => state.cart.loading);
 
   useEffect(() => {
     if (product) {
@@ -64,16 +65,24 @@ const QuickViewModal = ({ product, onClose }) => {
     };
   }, []);
 
-  const handleAddToCart = () => {
-    dispatch(addToCart({ product, quantity, size: selectedSize }));
-    onClose();
-    navigate('/cart');
+  const handleAddToCart = async () => {
+    try {
+      await dispatch(addToCart({ product, quantity, size: selectedSize })).unwrap();
+      onClose();
+      navigate('/cart');
+    } catch (err) {
+      console.error("Failed to add to cart:", err);
+    }
   };
 
-  const handleBuyNow = () => {
-    dispatch(addToCart({ product, quantity, size: selectedSize }));
-    onClose();
-    navigate('/checkout');
+  const handleBuyNow = async () => {
+    try {
+      await dispatch(addToCart({ product, quantity, size: selectedSize })).unwrap();
+      onClose();
+      navigate('/checkout');
+    } catch (err) {
+      console.error("Failed to buy now:", err);
+    }
   };
 
   const handleShare = async () => {
@@ -258,15 +267,17 @@ const QuickViewModal = ({ product, onClose }) => {
                     <button
                       className="add-cart-btn"
                       onClick={handleAddToCart}
+                      disabled={isAdding}
                     >
-                      Add to Cart
+                      {isAdding ? "Adding..." : "Add to Cart"}
                     </button>
                   </div>
                   <button 
                     className="buy-now-btn" 
                     onClick={handleBuyNow}
+                    disabled={isAdding}
                   >
-                    Buy it now
+                    {isAdding ? "Processing..." : "Buy it now"}
                   </button>
                 </>
               ) : (
