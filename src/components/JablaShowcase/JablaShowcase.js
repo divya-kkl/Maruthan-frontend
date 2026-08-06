@@ -3,6 +3,7 @@ import './JablaShowcase.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
 import { fetchProductsByTag, openQuickView as openGlobalQuickView } from '../../redux/Slice/tagProductsSlice';
+import { isNew } from '../../redux/Slice/productDetailsSlice';
 import { useNavigate } from 'react-router-dom';
 
 const JablaShowcase = () => {
@@ -75,7 +76,10 @@ const JablaShowcase = () => {
           ) : products.length > 0 ? (
             products.map((item) => (
               <div className="jabla-card" key={item.id}>
-                <div className="jabla-image-wrapper" style={{ cursor: 'pointer' }} onClick={() => navigate(`/product/${item.id}`)}>
+                <div className="jabla-image-wrapper" style={{ cursor: 'pointer', position: 'relative' }} onClick={() => navigate(`/product/${item.id}`)}>
+                  {isNew(item.createdAt) && (
+                    <span className="new-badge">NEW</span>
+                  )}
                   <img
                     src={item.images && item.images.length > 0 ? item.images[0] : '/images/placeholder.png'}
                     alt={item.name}

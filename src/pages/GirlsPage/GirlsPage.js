@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import './GirlsPage.css';
 import { fetchCategoryProducts, resetCategoryProducts } from '../../redux/Slice/categoryProductsSlice';
 import { openQuickView as openGlobalQuickView } from '../../redux/Slice/tagProductsSlice';
+import { isNew } from '../../redux/Slice/productDetailsSlice';
 
 const GirlsPage = () => {
   const navigate = useNavigate();
@@ -197,8 +198,11 @@ const GirlsPage = () => {
                   <div
                     className="category-image-wrapper"
                     onClick={() => navigate(`/product/${product.id}`)}
-                    style={{ cursor: 'pointer' }}
+                    style={{ cursor: 'pointer', position: 'relative' }}
                   >
+                    {isNew(product.createdAt) && (
+                      <span className="new-badge">NEW</span>
+                    )}
                     <img
                       src={product.images && product.images.length > 0 ? product.images[0] : '/images/placeholder.png'}
                       alt={product.name}
