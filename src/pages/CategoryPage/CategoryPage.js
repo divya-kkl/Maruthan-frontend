@@ -444,8 +444,8 @@ const CategoryPage = ({ type = 'category' }) => {
               <span>Sort by:</span>
               <select className="sort-by-select" value={sort} onChange={(e) => {setSort(e.target.value); setPage(1);}}>
                 <option value="features">Features</option>
-                <option value="most-relevant">Most relevant</option>
-                <option value="bestselling">Best selling</option>
+                {/* <option value="most-relevant">Most relevant</option>
+                <option value="bestselling">Best selling</option> */}
                 <option value="price-low">Price, low to high</option>
                 <option value="price-high">Price, high to low</option>
                 <option value="atoz">Alphabetically, A-Z</option>

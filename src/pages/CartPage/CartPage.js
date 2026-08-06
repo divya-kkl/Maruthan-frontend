@@ -115,27 +115,9 @@ const CartPage = () => {
 
           <div className="cart-sidebar-section">
 
-            <div className="shipping-estimate-block">
-              <label>Estimate Shipping</label>
-              <div className="form-group">
-                <label>Country/region</label>
-                <select defaultValue="India">
-                  <option value="India">India</option>
-                  <option value="United States">United States</option>
-                  <option value="United Kingdom">United Kingdom</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label>Province</label>
-                <select defaultValue="Tamil Nadu">
-                  <option value="Tamil Nadu">Tamil Nadu</option>
-                  <option value="Kerala">Kerala</option>
-                  <option value="Karnataka">Karnataka</option>
-                </select>
-              </div>
-            </div>
+         
 
-            <div className="cart-summary-block">
+           
               {/* Coupon Section */}
               <div className="coupon-section">
                 <label>Coupon Code</label>
@@ -192,7 +174,7 @@ const CartPage = () => {
               <p className="tax-shipping-note">Tax included. Shipping calculated at checkout.</p>
               <button className="checkout-btn" onClick={handleCheckout}>Check out</button>
             </div>
-          </div>
+     
         </div>
       )}
     </div>
