@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchBanner } from '../../redux/Slice/bannerSlice';
 import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
 import { fetchProductsByTag, openQuickView as openGlobalQuickView } from '../../redux/Slice/tagProductsSlice';
+import { isNew } from '../../redux/Slice/productDetailsSlice';
 
 const CarouselCard = ({ product, openQuickView }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -20,8 +21,10 @@ const CarouselCard = ({ product, openQuickView }) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="carousel-image-wrapper" style={{ cursor: 'pointer' }} onClick={() => navigate(`/product/${product.id}`)}>
-        <div className="badge-new">New</div>
+      <div className="carousel-image-wrapper" style={{ cursor: 'pointer', position: 'relative' }} onClick={() => navigate(`/product/${product.id}`)}>
+        {isNew(product.createdAt) && (
+          <span className="new-badge">NEW</span>
+        )}
         <img
           src={displayImage}
           alt={product.name}

@@ -102,3 +102,35 @@ a {
   border: 1px solid #1A4685 !important;
   transform: scale(1.03) !important;
 }
+
+/* NEW badge styles using the uploaded ribbon image */
+.new-badge {
+  position: absolute;
+  top: 10px;
+  left: -4px; /* Hangs slightly off the left edge for a premium 3D fold effect */
+  color: #ffffff !important;
+  width: 75px !important;
+  height: 25px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  z-index: 5 !important;
+  letter-spacing: 1.2px !important;
+  font-family: var(--font-body) !important;
+  padding-bottom: 3px !important; /* Offset text slightly up to center it in the ribbon */
+  padding-left: 2px !important; /* Offset text slightly right of the fold */
+}
+
+.new-badge::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: url('./assets/new_ribbon.png') no-repeat center center !important;
+  background-size: 100% 100% !important;
+  mix-blend-mode: multiply; /* Magically removes the white background from the image */
+  z-index: -1; /* Puts the ribbon behind the text */
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25)) !important;
+}

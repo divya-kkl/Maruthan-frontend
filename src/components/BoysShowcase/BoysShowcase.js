@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchCategories } from '../../redux/Slice/headerSlice';
 import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
 import { fetchProductsByTag, openQuickView as openGlobalQuickView } from '../../redux/Slice/tagProductsSlice';
+import { isNew } from '../../redux/Slice/productDetailsSlice';
 import { useNavigate } from 'react-router-dom';
 
 const BoysShowcase = () => {
@@ -95,7 +96,10 @@ const BoysShowcase = () => {
           ) : products.length > 0 ? (
             products.map((product) => (
               <div className="boys-card" key={product.id}>
-                <div className="boys-image-wrapper" style={{ cursor: 'pointer' }} onClick={() => navigate(`/product/${product.id}`)}>
+                <div className="boys-image-wrapper" style={{ cursor: 'pointer', position: 'relative' }} onClick={() => navigate(`/product/${product.id}`)}>
+                  {isNew(product.createdAt) && (
+                    <span className="new-badge">NEW</span>
+                  )}
                   <img
                     src={product.images && product.images.length > 0 ? product.images[0] : '/images/placeholder.png'}
                     alt={product.name}

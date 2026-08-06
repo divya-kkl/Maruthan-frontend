@@ -3,6 +3,7 @@ import './ChettinadShowcase.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
 import { fetchProductsByTag, openQuickView as openGlobalQuickView, setActiveIndex as setGlobalActiveIndex } from '../../redux/Slice/tagProductsSlice';
+import { isNew } from '../../redux/Slice/productDetailsSlice';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -104,7 +105,10 @@ const ChettinadShowcase = () => {
           ) : products.length > 0 ? (
             products.map((product) => (
               <div className="chettinad-card" key={product.id}>
-                <div className="chettinad-image-wrapper" style={{ cursor: 'pointer' }} onClick={() => navigate(`/product/${product.id}`)}>
+                <div className="chettinad-image-wrapper" style={{ cursor: 'pointer', position: 'relative' }} onClick={() => navigate(`/product/${product.id}`)}>
+                  {isNew(product.createdAt) && (
+                    <span className="new-badge">NEW</span>
+                  )}
                   <img
                     src={product.images && product.images.length > 0 ? product.images[0] : '/images/placeholder.png'}
                     alt={product.name}

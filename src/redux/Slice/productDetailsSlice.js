@@ -16,6 +16,7 @@ const GET_PRODUCT_BY_ID = gql`
       material
       rating
       numReviews
+      createdAt
       variants {
         color
         size
@@ -40,7 +41,13 @@ export const fetchProductById = createAsyncThunk(
     }
   }
 );
-
+export const isNew = (createdAt) => {
+  if (!createdAt) return false;
+  const createdDate = new Date(isNaN(createdAt) ? createdAt : parseInt(createdAt));
+  const diffDays = Math.ceil(Math.abs(new Date() -createdDate) / (1000 * 60 * 60 * 24));
+  return diffDays <= 10;
+}
+ 
 export const ALL_SIZES = [
   { key: 's', display: 'S (0-12M)' },
   { key: 'm', display: 'M (1-2Y)' },
