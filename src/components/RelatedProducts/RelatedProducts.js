@@ -3,21 +3,27 @@ import './RelatedProducts.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
+import { fetchRelatedProducts } from '../../redux/Slice/productDetailsSlice';
 import { openQuickView as openGlobalQuickView } from '../../redux/Slice/tagProductsSlice';
-const RelatedProducts = ({ title = "New Arrivals" }) => {
+
+const RelatedProducts = ({ title = "New Arrivals", productId }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { product, status } = useSelector((state) => state.product);
-
+  const { relatedProducts, relatedLoading } = useSelector((state) => state.productDetails);
 
   useEffect(() => {
-    if (status === 'idle') {
-      dispatch(fetchProducts());
+    if (productId) {
+      dispatch(fetchRelatedProducts({ productId, limit: 10 }));
+    } else {
+      if (status === 'idle') {
+        dispatch(fetchProducts());
+      }
     }
-  }, [status, dispatch]);
+  }, [productId, status, dispatch]);
 
-  const loading = status === 'loading' || status === 'idle';
-  const displayProducts = product ? product.slice(0, 10) : [];
+  const loading = productId ? relatedLoading : (status === 'loading' || status === 'idle');
+  const displayProducts = productId ? relatedProducts : (product ? product.slice(0, 10) : []);
 
   const openQuickView = (product) => {
     dispatch(openGlobalQuickView({
