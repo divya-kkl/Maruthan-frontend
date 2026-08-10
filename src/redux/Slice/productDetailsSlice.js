@@ -3,6 +3,18 @@ import { GraphQLClient, gql } from 'graphql-request';
 
 const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT || 'http://localhost:2000/graphql';
 
+const GET_RELATED_PRODUCTS = gql`
+  query GetRelatedProducts($productId: ID!, $limit: Int) {
+    getRelatedProducts(productId: $productId, limit: $limit) {
+      id
+      name
+      price
+      mrp
+      images
+    }
+  }
+`;
+
 const GET_PRODUCT_BY_ID = gql`
   query GetProductById($id: ID!) {
     getProductById(id: $id) {
@@ -25,6 +37,19 @@ const GET_PRODUCT_BY_ID = gql`
     }
   }
 `;
+
+export const fetchRelatedProducts = createAsyncThunk(
+  'productDetails/fetchRelatedProducts',
+  async ({ productId, limit = 10 }, { rejectWithValue }) => {
+    try {
+      const client = new GraphQLClient(GRAPHQL_ENDPOINT);
+      const data = await client.request(GET_RELATED_PRODUCTS, { productId, limit: Number(limit) });
+      return data.getRelatedProducts;
+    } catch (err) {
+      return rejectWithValue(err.message || "Failed to load related products");
+    }
+  }
+);
 
 export const fetchProductById = createAsyncThunk(
   'productDetails/fetchProductById',
@@ -66,6 +91,9 @@ const productDetailsSlice = createSlice({
     selectedSize: '',
     quantity: 1,
     activeImage: '',
+    relatedProducts: [],
+    relatedLoading: false,
+    relatedError: null,
   },
   reducers: {
     resetProductDetails: (state) => {
@@ -102,6 +130,18 @@ const productDetailsSlice = createSlice({
       .addCase(fetchProductById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(fetchRelatedProducts.pending, (state) => {
+        state.relatedLoading = true;
+        state.relatedError = null;
+      })
+      .addCase(fetchRelatedProducts.fulfilled, (state, action) => {
+        state.relatedLoading = false;
+        state.relatedProducts = action.payload;
+      })
+      .addCase(fetchRelatedProducts.rejected, (state, action) => {
+        state.relatedLoading = false;
+        state.relatedError = action.payload;
       });
   }
 });

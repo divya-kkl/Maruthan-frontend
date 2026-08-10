@@ -542,7 +542,7 @@ const ProductPage = () => {
     </div>
     
     <div style={{ marginTop: '40px', paddingBottom: '40px' }}>
-      <RelatedProducts key={id} title="New Arrivals" />
+      <RelatedProducts key={id} productId={id} title="Related Products" />
     </div>
     
     {/* Reviews & Ratings Section */}
