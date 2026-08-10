@@ -106,6 +106,8 @@ const QuickViewModal = ({ product, onClose }) => {
   if (!product) return null;
 
   const selectedVariant = product.variants?.find(v => v.size === selectedSize);
+  const hasOnlyNoSize = product?.variants?.length === 1 && product.variants[0].size.toLowerCase().replace(/\s/g, '') === 'nosize';
+  const showSizeSection = product?.hasSize !== false && !hasOnlyNoSize;
   const currentStock = selectedVariant ? selectedVariant.stock : (product.variants?.[0]?.stock || 0);
 
   return (
@@ -148,8 +150,9 @@ const QuickViewModal = ({ product, onClose }) => {
               )}
             </div>
 
-            <div className="quickview-size-section">
-              {(() => {
+            {showSizeSection && (
+              <div className="quickview-size-section">
+                {(() => {
                 const availableSizes = (product?.variants || []).reduce((acc, variant) => {
                   if (!variant.size) return acc;
                   const exists = acc.some(item => item.rawSize.toLowerCase() === variant.size.toLowerCase());
@@ -229,6 +232,7 @@ const QuickViewModal = ({ product, onClose }) => {
                 );
               })()}
             </div>
+            )}
 
             <div className="quickview-desc-text">
               <p>{product.description || "Dress your little princess in pure elegance with this stunning dress from little RR - trusted by 10L+ happy parents across India."}</p>

@@ -189,6 +189,8 @@ const ProductPage = () => {
   if (error || !product) return <div className="product-page-error">{error || "Product not found"}</div>;
 
   const selectedVariant = product.variants?.find(v => v.size === selectedSize);
+  const hasOnlyNoSize = product?.variants?.length === 1 && product.variants[0].size.toLowerCase().replace(/\s/g, '') === 'nosize';
+  const showSizeSection = product?.hasSize !== false && !hasOnlyNoSize;
   const currentStock = selectedVariant ? selectedVariant.stock : (product.variants?.[0]?.stock || 0);
   const stockProgress = Math.min((currentStock / 50) * 100, 100);
 
@@ -352,8 +354,9 @@ const ProductPage = () => {
           <div className="stock-progress-fill" style={{ width: `${currentStock > 0 ? stockProgress : 0}%`, backgroundColor: currentStock < 5 ? '#e74c3c' : '#111' }}></div>
         </div>
 
-        <div className="size-selector-section">
-          {(() => {
+        {showSizeSection && (
+          <div className="size-selector-section">
+            {(() => {
             const availableSizes = (product?.variants || []).reduce((acc, variant) => {
               if (!variant.size) return acc;
               const exists = acc.some(item => item.rawSize.toLowerCase() === variant.size.toLowerCase());
@@ -415,8 +418,9 @@ const ProductPage = () => {
                 </div>
               </>
             );
-          })()}
-        </div>
+            })()}
+          </div>
+        )}
 
         <div className="product-actions">
           {currentStock > 0 ? (
