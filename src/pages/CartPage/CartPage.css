@@ -346,7 +346,8 @@
 }
 
 .coupon-apply-btn:disabled {
-  background-color: #a0aec0;
+  background-color: #7e3065;
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
