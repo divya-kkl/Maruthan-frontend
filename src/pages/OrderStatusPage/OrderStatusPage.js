@@ -13,7 +13,7 @@ const OrderStatusPage = () => {
 
         <h2 className="order-status-subtitle">Order Status</h2>
         <p className="order-status-text">
-          At little RR, we follow a structured and transparent order process to ensure a smooth shopping experience for parents. Below is a clear overview of each stage your order goes through after placement.
+          At maruthan, we follow a structured and transparent order process to ensure a smooth shopping experience for parents. Below is a clear overview of each stage your order goes through after placement.
         </p>
 
         <h2 className="order-status-subtitle">Order Confirmed</h2>

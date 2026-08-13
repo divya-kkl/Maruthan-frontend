@@ -7,7 +7,7 @@ export const TRENDING_SEARCHES = [
   // IMPORTANT: The 'code' MUST EXACTLY match the Category Code in your Admin Panel!
   { name: "Newborn Pattu Frock", code: "newborn" },
   { name: "Girls Pattu Pavadai", code: "girls" },
-  { name: "Chettinad Cotton Pattupavadai", code: "chettinad" },
+  { name: "Made for Every Part of Your Life (MADE FOR EVERY PART OF YOUR LIFE Pattupavadai", code: "chettinad" },
   { name: "Pattu Frock", code: "pattu" },
   { name: "Tamil Newyear collection", code: "tamil-newyear" },
   { name: "Best selling products", code: "best-selling" }

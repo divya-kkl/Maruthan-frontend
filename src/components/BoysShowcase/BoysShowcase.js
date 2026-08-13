@@ -34,7 +34,7 @@ const BoysShowcase = () => {
   }
 
 
-  const taggedProducts = productsByTag['BOYS ETHNIC WEAR COLLECTION'] || [];
+  const taggedProducts = productsByTag['COCONUT SHELL PRODUCTS'] || [];
 
   const combinedProducts = [...taggedProducts];
   const uniqueProductsMap = new Map();
@@ -52,7 +52,7 @@ const BoysShowcase = () => {
   useEffect(() => {
     dispatch(fetchCategories());
     dispatch(fetchProducts());
-    dispatch(fetchProductsByTag({ code: 'BOYS ETHNIC WEAR COLLECTION', limit: 5 }));
+    dispatch(fetchProductsByTag({ code: 'COCONUT SHELL PRODUCTS', limit: 5 }));
   }, [dispatch]);
 
   if (tagStatus === 'failed') {
@@ -76,7 +76,7 @@ const BoysShowcase = () => {
           </div>
         ) : (
           <>
-            <h2 className="boys-title">Boys Ethnic Wear Collection</h2>
+            <h2 className="boys-title">Coconut Shell Products</h2>
             <p className="boys-subtitle">Let your boy stand out from the crowd in our unique ethnic wears like dhoti shirts and more. Fashion that's as playful as he is!</p>
           </>
         )}

@@ -57,7 +57,7 @@ const ProductCarousel = () => {
   const loading = (productStatus === 'loading' || productStatus === 'idle') && tagStatus !== 'succeeded';
 
 
-  const taggedProducts = productsByTag['EXCLUSIVE PATTU PAVADAI COLLECTIONS'] || [];
+  const taggedProducts = productsByTag['NEW ARRIVALS'] || [];
 
   const combinedProducts = [...taggedProducts];
   const uniqueProductsMap = new Map();
@@ -103,7 +103,7 @@ const ProductCarousel = () => {
 
   useEffect(() => {
     dispatch(fetchProducts());
-    dispatch(fetchProductsByTag({ code: 'EXCLUSIVE PATTU PAVADAI COLLECTIONS', limit: 10 }));
+    dispatch(fetchProductsByTag({ code: 'NEW ARRIVALS', limit: 10 }));
     dispatch(fetchBanner());
   }, [dispatch]);
 
@@ -128,7 +128,7 @@ const ProductCarousel = () => {
                 <div className="shimmer-text title" style={{ width: '300px', height: '32px' }}></div>
               </div>
             ) : (
-              <h2 className="carousel-title">Exclusive Pattu Pavadai Collections</h2>
+              <h2 className="carousel-title">New Arrivals</h2>
             )}
           </div>
 

@@ -16,7 +16,7 @@ const ChettinadShowcase = () => {
   const loading = (productStatus === 'loading' || productStatus === 'idle') && tagStatus !== 'succeeded';
 
 
-  const taggedProducts = productsByTag['CHETTINAD COTTON'] || [];
+  const taggedProducts = productsByTag['MADE FOR EVERY PART OF YOUR LIFE'] || [];
 
   const combinedProducts = [...taggedProducts];
   const uniqueProductsMap = new Map();
@@ -66,7 +66,7 @@ const ChettinadShowcase = () => {
 
   useEffect(() => {
     dispatch(fetchProducts());
-    dispatch(fetchProductsByTag({ code: 'CHETTINAD COTTON', limit: 5 }));
+    dispatch(fetchProductsByTag({ code: 'MADE FOR EVERY PART OF YOUR LIFE', limit: 5 }));
   }, [dispatch]);
 
   if (tagStatus === 'failed') {
@@ -87,7 +87,7 @@ const ChettinadShowcase = () => {
             <div className="shimmer-text title" style={{ width: '300px', height: '32px' }}></div>
           </div>
         ) : (
-          <h2 className="chettinad-title">Chettinad Cotton</h2>
+          <h2 className="chettinad-title">Made for Every Part of Your Life </h2>
         )}
 
         <div className="chettinad-grid" ref={scrollRef} onScroll={handleScroll}>

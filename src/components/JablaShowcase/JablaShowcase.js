@@ -14,7 +14,7 @@ const JablaShowcase = () => {
   const loading = (productStatus === 'loading' || productStatus === 'idle') && tagStatus !== 'succeeded';
 
 
-  const taggedProducts = productsByTag['JABLA, CO-OD & FROCK'] || [];
+  const taggedProducts = productsByTag['SEE KOTTRAVAI IN LIFE'] || [];
 
   // Combine tagged products first, then generic products, removing duplicates by ID
   const combinedProducts = [...taggedProducts];
@@ -32,7 +32,7 @@ const JablaShowcase = () => {
 
   useEffect(() => {
     dispatch(fetchProducts());
-    dispatch(fetchProductsByTag({ code: 'JABLA, CO-OD & FROCK', limit: 5 }));
+    dispatch(fetchProductsByTag({ code: 'SEE KOTTRAVAI IN LIFE', limit: 5 }));
   }, [dispatch]);
 
   if (tagStatus === 'failed') {
@@ -56,7 +56,7 @@ const JablaShowcase = () => {
           </div>
         ) : (
           <>
-            <h2 className="jabla-title">Jabla, Co-od & Frock</h2>
+            <h2 className="jabla-title">See Kottravai in life </h2>
             <p className="jabla-subtitle">Breathable cotton frock made for summer comfort and everyday charm!</p>
           </>
         )}

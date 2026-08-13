@@ -12,7 +12,7 @@ const PaymentPage = () => {
         <h1 className="payment-main-title">Payment</h1>
 
         <p className="payment-text">
-          At little RR, we offer multiple secure and convenient payment options to make your shopping experience smooth and reliable whether you’re ordering within India or internationally.
+          At maruthan, we offer multiple secure and convenient payment options to make your shopping experience smooth and reliable whether you’re ordering within India or internationally.
         </p>
 
         <hr className="payment-divider" />
@@ -77,7 +77,7 @@ const PaymentPage = () => {
           If you need help choosing the right payment method or have special payment concerns, our team is here to assist.
         </p>
         <p className="payment-text">
-          📩 Email: info@littlerr.in<br />
+          📩 Email: info@maruthan.in<br />
           📞 WhatsApp: +91-9786221122
         </p>
       </div>

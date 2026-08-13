@@ -64,7 +64,7 @@ const ContactPage = () => {
             allowFullScreen=""
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
-            title="little RR Location"
+            title="maruthan Location"
           ></iframe>
         </div>
 
@@ -82,17 +82,17 @@ const ContactPage = () => {
                 <a href="tel:+919786221122" className="contact-link">WhatsApp / Call</a> : <span className="contact-phone-number">+91-9786221122</span>
               </p>
               <p className="contact-info-text">
-                <a href="mailto:info@littlerr.in" className="contact-link">Email</a>: info@littlerr.in
+                <a href="mailto:info@maruthan.in" className="contact-link">Email</a>: info@maruthan.in
               </p>
             </div>
 
             <div className="contact-info-block" style={{ marginTop: '30px' }}>
               <h3 className="contact-info-title">Main Office:</h3>
               <p className="contact-info-text">
-                little RR<br />
-             First Floor, D.no 7359, <br /> Sornavallinagar Second Street,  <br />Thuthi Nagar, Kalayarkoil,<br /> Tamil Nadu 630551  <br />
-              
-              
+                maruthan<br />
+                First Floor, D.no 7359, <br /> Sornavallinagar Second Street,  <br />Thuthi Nagar, Kalayarkoil,<br /> Tamil Nadu 630551  <br />
+
+
                 Phone: <span className="contact-phone-number"> 9786221122</span>
               </p>
             </div>
@@ -116,7 +116,7 @@ const ContactPage = () => {
               <input
                 type="hidden"
                 name="_subject"
-                value="New Contact from little RR Website"
+                value="New Contact from maruthan Website"
               />
               <input
                 type="hidden"

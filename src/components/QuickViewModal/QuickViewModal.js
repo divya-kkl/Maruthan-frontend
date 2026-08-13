@@ -235,7 +235,7 @@ const QuickViewModal = ({ product, onClose }) => {
             )}
 
             <div className="quickview-desc-text">
-              <p>{product.description || "Dress your little princess in pure elegance with this stunning dress from little RR - trusted by 10L+ happy parents across India."}</p>
+              <p>{product.description || "Dress your little princess in pure elegance with this stunning dress from maruthan - trusted by 10L+ happy parents across India."}</p>
             </div>
 
             <div className="quickview-specs-section">

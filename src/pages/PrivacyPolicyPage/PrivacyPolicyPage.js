@@ -12,11 +12,11 @@ const PrivacyPolicyPage = () => {
         <h1 className="privacy-main-title">Privacy Policy</h1>
 
         <p className="privacy-intro-text">
-          Please read this Privacy Policy carefully before using the website <a href="https://www.littlerr.in" target="_blank" rel="noopener noreferrer">www.littlerr.in</a> or submitting any personal information. By accessing or using the site, you agree to the terms and practices described below.
+          Please read this Privacy Policy carefully before using the website <a href="https://www.maruthan.in" target="_blank" rel="noopener noreferrer">www.maruthan.in</a> or submitting any personal information. By accessing or using the site, you agree to the terms and practices described below.
         </p>
 
         <p className="privacy-text">
-          We encourage you to review this policy regularly to stay informed about how we collect, use, and safeguard your personal information. little RR reserves the right to modify this policy at any time without prior notice. Updates will be posted on this page and become effective immediately upon publication.
+          We encourage you to review this policy regularly to stay informed about how we collect, use, and safeguard your personal information. maruthan reserves the right to modify this policy at any time without prior notice. Updates will be posted on this page and become effective immediately upon publication.
         </p>
 
         <hr className="privacy-divider" />
@@ -88,7 +88,7 @@ const PrivacyPolicyPage = () => {
           If you have any questions or concerns regarding this Privacy Policy or how your personal data is managed, please contact us at:
         </p>
         <p className="privacy-contact-info">
-          📧 Email: <a href="mailto:info@littlerr.in">info@littlerr.in</a>
+          📧 Email: <a href="mailto:info@maruthan.in">info@maruthan.in</a>
         </p>
       </div>
     </div>

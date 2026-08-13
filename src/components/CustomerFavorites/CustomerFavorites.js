@@ -10,7 +10,7 @@ const CustomerFavorites = () => {
   const { productsByTag, status: tagStatus } = useSelector((state) => state.tagProducts);
   const loading = (productStatus === 'loading' || productStatus === 'idle') && tagStatus !== 'succeeded';
 
-  const taggedProducts = productsByTag['Loved by Our Little Customers'] || [];
+  const taggedProducts = productsByTag['SHOP TERRACOTTA JEWELLERY'] || [];
   const uniqueProductsMap = new Map();
   taggedProducts.forEach(p => {
     if (!uniqueProductsMap.has(p.id)) uniqueProductsMap.set(p.id, p);
@@ -21,7 +21,7 @@ const CustomerFavorites = () => {
 
   useEffect(() => {
     dispatch(fetchProducts());
-    dispatch(fetchProductsByTag({ code: 'Loved by Our Little Customers', limit: 10 }));
+    dispatch(fetchProductsByTag({ code: 'SHOP TERRACOTTA JEWELLERY', limit: 10 }));
   }, [dispatch]);
 
   const truncate = (str, n) => (str.length > n ? str.substr(0, n - 1) + '...' : str);
@@ -48,7 +48,7 @@ const CustomerFavorites = () => {
         </div>
       ) : (
         <div className="customer-favorites-header">
-          <h2 className="customer-favorites-title">Loved by Our Little Customers 💛</h2>
+          <h2 className="customer-favorites-title">Shop Terracotta Jewellery 💛</h2>
           <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="customer-favorites-insta-btn">
             <FaInstagram className="cf-insta-icon" />
             Follow Us on Instagram

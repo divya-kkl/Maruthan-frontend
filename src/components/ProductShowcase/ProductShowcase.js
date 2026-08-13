@@ -17,8 +17,8 @@ const ProductShowcase = () => {
 
   const loading = (productStatus === 'loading' || productStatus === 'idle') && tagStatus !== 'succeeded';
 
- 
-  const taggedProducts = productsByTag['TRADITIONAL GOWNS'] || [];
+
+  const taggedProducts = productsByTag['BEST SELLERS'] || [];
 
   // Combine tagged products first, then generic products, removing duplicates by ID
   const combinedProducts = [...taggedProducts];
@@ -34,7 +34,7 @@ const ProductShowcase = () => {
 
   useEffect(() => {
     dispatch(fetchProducts());
-    dispatch(fetchProductsByTag({ code: 'TRADITIONAL GOWNS', limit: 5 }));
+    dispatch(fetchProductsByTag({ code: 'BEST SELLERS', limit: 5 }));
   }, [dispatch]);
 
   if (tagStatus === 'failed') {
@@ -68,7 +68,7 @@ const ProductShowcase = () => {
           </div>
         ) : (
           <>
-            <h2 className="showcase-title">Traditional gowns</h2>
+            <h2 className="showcase-title">Best Sellers</h2>
             <p className="showcase-subtitle">Loved by parents for its timeless tradition and comfort!</p>
           </>
         )}

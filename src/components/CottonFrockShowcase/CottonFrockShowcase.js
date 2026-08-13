@@ -14,7 +14,7 @@ const CottonFrockShowcase = () => {
   const loading = (productStatus === 'loading' || productStatus === 'idle' || productStatus === 'idel') && tagStatus !== 'succeeded';
 
 
-  const taggedProducts = productsByTag['COTTON & MODERN FROCK'] || [];
+  const taggedProducts = productsByTag['BANANA FIBER'] || [];
 
   const combinedProducts = [...taggedProducts];
   const uniqueProductsMap = new Map();
@@ -30,7 +30,7 @@ const CottonFrockShowcase = () => {
 
   useEffect(() => {
     dispatch(fetchProducts());
-    dispatch(fetchProductsByTag({ code: 'COTTON & MODERN FROCK', limit: 5 }));
+    dispatch(fetchProductsByTag({ code: 'BANANA FIBER', limit: 5 }));
   }, [dispatch]);
 
   if (tagStatus === 'failed') {
@@ -54,7 +54,7 @@ const CottonFrockShowcase = () => {
           </div>
         ) : (
           <>
-            <h2 className="cotton-frock-title">Cotton & Modern frock</h2>
+            <h2 className="cotton-frock-title">Banana Fiber</h2>
             <p className="cotton-frock-subtitle">Breathable cotton frock made for summer comfort and everyday charm!</p>
           </>
         )}

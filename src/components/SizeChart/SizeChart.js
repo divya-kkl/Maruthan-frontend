@@ -22,7 +22,7 @@ const SizeChart = () => {
           <div className="size-chart-modal-content" onClick={(e) => e.stopPropagation()}>
             <button className="size-chart-modal-close" onClick={() => dispatch(closeSizeChart())}>&times;</button>
             <div className="size-chart-image-container">
-              <img src="/images/sidechartimage1.png" alt="LittleRR Size Chart" className="size-chart-main-img" />
+              <img src="/images/sidechartimage1.png" alt="maruthan Size Chart" className="size-chart-main-img" />
             </div>
           </div>
         </div>

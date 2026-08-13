@@ -11,25 +11,25 @@ const AboutUsPage = () => {
     <div className="about-page">
       <div className="about-container">
         <div className="about-breadcrumb">
-          <Link to="/">Home</Link> &middot; <span>About little RR</span>
+          <Link to="/">Home</Link> &middot; <span>About maruthan</span>
         </div>
 
-        <h2 className="about-subtitle">About little RR - Premium Kids Ethnic Wear Manufacturer in India</h2>
+        <h2 className="about-subtitle">About maruthan - Premium Kids Ethnic Wear Manufacturer in India</h2>
         <p className="about-text">
-          little RR is a leading kids ethnic wear manufacturer in India, specializing in premium traditional outfits for newborns, toddlers, and young children. We design and manufacture high-quality Indian ethnic wear that blends cultural heritage with modern comfort and finishing standards. With a strong background in garment manufacturing, our brand focuses exclusively on creating baby silk frocks, traditional cotton dresses, ethnic gowns, and festive wear for kids. Every outfit is crafted in-house by skilled artisans using carefully selected fabrics that are soft, breathable, and suitable for delicate children’s skin.
+          maruthan is a leading kids ethnic wear manufacturer in India, specializing in premium traditional outfits for newborns, toddlers, and young children. We design and manufacture high-quality Indian ethnic wear that blends cultural heritage with modern comfort and finishing standards. With a strong background in garment manufacturing, our brand focuses exclusively on creating baby silk frocks, traditional cotton dresses, ethnic gowns, and festive wear for kids. Every outfit is crafted in-house by skilled artisans using carefully selected fabrics that are soft, breathable, and suitable for delicate children’s skin.
         </p>
         <p className="about-text">
           As direct manufacturers, we maintain strict quality control at every stage from fabric sourcing and pattern cutting to stitching, detailing, and final inspection. Our production process ensures consistent sizing, premium finishing, durability, and elegant design in every garment. Our collections are ideal for naming ceremonies, first birthdays, temple visits, wedding functions, and festive occasions such as Diwali, Navratri, and Pongal. We are committed to offering comfortable, skin-friendly, and beautifully designed traditional outfits that allow children to move freely while looking graceful.
         </p>
         <p className="about-text">
-          At little RR, our vision is to become a trusted and recognized brand in the Indian kids ethnic wear industry by delivering authentic designs, premium manufacturing quality, and customer-focused service. We believe every child deserves to celebrate special moments in comfort, confidence, and traditional elegance.
+          At maruthan, our vision is to become a trusted and recognized brand in the Indian kids ethnic wear industry by delivering authentic designs, premium manufacturing quality, and customer-focused service. We believe every child deserves to celebrate special moments in comfort, confidence, and traditional elegance.
         </p>
 
         <hr className="about-divider" />
 
-        <h2 className="about-subtitle">Why little RR Pattu Dress?</h2>
+        <h2 className="about-subtitle">Why maruthan Pattu Dress?</h2>
         <p className="about-text">
-          A Pattu Pavadai is more than a dress - it is tradition and celebration woven into silk. At little RR, we craft each pavadai using premium raw silk and authentic Banarasi silk sourced directly from trusted weaving units. No synthetic substitutes. No compromise on quality. Every piece features pure silk fabric, rich zari borders, elegant colors, and a soft inner lining for complete comfort.
+          A Pattu Pavadai is more than a dress - it is tradition and celebration woven into silk. At maruthan, we craft each pavadai using premium raw silk and authentic Banarasi silk sourced directly from trusted weaving units. No synthetic substitutes. No compromise on quality. Every piece features pure silk fabric, rich zari borders, elegant colors, and a soft inner lining for complete comfort.
         </p>
         <p className="about-text">
           The result? A royal yet baby-friendly Pattu Pavadai made for your little princess to shine on every special occasion.
@@ -49,7 +49,7 @@ const AboutUsPage = () => {
           </p>
 
           <p className="about-text center-text">
-            At <span className="about-highlight">little RR</span>, we believe baby clothing is not just about style - it is about <span className="about-highlight">comfort, safety, and love</span>. That is why we use carefully selected fabrics sourced directly from authentic manufacturers of <span className="about-highlight">Banarasi silk</span> and <span className="about-highlight">100% pure Chettinad cotton</span>.
+            At <span className="about-highlight">maruthan</span>, we believe baby clothing is not just about style - it is about <span className="about-highlight">comfort, safety, and love</span>. That is why we use carefully selected fabrics sourced directly from authentic manufacturers of <span className="about-highlight">Banarasi silk</span> and <span className="about-highlight">100% pure Made for Every Part of Your Life (MADE FOR EVERY PART OF YOUR LIFE</span>.
           </p>
 
           <p className="about-text center-text">
@@ -70,7 +70,7 @@ const AboutUsPage = () => {
               </svg>
             </div>
             <h3 className="about-feature-title">Authentic Fabrics</h3>
-            <p className="about-feature-text">Banarasi silk & 100% Chettinad cotton</p>
+            <p className="about-feature-text">Banarasi silk & 100% Made for Every Part of Your Life (MADE FOR EVERY PART OF YOUR LIFE</p>
           </div>
 
           <div className="about-feature-card">
@@ -128,7 +128,7 @@ const AboutUsPage = () => {
               <div className="about-timeline-dot"></div>
               <div className="about-timeline-content">
                 <h3 className="about-timeline-title">Expanding Collections</h3>
-                <p className="about-timeline-text">Introduced Pattu Pavadai and Chettinad cotton collections.</p>
+                <p className="about-timeline-text">Introduced Pattu Pavadai and Made for Every Part of Your Life (MADE FOR EVERY PART OF YOUR LIFE collections.</p>
               </div>
             </div>
 

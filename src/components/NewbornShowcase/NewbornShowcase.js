@@ -16,7 +16,7 @@ const NewbornShowcase = () => {
   const loading = (productStatus === 'loading' || productStatus === 'idle') && tagStatus !== 'succeeded';
 
 
-  const taggedProducts = productsByTag['NEWBORN PATTU FROCK'] || [];
+  const taggedProducts = productsByTag['HAMPERS'] || [];
 
   // Combine tagged products first, then generic products, removing duplicates by ID
   const combinedProducts = [...taggedProducts];
@@ -32,7 +32,7 @@ const NewbornShowcase = () => {
 
   useEffect(() => {
     dispatch(fetchProducts());
-    dispatch(fetchProductsByTag({ code: 'NEWBORN PATTU FROCK', limit: 8 }));
+    dispatch(fetchProductsByTag({ code: 'HAMPERS', limit: 8 }));
   }, [dispatch]);
 
   if (tagStatus === 'failed') {
@@ -54,7 +54,7 @@ const NewbornShowcase = () => {
             <div className="shimmer-text title" style={{ width: '300px', height: '32px' }}></div>
           </div>
         ) : (
-          <h2 className="newborn-title">Newborn Pattu Frock</h2>
+          <h2 className="newborn-title">Hampers</h2>
         )}
 
         <div className="newborn-grid">

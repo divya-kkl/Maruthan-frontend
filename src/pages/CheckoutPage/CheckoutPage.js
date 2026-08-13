@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./CheckoutPage.css";
 import { useSelector, useDispatch } from "react-redux";
-import { removeFromCart,fetchDeliveryCharge  } from "../../redux/Slice/cartSlice";
+import { removeFromCart, fetchDeliveryCharge } from "../../redux/Slice/cartSlice";
 import { fetchSavedAddresses, fetchPaymentMethods, placeOrder, createRazorpayOrder, resetOrderSuccess, setValidationErrors, setSubmitError, updateCheckoutFormData, setSelectedAddressIndex } from "../../redux/Slice/checkoutSlice";
 
 
@@ -66,9 +66,9 @@ const Checkout = ({ onNavigate }) => {
       const orderId = orderSuccessData.id;
       dispatch(resetOrderSuccess());
       if (onNavigate) {
-         onNavigate(`order-success/${orderId}`);
+        onNavigate(`order-success/${orderId}`);
       } else {
-         navigate(`/order-success/${orderId}`);
+        navigate(`/order-success/${orderId}`);
       }
     }
   }, [orderSuccessData, navigate, onNavigate, dispatch]);
@@ -77,9 +77,9 @@ const Checkout = ({ onNavigate }) => {
     if (error && error.includes("Unauthorized")) {
       alert("Please login to place an order.");
       if (onNavigate) {
-         onNavigate("signin");
+        onNavigate("signin");
       } else {
-         navigate("/login");
+        navigate("/login");
       }
     } else if (error) {
       dispatch(setSubmitError("Failed to place order: " + (error || "Please try again.")));
@@ -88,7 +88,7 @@ const Checkout = ({ onNavigate }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
+
     if (name === 'phone') {
       // Only allow numbers for phone
       const sanitized = value.replace(/[^0-9]/g, '');
@@ -96,7 +96,7 @@ const Checkout = ({ onNavigate }) => {
       dispatch(updateCheckoutFormData({ [name]: sanitized }));
       return;
     }
-    
+
     if (name === 'name' || name === 'city' || name === 'state') {
       // Only allow alphabets and spaces for text fields
       const sanitized = value.replace(/[^a-zA-Z\s]/g, '');
@@ -117,123 +117,123 @@ const Checkout = ({ onNavigate }) => {
 
     const deliveryAddress = selectedAddressIndex === 'new'
       ? {
-          addressType: formData.addressType,
-          name: formData.name,
-          street: formData.street,
-          city: formData.city,
-          state: formData.state,
-          country: formData.country,
-          phone: formData.phone,
-        }
+        addressType: formData.addressType,
+        name: formData.name,
+        street: formData.street,
+        city: formData.city,
+        state: formData.state,
+        country: formData.country,
+        phone: formData.phone,
+      }
       : {
-          addressType: savedAddresses[selectedAddressIndex].addressType,
-          name: savedAddresses[selectedAddressIndex].name,
-          street: savedAddresses[selectedAddressIndex].street,
-          city: savedAddresses[selectedAddressIndex].city,
-          state: savedAddresses[selectedAddressIndex].state,
-          country: savedAddresses[selectedAddressIndex].country,
-          phone: savedAddresses[selectedAddressIndex].phone,
-        };
+        addressType: savedAddresses[selectedAddressIndex].addressType,
+        name: savedAddresses[selectedAddressIndex].name,
+        street: savedAddresses[selectedAddressIndex].street,
+        city: savedAddresses[selectedAddressIndex].city,
+        state: savedAddresses[selectedAddressIndex].state,
+        country: savedAddresses[selectedAddressIndex].country,
+        phone: savedAddresses[selectedAddressIndex].phone,
+      };
 
     if (selectedAddressIndex !== 'new') {
-       if (!deliveryAddress.phone || deliveryAddress.phone.trim() === '') {
-           errors.addressSelection = "Phone number is missing in this saved address. Please add a new address.";
-       }
+      if (!deliveryAddress.phone || deliveryAddress.phone.trim() === '') {
+        errors.addressSelection = "Phone number is missing in this saved address. Please add a new address.";
+      }
     } else {
-       if (!formData.name || formData.name.trim() === '') errors.name = "Full name is required";
-       if (!formData.phone || formData.phone.length !== 10) errors.phone = "Valid 10-digit phone number is required";
-       if (!formData.street || formData.street.trim() === '') errors.street = "Street address is required";
-       if (!formData.city || formData.city.trim() === '') errors.city = "City is required";
-       if (!formData.state || formData.state.trim() === '') errors.state = "State is required";
+      if (!formData.name || formData.name.trim() === '') errors.name = "Full name is required";
+      if (!formData.phone || formData.phone.length !== 10) errors.phone = "Valid 10-digit phone number is required";
+      if (!formData.street || formData.street.trim() === '') errors.street = "Street address is required";
+      if (!formData.city || formData.city.trim() === '') errors.city = "City is required";
+      if (!formData.state || formData.state.trim() === '') errors.state = "State is required";
     }
 
     if (Object.keys(errors).length > 0) {
-        dispatch(setValidationErrors(errors));
-        return;
+      dispatch(setValidationErrors(errors));
+      return;
     }
 
-      const input = {
-        deliveryCharge: deliveryCharge || 0,
-        paymentMethod: formData.paymentMethod,
-        deliveryAddress,
-        notes: formData.notes || undefined,
-        couponCode: coupon ? coupon.code : undefined,
-      };
+    const input = {
+      deliveryCharge: deliveryCharge || 0,
+      paymentMethod: formData.paymentMethod,
+      deliveryAddress,
+      notes: formData.notes || undefined,
+      couponCode: coupon ? coupon.code : undefined,
+    };
 
-      // Purely Frontend Razorpay Payment if UPI (Online Delivery)
-      if (formData.paymentMethod === "UPI" || formData.paymentMethod === "RAZORPAY") {
-        if (!window.Razorpay) {
-            alert("Razorpay SDK failed to load. Please check your internet connection.");
-            return;
-        }
-        if (!process.env.REACT_APP_RAZORPAY_KEY_ID) {
-            alert("Razorpay Key is missing! Please check your .env file.");
-            return;
-        }
-
-        // 1. Calculate amount (cart total - discount + delivery charge)
-        const totalAmount = finalTotalAmount;
-
-        // 2. Call backend to create Razorpay Order via Redux
-        let rzpResponse;
-        try {
-          rzpResponse = await dispatch(createRazorpayOrder(totalAmount)).unwrap();
-        } catch (err) {
-          alert("Failed to initialize Razorpay order. Please try again.");
-          return;
-        }
-
-        if (!rzpResponse.success) {
-           alert("Failed to initialize Razorpay order. Please try again.");
-           return;
-        }
-
-        const options = {
-          key: process.env.REACT_APP_RAZORPAY_KEY_ID, 
-          amount: rzpResponse.amount, // Amount is in paise
-          currency: "INR",
-          name: "littleRR",
-          order_id: rzpResponse.orderId, 
-          description: "Purchase Order",
-          handler: async function (response) {
-            try {
-              // 3. Payment success callback from Razorpay -> Place Order on backend via Redux
-              input.paymentMethod = "RAZORPAY";
-              input.razorpayOrderId = response.razorpay_order_id;
-              input.razorpayPaymentId = response.razorpay_payment_id;
-              input.razorpaySignature = response.razorpay_signature;
-
-              dispatch(placeOrder({ input, cartItems }));
-              
-            } catch (verifyErr) {
-              console.error("Payment Verification Error", verifyErr);
-              alert("Payment verification failed! Please contact support.");
-            }
-          },
-          prefill: {
-            name: deliveryAddress.name,
-            contact: deliveryAddress.phone
-          },
-          theme: {
-            color: "#8a2b8f"
-          },
-          modal: {
-            ondismiss: function() {
-              alert("Payment cancelled.");
-            }
-          }
-        };
-
-        const rzp = new window.Razorpay(options);
-        rzp.on('payment.failed', function (response){
-          alert("Payment failed: " + response.error.description);
-        });
-        rzp.open();
+    // Purely Frontend Razorpay Payment if UPI (Online Delivery)
+    if (formData.paymentMethod === "UPI" || formData.paymentMethod === "RAZORPAY") {
+      if (!window.Razorpay) {
+        alert("Razorpay SDK failed to load. Please check your internet connection.");
+        return;
+      }
+      if (!process.env.REACT_APP_RAZORPAY_KEY_ID) {
+        alert("Razorpay Key is missing! Please check your .env file.");
         return;
       }
 
-      // If not ONLINE (e.g. COD), proceed normally
-      dispatch(placeOrder({ input, cartItems }));
+      // 1. Calculate amount (cart total - discount + delivery charge)
+      const totalAmount = finalTotalAmount;
+
+      // 2. Call backend to create Razorpay Order via Redux
+      let rzpResponse;
+      try {
+        rzpResponse = await dispatch(createRazorpayOrder(totalAmount)).unwrap();
+      } catch (err) {
+        alert("Failed to initialize Razorpay order. Please try again.");
+        return;
+      }
+
+      if (!rzpResponse.success) {
+        alert("Failed to initialize Razorpay order. Please try again.");
+        return;
+      }
+
+      const options = {
+        key: process.env.REACT_APP_RAZORPAY_KEY_ID,
+        amount: rzpResponse.amount, // Amount is in paise
+        currency: "INR",
+        name: "maruthan",
+        order_id: rzpResponse.orderId,
+        description: "Purchase Order",
+        handler: async function (response) {
+          try {
+            // 3. Payment success callback from Razorpay -> Place Order on backend via Redux
+            input.paymentMethod = "RAZORPAY";
+            input.razorpayOrderId = response.razorpay_order_id;
+            input.razorpayPaymentId = response.razorpay_payment_id;
+            input.razorpaySignature = response.razorpay_signature;
+
+            dispatch(placeOrder({ input, cartItems }));
+
+          } catch (verifyErr) {
+            console.error("Payment Verification Error", verifyErr);
+            alert("Payment verification failed! Please contact support.");
+          }
+        },
+        prefill: {
+          name: deliveryAddress.name,
+          contact: deliveryAddress.phone
+        },
+        theme: {
+          color: "#8a2b8f"
+        },
+        modal: {
+          ondismiss: function () {
+            alert("Payment cancelled.");
+          }
+        }
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', function (response) {
+        alert("Payment failed: " + response.error.description);
+      });
+      rzp.open();
+      return;
+    }
+
+    // If not ONLINE (e.g. COD), proceed normally
+    dispatch(placeOrder({ input, cartItems }));
   };
 
   if (loading) {
@@ -254,7 +254,7 @@ const Checkout = ({ onNavigate }) => {
           <p style={{ color: "#888" }}>
             Add some products to your cart before checking out.
           </p>
-          <button onClick={() => { if(onNavigate) onNavigate('home'); else navigate("/"); }}>Continue Shopping</button>
+          <button onClick={() => { if (onNavigate) onNavigate('home'); else navigate("/"); }}>Continue Shopping</button>
         </div>
       </div>
     );
@@ -263,8 +263,8 @@ const Checkout = ({ onNavigate }) => {
   return (
     <div className="checkout-page">
       <div className="checkout-header-wrapper">
-         <h1>Secure Checkout</h1>
-         <p>Complete your purchase securely</p>
+        <h1>Secure Checkout</h1>
+        <p>Complete your purchase securely</p>
       </div>
 
       <form onSubmit={handlePlaceOrder} className="checkout-container">
@@ -313,110 +313,110 @@ const Checkout = ({ onNavigate }) => {
           ) : null}
 
           {validationErrors.addressSelection && (
-             <div style={{ color: '#dc3545', marginTop: '10px', fontSize: '14px', fontWeight: '500' }}>
-                {validationErrors.addressSelection}
-             </div>
+            <div style={{ color: '#dc3545', marginTop: '10px', fontSize: '14px', fontWeight: '500' }}>
+              {validationErrors.addressSelection}
+            </div>
           )}
 
           {selectedAddressIndex === 'new' && (
             <div className="new-address-form">
               <div className="form-row">
                 <div className="form-group">
-              <label>Full Name *</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="Enter your full name"
-                required
-              />
-              {validationErrors.name && <span style={{color: '#dc3545', fontSize: '13px', marginTop:'5px', display:'block'}}>{validationErrors.name}</span>}
-            </div>
-            <div className="form-group">
-              <label>Phone Number *</label>
-              <input
-                type="tel"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                placeholder="Enter 10 digit phone number"
-                minLength="10"
-                maxLength="10"
-                pattern="[0-9]{10}"
-                title="Please enter a valid 10-digit phone number"
-                required
-              />
-              {validationErrors.phone && <span style={{color: '#dc3545', fontSize: '13px', marginTop:'5px', display:'block'}}>{validationErrors.phone}</span>}
-            </div>
-          </div>
+                  <label>Full Name *</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="Enter your full name"
+                    required
+                  />
+                  {validationErrors.name && <span style={{ color: '#dc3545', fontSize: '13px', marginTop: '5px', display: 'block' }}>{validationErrors.name}</span>}
+                </div>
+                <div className="form-group">
+                  <label>Phone Number *</label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    placeholder="Enter 10 digit phone number"
+                    minLength="10"
+                    maxLength="10"
+                    pattern="[0-9]{10}"
+                    title="Please enter a valid 10-digit phone number"
+                    required
+                  />
+                  {validationErrors.phone && <span style={{ color: '#dc3545', fontSize: '13px', marginTop: '5px', display: 'block' }}>{validationErrors.phone}</span>}
+                </div>
+              </div>
 
-          <div className="form-group">
-            <label>Street Address *</label>
-            <input
-              type="text"
-              name="street"
-              value={formData.street}
-              onChange={handleChange}
-              placeholder="House no, Building, Street, Area"
-              required
-            />
-            {validationErrors.street && <span style={{color: '#dc3545', fontSize: '13px', marginTop:'5px', display:'block'}}>{validationErrors.street}</span>}
-          </div>
+              <div className="form-group">
+                <label>Street Address *</label>
+                <input
+                  type="text"
+                  name="street"
+                  value={formData.street}
+                  onChange={handleChange}
+                  placeholder="House no, Building, Street, Area"
+                  required
+                />
+                {validationErrors.street && <span style={{ color: '#dc3545', fontSize: '13px', marginTop: '5px', display: 'block' }}>{validationErrors.street}</span>}
+              </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label>City *</label>
-              <input
-                type="text"
-                name="city"
-                value={formData.city}
-                onChange={handleChange}
-                placeholder="City"
-                required
-              />
-              {validationErrors.city && <span style={{color: '#dc3545', fontSize: '13px', marginTop:'5px', display:'block'}}>{validationErrors.city}</span>}
-            </div>
-            <div className="form-group">
-              <label>State *</label>
-              <input
-                type="text"
-                name="state"
-                value={formData.state}
-                onChange={handleChange}
-                placeholder="State"
-                required
-              />
-              {validationErrors.state && <span style={{color: '#dc3545', fontSize: '13px', marginTop:'5px', display:'block'}}>{validationErrors.state}</span>}
-            </div>
-          </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>City *</label>
+                  <input
+                    type="text"
+                    name="city"
+                    value={formData.city}
+                    onChange={handleChange}
+                    placeholder="City"
+                    required
+                  />
+                  {validationErrors.city && <span style={{ color: '#dc3545', fontSize: '13px', marginTop: '5px', display: 'block' }}>{validationErrors.city}</span>}
+                </div>
+                <div className="form-group">
+                  <label>State *</label>
+                  <input
+                    type="text"
+                    name="state"
+                    value={formData.state}
+                    onChange={handleChange}
+                    placeholder="State"
+                    required
+                  />
+                  {validationErrors.state && <span style={{ color: '#dc3545', fontSize: '13px', marginTop: '5px', display: 'block' }}>{validationErrors.state}</span>}
+                </div>
+              </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label>Country *</label>
-              <input
-                type="text"
-                name="country"
-                value={formData.country}
-                onChange={handleChange}
-                required
-                readOnly
-                className="readonly-input"
-              />
-            </div>
-            <div className="form-group">
-              <label>Address Type</label>
-              <select
-                name="addressType"
-                value={formData.addressType}
-                onChange={handleChange}
-              >
-                <option value="Home">Home</option>
-                <option value="Work">Work</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-          </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Country *</label>
+                  <input
+                    type="text"
+                    name="country"
+                    value={formData.country}
+                    onChange={handleChange}
+                    required
+                    readOnly
+                    className="readonly-input"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Address Type</label>
+                  <select
+                    name="addressType"
+                    value={formData.addressType}
+                    onChange={handleChange}
+                  >
+                    <option value="Home">Home</option>
+                    <option value="Work">Work</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+              </div>
 
             </div>
           )}
@@ -439,34 +439,34 @@ const Checkout = ({ onNavigate }) => {
             {paymentMethods.length > 0 ? paymentMethods.map((method) => {
               const isActive = method.status === 'ACTIVE';
               return (
-              <label
-                key={method.value}
-                className={`payment-option ${
-                  formData.paymentMethod === method.value ? "selected" : ""
-                } ${!isActive ? "disabled" : ""}`}
-                style={!isActive ? { opacity: 0.5, cursor: "not-allowed" } : {}}
-              >
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value={method.value}
-                  checked={formData.paymentMethod === method.value && isActive}
-                  onChange={handleChange}
-                  disabled={!isActive}
-                />
-                <div className="payment-option-content">
-                  <span className="payment-label">
-                    {method.icon} {method.name}
-                    {!isActive && (
-                      <span style={{ fontSize: "12px", color: "#dc3545", marginLeft: "8px", fontWeight: "normal" }}>
-                        (Unavailable)
-                      </span>
-                    )}
-                  </span>
-                  {method.description && <span className="payment-desc">{method.description}</span>}
-                </div>
-              </label>
-            )}) : (
+                <label
+                  key={method.value}
+                  className={`payment-option ${formData.paymentMethod === method.value ? "selected" : ""
+                    } ${!isActive ? "disabled" : ""}`}
+                  style={!isActive ? { opacity: 0.5, cursor: "not-allowed" } : {}}
+                >
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value={method.value}
+                    checked={formData.paymentMethod === method.value && isActive}
+                    onChange={handleChange}
+                    disabled={!isActive}
+                  />
+                  <div className="payment-option-content">
+                    <span className="payment-label">
+                      {method.icon} {method.name}
+                      {!isActive && (
+                        <span style={{ fontSize: "12px", color: "#dc3545", marginLeft: "8px", fontWeight: "normal" }}>
+                          (Unavailable)
+                        </span>
+                      )}
+                    </span>
+                    {method.description && <span className="payment-desc">{method.description}</span>}
+                  </div>
+                </label>
+              )
+            }) : (
               // Fallback if no payment methods configured in admin
               [
                 { value: "COD", label: "💵 Cash on Delivery", desc: "Pay at your doorstep" },
@@ -502,7 +502,7 @@ const Checkout = ({ onNavigate }) => {
                     Rs. {(item.product.price * item.quantity).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                   </span>
                 </div>
-                <button 
+                <button
                   type="button"
                   className="remove-summary-item"
                   onClick={() => dispatch(removeFromCart({ productId: item.product.id || item.product._id, size: item.size }))}
@@ -515,45 +515,45 @@ const Checkout = ({ onNavigate }) => {
           </div>
 
           <div className="summary-totals">
-             <div className="summary-row">
-               <span>Subtotal</span>
-               <span>
-                 Rs. {getCartTotal().toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-               </span>
-             </div>
-             
-             {coupon && (
-               <div className="summary-row" style={{ color: 'green' }}>
-                 <span>
-                   Discount ({coupon.type === 'PERCENTAGE' ? `${coupon.value}%` : `Rs. ${coupon.value}`})
-                 </span>
-                 <span>
-                   - Rs. {discount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-                 </span>
-               </div>
-             )}
+            <div className="summary-row">
+              <span>Subtotal</span>
+              <span>
+                Rs. {getCartTotal().toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+              </span>
+            </div>
 
-             <div className="summary-row">
-               <span>Delivery Charge</span>
-               {deliveryCharge > 0 ? (
-                 <span>Rs. {deliveryCharge.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
-               ) : (
-                 <span className="free-shipping">Free</span>
-               )}
-             </div>
+            {coupon && (
+              <div className="summary-row" style={{ color: 'green' }}>
+                <span>
+                  Discount ({coupon.type === 'PERCENTAGE' ? `${coupon.value}%` : `Rs. ${coupon.value}`})
+                </span>
+                <span>
+                  - Rs. {discount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                </span>
+              </div>
+            )}
 
-             <div className="summary-total-row">
-               <span>Total to Pay</span>
-               <span className="total-amount">
-                 Rs. {finalTotalAmount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-               </span>
-             </div>
+            <div className="summary-row">
+              <span>Delivery Charge</span>
+              {deliveryCharge > 0 ? (
+                <span>Rs. {deliveryCharge.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
+              ) : (
+                <span className="free-shipping">Free</span>
+              )}
+            </div>
+
+            <div className="summary-total-row">
+              <span>Total to Pay</span>
+              <span className="total-amount">
+                Rs. {finalTotalAmount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+              </span>
+            </div>
           </div>
 
           {submitError && (
-             <div style={{ color: '#dc3545', marginBottom: '15px', textAlign: 'center', fontSize: '15px', fontWeight: 'bold' }}>
-                {submitError}
-             </div>
+            <div style={{ color: '#dc3545', marginBottom: '15px', textAlign: 'center', fontSize: '15px', fontWeight: 'bold' }}>
+              {submitError}
+            </div>
           )}
 
           <button
@@ -562,13 +562,13 @@ const Checkout = ({ onNavigate }) => {
             disabled={isPlacingOrder}
           >
             {isPlacingOrder ? (
-               <><span className="checkout-spinner"></span> Processing...</>
+              <><span className="checkout-spinner"></span> Processing...</>
             ) : "Place Secure Order"}
           </button>
-          
+
           <div className="secure-checkout-badge">
-             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-             256-bit SSL Secure Checkout
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            256-bit SSL Secure Checkout
           </div>
         </div>
       </form>

@@ -56,7 +56,7 @@ const ExchangePage = () => {
 
         <h2 className="exchange-subtitle">Return Address</h2>
         <p className="exchange-text">
-          little RR<br />
+          maruthan<br />
         First Floor, D.no 7359,<br />
          Sornavallinagar Second Street, <br />
          Thuthi Nagar,

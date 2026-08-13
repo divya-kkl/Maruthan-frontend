@@ -2,8 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   brand: {
-    logo: '/images/log1.png',
-    description: 'Little RR offers the finest and most comfortable ethnic and traditional wear for your little ones, blending timeless traditions with modern comfort.'
+    logo: '/images/logo.png',
+    description: 'maruthan offers the finest and most comfortable ethnic and traditional wear for your little ones, blending timeless traditions with modern comfort.'
   },
   infoLinks: [
     { id: 'l1', label: 'Order Status', path: '/order-status' },
@@ -25,7 +25,7 @@ const initialState = {
       { id: 3, name: 'KalyarKovil, Sivagangai', phone: '91-9786221122' }
     ],
     mainPhone: '+91-9786221122',
-    email: 'info@littlerr.in'
+    email: 'info@maruthan.in'
   },
   socials: [
     { id: 'fb', name: 'facebook', url: 'https://www.facebook.com', icon: 'f' },
@@ -34,7 +34,7 @@ const initialState = {
     { id: 'in', name: 'linkedin', url: 'https://www.linkedin.com', icon: 'in' },
     { id: 'wa', name: 'whatsapp', url: 'https://wa.me/919786221122', icon: 'whatsapp' }
   ],
-  copyright: '© 2026 littlerr. All rights reserved'
+  copyright: '© 2026 maruthan. All rights reserved'
 };
 
 const footerSlice = createSlice({
