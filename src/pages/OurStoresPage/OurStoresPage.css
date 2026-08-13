@@ -22,7 +22,7 @@
 .osp-header-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(15, 45, 92, 0.2) 0%, rgba(15, 45, 92, 0.8) 100%);
+  background: transparent;
   pointer-events: none;
 }
 

@@ -64,7 +64,7 @@ const OurStores = () => {
       ) : (
         <>
           {/* Header Banner */}
-          <div className="osp-header-banner" style={{ backgroundImage: "linear-gradient(to right, rgba(15, 45, 92, 0.9), rgba(15, 45, 92, 0.7)), url('/images/promo_bg.png')" }}>
+          <div className="osp-header-banner" style={{ backgroundColor: '#7e3065' }}>
             <div className="osp-header-overlay"></div>
             <div className="osp-header-content">
               <div className="osp-header-pre">
