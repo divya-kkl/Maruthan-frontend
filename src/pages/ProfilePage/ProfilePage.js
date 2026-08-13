@@ -16,16 +16,16 @@ const ProfilePage = () => {
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
 
   const { user, orders, loadingOrders } = useSelector((state) => state.user);
-  const { 
-    allReviews, 
-    submitting, 
+  const {
+    allReviews,
+    submitting,
     submitSuccess,
     isReviewModalOpen,
     reviewProduct,
     reviewOrderId,
     rating,
     comment,
-    editingReviewId 
+    editingReviewId
   } = useSelector((state) => state.reviews);
 
   useEffect(() => {
@@ -78,14 +78,14 @@ const ProfilePage = () => {
     try {
       const token = localStorage.getItem('token');
       const userId = user.id || user._id;
-      
-      await dispatch(updateUserAddress({ 
-        userId, 
-        token, 
-        newAddress, 
-        currentAddresses: user.addresses 
+
+      await dispatch(updateUserAddress({
+        userId,
+        token,
+        newAddress,
+        currentAddresses: user.addresses
       })).unwrap();
-      
+
       setIsAddressModalOpen(false);
     } catch (error) {
       console.error("Error updating user addresses:", error);
@@ -102,7 +102,7 @@ const ProfilePage = () => {
       alert("Please select a star rating!");
       return;
     }
-    
+
     try {
       if (editingReviewId) {
         await dispatch(updateReview({
@@ -123,12 +123,12 @@ const ProfilePage = () => {
         };
         await dispatch(createReview(input)).unwrap();
       }
-      
+
       // Refresh user orders and reviews
       const token = localStorage.getItem('token');
       dispatch(fetchUserOrders({ userId: user.id || user._id, token }));
       dispatch(fetchAllReviews());
-      
+
       setTimeout(() => {
         dispatch(closeReviewModal());
       }, 2000);
@@ -269,9 +269,9 @@ const ProfilePage = () => {
               ) : (
                 <div className="orders-list">
                   {orders.map(order => (
-                    <div 
-                      className="order-card" 
-                      key={order.id} 
+                    <div
+                      className="order-card"
+                      key={order.id}
                       onClick={() => {
                         if (order.items && order.items.length > 0) {
                           navigate(`/product/${order.items[0].productId}`);
@@ -317,8 +317,8 @@ const ProfilePage = () => {
 
                         {/* Items and Prices */}
                         {order.items && order.items.map((item, idx) => {
-                          const userReview = allReviews?.find(r => 
-                            r.productId === item.productId && 
+                          const userReview = allReviews?.find(r =>
+                            r.productId === item.productId &&
                             r.orderId === order.id &&
                             r.userId === (user.id || user._id)
                           );
@@ -335,8 +335,8 @@ const ProfilePage = () => {
                                         <span className="user-review-badge">Your Review</span>
                                         <div className="user-review-stars" style={{ display: 'flex', gap: '2px' }}>
                                           {[1, 2, 3, 4, 5].map((star) => (
-                                            <span 
-                                              key={star} 
+                                            <span
+                                              key={star}
                                               className={`user-review-star ${star <= userReview.rating ? 'filled' : ''}`}
                                               style={{ color: star <= userReview.rating ? '#ffc107' : '#cbd5e0', fontSize: '18px' }}
                                             >
@@ -347,7 +347,7 @@ const ProfilePage = () => {
                                         <p className="user-review-comment">
                                           "{userReview.comment}"
                                         </p>
-                                        <button 
+                                        <button
                                           type="button"
                                           className="edit-review-inline-btn"
                                           onClick={(e) => { e.stopPropagation(); handleOpenReviewModal(item, order.id, userReview.rating, userReview.comment, userReview.id); }}
@@ -355,7 +355,7 @@ const ProfilePage = () => {
                                             marginTop: '6px',
                                             background: 'none',
                                             border: 'none',
-                                            color: '#1a365d',
+                                            color: '#7e3065',
                                             fontWeight: '600',
                                             fontSize: '11px',
                                             cursor: 'pointer',
@@ -379,8 +379,8 @@ const ProfilePage = () => {
                                             { val: 4, label: 'Good' },
                                             { val: 5, label: 'Very Good' }
                                           ].map((starObj) => (
-                                            <div 
-                                              key={starObj.val} 
+                                            <div
+                                              key={starObj.val}
                                               className="feedback-star-col"
                                               onClick={(e) => { e.stopPropagation(); handleOpenReviewModal(item, order.id, starObj.val); }}
                                             >
@@ -394,7 +394,7 @@ const ProfilePage = () => {
                                   )}
                                 </div>
                               </div>
-                              <div className="order-item-price-col" style={{ gridColumn: '3', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-end', fontWeight: '700', fontSize: '15px', color: '#0F2D5C', paddingTop: '2px', borderBottom: idx < order.items.length - 1 ? '1px solid #f0f0f0' : 'none', paddingBottom: idx < order.items.length - 1 ? '15px' : '0' }}>
+                              <div className="order-item-price-col" style={{ gridColumn: '3', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-end', fontWeight: '700', fontSize: '15px', color: '#7e3065', paddingTop: '2px', borderBottom: idx < order.items.length - 1 ? '1px solid #f0f0f0' : 'none', paddingBottom: idx < order.items.length - 1 ? '15px' : '0' }}>
                                 Rs. {item.price.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                               </div>
                             </React.Fragment>
@@ -441,18 +441,18 @@ const ProfilePage = () => {
                   <h3>Write a Review</h3>
                   <button className="review-modal-close" onClick={() => dispatch(closeReviewModal())}>&#x2715;</button>
                 </div>
-                
+
                 <div className="review-modal-product-info">
-                  <img 
-                    src={reviewProduct.image} 
-                    alt={reviewProduct.name} 
+                  <img
+                    src={reviewProduct.image}
+                    alt={reviewProduct.name}
                     onError={(e) => { e.target.src = "https://placehold.co/80x80/f5f5f5/8a2b8f?text=Product" }}
                   />
                   <div>
                     <h4>{reviewProduct.name}</h4>
                   </div>
                 </div>
-                
+
                 <div className="review-rating-input-group">
                   <label>Your Rating:</label>
                   <div className="review-star-rating">
@@ -468,7 +468,7 @@ const ProfilePage = () => {
                     ))}
                   </div>
                 </div>
-                
+
                 <div className="review-comment-input-group">
                   <label>Your Review:</label>
                   <textarea
@@ -478,11 +478,11 @@ const ProfilePage = () => {
                     rows="4"
                   />
                 </div>
-                
+
                 <div className="review-modal-actions">
                   <button className="review-cancel-btn" onClick={() => dispatch(closeReviewModal())}>Cancel</button>
-                  <button 
-                    className="review-submit-btn" 
+                  <button
+                    className="review-submit-btn"
                     onClick={handleSubmitReview}
                     disabled={submitting}
                   >

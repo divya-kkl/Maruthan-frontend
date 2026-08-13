@@ -76,7 +76,7 @@
 
 .newborn-price {
   font-size: 15px;
-  color: #1a365d;
+  color: #7e3065;
   font-weight: bold;
 }
 
@@ -143,8 +143,14 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
   }
+
   .newborn-name {
     font-size: 13px;
   }
 }
-@media (max-width: 768px) { .newborn-showcase-section { padding: 20px 0 !important; } }
+
+@media (max-width: 768px) {
+  .newborn-showcase-section {
+    padding: 20px 0 !important;
+  }
+}

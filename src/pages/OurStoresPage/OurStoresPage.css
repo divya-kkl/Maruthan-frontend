@@ -2,7 +2,8 @@
   width: 100%;
   background-color: #fcfcfc;
   min-height: 100vh;
-  font-family: 'Times New Roman', Times, serif; /* Classy font styling */
+  font-family: 'Times New Roman', Times, serif;
+  /* Classy font styling */
 }
 
 /* Header Banner */
@@ -10,7 +11,7 @@
   position: relative;
   width: 100%;
   padding: 100px 20px;
-  background-color: #0F2D5C;
+  background-color: #7e3065;
   background-size: cover;
   background-position: center;
   text-align: center;
@@ -138,7 +139,7 @@
   color: #fff;
   z-index: 2;
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.15);
-  background-color: #0F2D5C;
+  background-color: #7e3065;
 }
 
 .osp-badge .badge-icon {
@@ -176,7 +177,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #0F2D5C;
+  color: #7e3065;
   font-size: 13px;
   font-weight: 600;
   margin-bottom: 8px;
@@ -190,7 +191,7 @@
 
 .osp-name {
   font-size: 24px;
-  color: #0F2D5C;
+  color: #7e3065;
   margin: 0;
   font-family: Georgia, 'Times New Roman', serif;
   font-weight: normal;
@@ -215,7 +216,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background-color: #0F2D5C;
+  background-color: #7e3065;
   margin: 0 10px;
 }
 
@@ -228,7 +229,7 @@
 }
 
 .osp-detail-row .detail-icon {
-  color: #0F2D5C;
+  color: #7e3065;
   font-size: 16px;
   margin-top: 3px;
   flex-shrink: 0;
@@ -278,9 +279,9 @@
 }
 
 .osp-whatsapp-btn {
-  background-color: #0F2D5C;
+  background-color: #7e3065;
   color: #fff;
-  border: 1px solid #0F2D5C;
+  border: 1px solid#7e3065;
 }
 
 .osp-whatsapp-btn:hover {
@@ -290,12 +291,12 @@
 
 .osp-direction-btn {
   background-color: #fff;
-  color: #0F2D5C;
-  border: 1px solid #0F2D5C;
+  color: #7e3065;
+  border: 1px solid#7e3065;
 }
 
 .osp-direction-btn:hover {
-  background-color: #0F2D5C;
+  background-color: #7e3065;
   color: #fff;
 }
 
@@ -311,7 +312,7 @@
   justify-content: flex-end;
   pointer-events: none;
   z-index: 1;
-  background: linear-gradient(135deg, transparent 50%, #0F2D5C 50%);
+  background: linear-gradient(135deg, transparent 50%, #7e3065 50%);
 }
 
 .osp-card-corner .corner-icon {
@@ -333,7 +334,7 @@
 .osp-features-bar {
   max-width: 1200px;
   margin: 0 auto;
-  background-color: #0F2D5C;
+  background-color: #7e3065;
   border-radius: 12px;
   display: flex;
   padding: 30px 10px;
@@ -398,12 +399,12 @@
     gap: 30px;
     padding: 35px 20px;
   }
-  
+
   .osp-feature-item {
     flex: 1 1 calc(50% - 30px);
     justify-content: flex-start;
   }
-  
+
   .osp-feature-item:not(:last-child) {
     border-right: none;
   }
@@ -413,20 +414,20 @@
   .osp-header-title {
     font-size: 36px;
   }
-  
+
   .osp-header-banner {
     padding: 20px 15px;
   }
-  
+
   .osp-section {
     padding: 40px 15px;
   }
-  
+
   .osp-grid {
     grid-template-columns: 1fr;
     gap: 30px;
   }
-  
+
   .osp-feature-item {
     flex: 1 1 100%;
   }

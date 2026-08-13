@@ -25,7 +25,7 @@
   font-size: 15px;
   color: #333;
   margin-bottom: 40px;
- font-family: 'Time New Roman';
+  font-family: 'Time New Roman';
   font-weight: 400;
 }
 
@@ -86,7 +86,7 @@
 
 .boys-name {
   font-size: 14px;
-  color: #1a365d;
+  color: #7e3065;
   margin: 0 0 8px 0;
   line-height: 1.4;
   font-weight: 400;
@@ -100,7 +100,7 @@
 
 .boys-price {
   font-size: 15px;
-  color: #1a365d;
+  color: #7e3065;
   font-family: 'Times New Roman', Times, serif;
   margin-bottom: 12px;
 }
@@ -110,8 +110,8 @@
   padding: 10px 0;
   margin-top: 12px;
   background-color: transparent;
-  color: #1a365d;
-  border: 1px solid #1a365d;
+  color: #7e3065;
+  border: 1px solid #7e3065;
   border-radius: 0;
   font-size: 16px;
   cursor: pointer;
@@ -120,7 +120,7 @@
 }
 
 .boys-select-btn:hover {
-  background-color: #1a365d;
+  background-color: #7e3065;
   color: white;
 }
 
@@ -151,7 +151,7 @@
   font-size: 15px;
   color: #333;
   margin-bottom: 40px;
- font-family: 'Time New Roman';
+  font-family: 'Time New Roman';
   font-weight: 400;
 }
 
@@ -212,7 +212,7 @@
 
 .boys-name {
   font-size: 14px;
-  color: #1a365d;
+  color: #7e3065;
   margin: 0 0 8px 0;
   line-height: 1.4;
   font-weight: 400;
@@ -226,7 +226,7 @@
 
 .boys-price {
   font-size: 15px;
-  color: #1a365d;
+  color: #7e3065;
   font-family: 'Times New Roman', Times, serif;
   margin-bottom: 0;
 }
@@ -236,8 +236,8 @@
   padding: 10px 0;
   margin-top: 15px;
   background-color: transparent;
-  color: #1a365d;
-  border: 1px solid #1a365d;
+  color: #7e3065;
+  border: 1px solid #7e3065;
   border-radius: 0;
   font-size: 16px;
   cursor: pointer;
@@ -246,7 +246,7 @@
 }
 
 .boys-select-btn:hover {
-  background-color: #1a365d;
+  background-color: #7e3065;
   color: white;
 }
 
@@ -257,7 +257,7 @@
 }
 
 .boys-view-all-btn {
-  background-color: #1a365d;
+  background-color: #7e3065;
   color: white;
   border: none;
   padding: 12px 40px;
@@ -269,18 +269,26 @@
 }
 
 .boys-view-all-btn:hover {
-  background-color: #1a365d;
+  background-color: #7e3065;
 }
 
 @media (max-width: 768px) {
   .boys-card {
     min-width: calc(50% - 7.5px);
   }
+
   .boys-title {
     font-size: 24px;
   }
+
   .boys-grid {
     gap: 15px;
   }
 }
-@media (max-width: 768px) { .boys-section { margin-top: 20px !important; margin-bottom: 20px !important; } }
+
+@media (max-width: 768px) {
+  .boys-section {
+    margin-top: 20px !important;
+    margin-bottom: 20px !important;
+  }
+}

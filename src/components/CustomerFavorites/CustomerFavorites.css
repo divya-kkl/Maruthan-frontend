@@ -19,7 +19,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: #1a365d;
+  background-color: #7e3065;
   color: #ffffff;
   text-decoration: none;
   padding: 10px 25px;
@@ -30,7 +30,7 @@
 }
 
 .customer-favorites-insta-btn:hover {
-  background-color: #0F2D5C;
+  background-color: #7e3065;
 }
 
 .cf-insta-icon {
@@ -40,11 +40,14 @@
 
 
 .cf-outer {
-  max-width: 1170px;     /* ← 1200px minus 30px padding of the top section */
+  max-width: 1170px;
+  /* ← 1200px minus 30px padding of the top section */
   margin: 0 auto;
   width: 100%;
-  overflow: hidden;      /* ← Clips cards exactly at the same line as the images above */
-  padding: 0;            /* ← Removed padding so clipping happens at the correct line */
+  overflow: hidden;
+  /* ← Clips cards exactly at the same line as the images above */
+  padding: 0;
+  /* ← Removed padding so clipping happens at the correct line */
   box-sizing: border-box;
 }
 
@@ -70,8 +73,13 @@
 
 /* Loop animation: -50% = exactly one full set (because we duplicated products) */
 @keyframes cf-scroll {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 /* ── Card ── */
@@ -139,7 +147,7 @@
 }
 
 .cf-heart-icon {
-  color: #0F2D5C;
+  color: #7e3065;
   font-size: 14px;
 }
 

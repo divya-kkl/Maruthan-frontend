@@ -67,7 +67,7 @@
 
 .rp-price {
   font-size: 14px;
-  color: #0F2D5C;
+  color: #7e3065;
   font-weight: 600;
   margin: 0 0 15px 0;
   margin-top: auto;
@@ -75,8 +75,8 @@
 
 .rp-select-btn {
   background-color: transparent;
-  color: #0F2D5C;
-  border: 1px solid #0F2D5C;
+  color: #7e3065;
+  border: 1px solid#7e3065;
   padding: 8px 0;
   font-size: 13px;
   cursor: pointer;
@@ -86,7 +86,7 @@
 }
 
 .rp-select-btn:hover {
-  background-color: #0F2D5C;
+  background-color: #7e3065;
   color: white;
 }
 
@@ -97,7 +97,7 @@
 }
 
 .rp-view-all-btn {
-  background-color: #0F2D5C;
+  background-color: #7e3065;
   color: white;
   border: none;
   padding: 10px 40px;
@@ -130,15 +130,15 @@
     gap: 10px;
     padding: 0 10px;
   }
-  
+
   .rp-name {
     font-size: 13px;
   }
-  
+
   .rp-price {
     font-size: 13px;
   }
-  
+
   .rp-info {
     padding: 10px;
   }

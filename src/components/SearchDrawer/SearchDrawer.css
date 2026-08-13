@@ -40,7 +40,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px 25px;
-  border-bottom: 1px solid #7b2cbf; /* Purple line */
+  border-bottom: 1px solid #7e3065; /* Theme color */
 }
 
 .search-drawer-title {
@@ -140,8 +140,8 @@
 
 .trending-tag-btn {
   background: transparent;
-  border: 1px solid #7b2cbf;
-  color: #1a365d;
+  border: 1px solid #7e3065;
+  color: #7e3065;
   padding: 8px 16px;
   border-radius: 4px;
   font-size: 14px;
@@ -163,7 +163,7 @@
   display: flex;
   align-items: center;
   padding: 15px 0;
-  border-bottom: 1px dashed #7b2cbf;
+  border-bottom: 1px dashed #7e3065;
   cursor: pointer;
   transition: background-color 0.2s;
 }
@@ -173,7 +173,7 @@
 }
 
 .popular-product-item:hover {
-  background-color: rgba(123, 44, 191, 0.05);
+  background-color: rgba(126, 48, 101, 0.05); /* #7e3065 at 5% opacity */
 }
 
 .popular-product-image {

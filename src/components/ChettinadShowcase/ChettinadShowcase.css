@@ -72,7 +72,7 @@
 
 .chettinad-name {
   font-size: 14px;
-  color: #1a365d;
+  color: #7e3065;
   margin: 0 0 8px 0;
   line-height: 1.4;
   font-weight: 400;
@@ -86,7 +86,7 @@
 
 .chettinad-price {
   font-size: 15px;
-  color: #1a365d;
+  color: #7e3065;
   font-family: 'Times New Roman', Times, serif;
   margin-bottom: 12px;
 }
@@ -96,8 +96,8 @@
   padding: 10px 0;
   margin-top: 12px;
   background-color: transparent;
-  color: #1a365d;
-  border: 1px solid #1a365d;
+  color: #7e3065;
+  border: 1px solid #7e3065;
   border-radius: 0;
   font-size: 16px;
   cursor: pointer;
@@ -106,7 +106,7 @@
 }
 
 .chettinad-select-btn:hover {
-  background-color: #1a365d;
+  background-color: #7e3065;
   color: white;
 }
 
@@ -150,7 +150,7 @@
 }
 
 .chettinad-view-all-btn {
-  background-color: #1a365d;
+  background-color: #7e3065;
   color: white;
   border: none;
   padding: 12px 40px;
@@ -162,16 +162,18 @@
 }
 
 .chettinad-view-all-btn:hover {
-  background-color: #1a365d;
+  background-color: #7e3065;
 }
 
 @media (max-width: 768px) {
   .chettinad-card {
     min-width: calc(50% - 7.5px);
   }
+
   .chettinad-title {
     font-size: 24px;
   }
+
   .chettinad-grid {
     gap: 15px;
   }

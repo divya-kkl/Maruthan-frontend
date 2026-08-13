@@ -18,7 +18,7 @@
 }
 
 .showcase-subtitle {
-  font-size:15px;
+  font-size: 15px;
   color: #333;
   margin: 0;
   font-family: 'Time New Roman';
@@ -91,7 +91,7 @@
 
 .select-options-btn {
   background: white;
-  color: #1a365d;
+  color: #7e3065;
   border: 1px solid #333;
   padding: 10px 0;
   font-size: 16px;
@@ -103,9 +103,9 @@
 }
 
 .select-options-btn:hover {
-  background: #1a365d;
+  background: #7e3065;
   color: white;
-  border-color: #1a365d;
+  border-color: #7e3065;
 }
 
 .shop-more-container {
@@ -115,7 +115,7 @@
 }
 
 .shop-more-btn {
-  background-color: #1a365d;
+  background-color: #7e3065;
   color: white;
   border: none;
   padding: 12px 40px;
@@ -140,9 +140,11 @@
   .product-showcase-section {
     margin: 20px auto;
   }
+
   .product-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
   .showcase-title {
     font-size: 32px;
   }
@@ -153,10 +155,12 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
   }
+
   .select-options-btn {
     font-size: 12px;
     padding: 8px 0;
   }
+
   .product-name {
     font-size: 13px;
   }

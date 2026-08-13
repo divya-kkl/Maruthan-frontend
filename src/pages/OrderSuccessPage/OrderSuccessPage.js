@@ -53,19 +53,19 @@ const OrderSuccessPage = () => {
   const navigate = useNavigate();
   const { orderId } = useParams();
   const dispatch = useDispatch();
-  
+
   const { orderDetails, loadingOrderDetails: loading } = useSelector((state) => state.checkout);
   const { user } = useSelector((state) => state.user);
-  const { 
-    allReviews, 
-    submitting, 
+  const {
+    allReviews,
+    submitting,
     submitSuccess,
     isReviewModalOpen,
     reviewProduct,
     reviewOrderId,
     rating,
     comment,
-    editingReviewId 
+    editingReviewId
   } = useSelector((state) => state.reviews);
   const isDetailsMode = window.location.pathname.includes('order-details');
 
@@ -78,7 +78,7 @@ const OrderSuccessPage = () => {
       alert("Please select a star rating!");
       return;
     }
-    
+
     // Obtain user details from redux state or fall back to localStorage
     const currentUser = user || JSON.parse(localStorage.getItem('user'));
     if (!currentUser) {
@@ -107,9 +107,9 @@ const OrderSuccessPage = () => {
         };
         await dispatch(createReview(input)).unwrap();
       }
-      
+
       dispatch(fetchAllReviews());
-      
+
       setTimeout(() => {
         dispatch(closeReviewModal());
       }, 2000);
@@ -173,8 +173,8 @@ const OrderSuccessPage = () => {
               <div className="premium-summary-items">
                 {orderDetails.items && orderDetails.items.map((item, idx) => {
                   const currentUser = user || JSON.parse(localStorage.getItem('user'));
-                  const userReview = allReviews?.find(r => 
-                    r.productId === item.productId && 
+                  const userReview = allReviews?.find(r =>
+                    r.productId === item.productId &&
                     r.orderId === orderDetails.id &&
                     (currentUser && r.userId === (currentUser.id || currentUser._id))
                   );
@@ -212,8 +212,8 @@ const OrderSuccessPage = () => {
                                 <span className="user-review-badge" style={{ fontSize: '10px', fontWeight: '700', color: '#166534', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Your Review</span>
                                 <div className="user-review-stars" style={{ display: 'flex', gap: '2px' }}>
                                   {[1, 2, 3, 4, 5].map((star) => (
-                                    <span 
-                                      key={star} 
+                                    <span
+                                      key={star}
                                       className={`user-review-star ${star <= userReview.rating ? 'filled' : ''}`}
                                       style={{ color: star <= userReview.rating ? '#ffc107' : '#cbd5e0', fontSize: '16px' }}
                                     >
@@ -224,7 +224,7 @@ const OrderSuccessPage = () => {
                                 <p className="user-review-comment" style={{ fontSize: '12px', color: '#1e293b', margin: '4px 0 0 0', fontStyle: 'italic', lineHeight: '1.4' }}>
                                   "{userReview.comment}"
                                 </p>
-                                <button 
+                                <button
                                   type="button"
                                   className="edit-review-inline-btn"
                                   onClick={() => handleOpenReviewModal(item, orderDetails.id, userReview.rating, userReview.comment, userReview.id)}
@@ -232,7 +232,7 @@ const OrderSuccessPage = () => {
                                     marginTop: '6px',
                                     background: 'none',
                                     border: 'none',
-                                    color: '#1a365d',
+                                    color: '#7e3065',
                                     fontWeight: '600',
                                     fontSize: '11px',
                                     cursor: 'pointer',
@@ -246,7 +246,7 @@ const OrderSuccessPage = () => {
                                 </button>
                               </div>
                             ) : (
-                              <div className="order-item-feedback-box" style={{ 
+                              <div className="order-item-feedback-box" style={{
                                 marginTop: '8px',
                                 backgroundColor: '#f8fafc',
                                 border: '1px solid #e2e8f0',
@@ -269,8 +269,8 @@ const OrderSuccessPage = () => {
                                     { val: 4, label: 'Good' },
                                     { val: 5, label: 'Very Good' }
                                   ].map((starObj) => (
-                                    <div 
-                                      key={starObj.val} 
+                                    <div
+                                      key={starObj.val}
                                       className="feedback-star-col"
                                       onClick={() => handleOpenReviewModal(item, orderDetails.id, starObj.val)}
                                       style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', flex: 1 }}
@@ -355,8 +355,8 @@ const OrderSuccessPage = () => {
                 <h3 className="dashboard-section-title">Payment Method</h3>
                 <div className="payment-method-content">
                   <div className="payment-badge">
-                    {orderDetails.paymentMethod === 'COD' 
-                      ? 'Cash on Delivery' 
+                    {orderDetails.paymentMethod === 'COD'
+                      ? 'Cash on Delivery'
                       : (orderDetails.paymentMethod === 'RAZORPAY' ? 'Online Payment' : orderDetails.paymentMethod)}
                   </div>
                 </div>
@@ -401,18 +401,18 @@ const OrderSuccessPage = () => {
                   <h3>Write a Review</h3>
                   <button className="review-modal-close" onClick={() => dispatch(closeReviewModal())}>&#x2715;</button>
                 </div>
-                
+
                 <div className="review-modal-product-info">
-                  <img 
-                    src={reviewProduct.image} 
-                    alt={reviewProduct.name} 
+                  <img
+                    src={reviewProduct.image}
+                    alt={reviewProduct.name}
                     onError={(e) => { e.target.src = "https://placehold.co/80x80/f5f5f5/8a2b8f?text=Product" }}
                   />
                   <div>
                     <h4>{reviewProduct.name}</h4>
                   </div>
                 </div>
-                
+
                 <div className="review-rating-input-group">
                   <label>Your Rating:</label>
                   <div className="review-star-rating">
@@ -428,7 +428,7 @@ const OrderSuccessPage = () => {
                     ))}
                   </div>
                 </div>
-                
+
                 <div className="review-comment-input-group">
                   <label>Your Review:</label>
                   <textarea
@@ -438,11 +438,11 @@ const OrderSuccessPage = () => {
                     rows="4"
                   />
                 </div>
-                
+
                 <div className="review-modal-actions">
                   <button className="review-cancel-btn" onClick={() => dispatch(closeReviewModal())}>Cancel</button>
-                  <button 
-                    className="review-submit-btn" 
+                  <button
+                    className="review-submit-btn"
                     onClick={handleSubmitReview}
                     disabled={submitting}
                   >

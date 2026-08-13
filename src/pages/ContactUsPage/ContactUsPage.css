@@ -1,5 +1,6 @@
 .contact-page {
-  background-color: #fdfdf9; /* Light cream/off-white background matching site */
+  background-color: #fdfdf9;
+  /* Light cream/off-white background matching site */
   min-height: 80vh;
   padding: 20px 20px;
   display: flex;
@@ -34,7 +35,7 @@
   font-family: Georgia, 'Times New Roman', Times, serif;
   font-size: 36px;
   font-weight: normal;
-  color: #1a365d;
+  color: #7e3065;
   margin-top: 10px;
   margin-bottom: 15px;
 }
@@ -51,7 +52,7 @@
   width: 100%;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
 }
 
@@ -109,7 +110,7 @@
 }
 
 .contact-link:hover {
-  color: #1a365d;
+  color: #7e3065;
 }
 
 /* Right Column */
@@ -137,7 +138,8 @@
 .custom-form-group textarea {
   width: 100%;
   padding: 15px 20px;
-  border: 1px solid #1a365d; /* Dark blue theme color instead of purple */
+  border: 1px solid #7e3065;
+  /* Dark blue theme color instead of purple */
   border-radius: 8px;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 15px;
@@ -154,7 +156,7 @@
 .custom-form-group input:focus,
 .custom-form-group textarea:focus {
   outline: none;
-  box-shadow: 0 0 0 1px #1a365d;
+  box-shadow: 0 0 0 1px #7e3065;
 }
 
 .custom-form-checkbox {
@@ -168,7 +170,7 @@
   width: 16px;
   height: 16px;
   cursor: pointer;
-  accent-color: #1a365d;
+  accent-color: #7e3065;
 }
 
 .custom-form-checkbox label {
@@ -178,7 +180,8 @@
 }
 
 .custom-submit-btn {
-  background-color: #1a365d; /* Dark blue theme color */
+  background-color: #7e3065;
+  /* Dark blue theme color */
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -220,7 +223,7 @@
     flex-direction: column;
     gap: 40px;
   }
-  
+
   .custom-form-row {
     flex-direction: column;
   }

@@ -57,7 +57,7 @@
   .premium-item-price {
     font-size: 14px;
     font-weight: 700;
-    color: #0F2D5C;
+    color: #7e3065;
     margin-top: 1px;
   }
 
@@ -110,13 +110,15 @@
   height: 30px;
   border: 3px solid rgba(138, 43, 143, 0.1);
   border-radius: 50%;
-  border-top-color: #0F2D5C;
+  border-top-color: #7e3065;
   animation: premium-spin 1s ease-in-out infinite;
   margin-bottom: 15px;
 }
 
 @keyframes premium-spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .error-state-msg {
@@ -183,7 +185,7 @@
   border: 1px solid #e2e8f0;
   background: #f8fafc;
   flex-shrink: 0;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
 }
 
 .premium-item-img img {
@@ -207,7 +209,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
   border: 2px solid #ffffff;
 }
 
@@ -239,7 +241,7 @@
 
 .premium-item-price {
   font-weight: 700;
-  color: #0F2D5C;
+  color: #7e3065;
   font-size: 15px;
   text-align: left;
   white-space: nowrap;
@@ -264,7 +266,7 @@
 .premium-grand-total {
   font-size: 17px;
   font-weight: 700;
-  color: #0F2D5C;
+  color: #7e3065;
   margin-top: 15px;
   padding-top: 16px;
   border-top: 1px solid #e2e8f0;
@@ -324,7 +326,7 @@
   display: inline-block;
   align-self: flex-start;
   background: #f0f3ff;
-  color: #0F2D5C;
+  color: #7e3065;
   padding: 6px 14px;
   border-radius: 20px;
   font-size: 12px;
@@ -360,8 +362,13 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .review-modal-card {
@@ -375,8 +382,15 @@
 }
 
 @keyframes slideUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .review-modal-header {
@@ -486,7 +500,7 @@
 }
 
 .review-comment-input-group textarea:focus {
-  border-color: #1a365d;
+  border-color: #7e3065;
   outline: none;
 }
 
@@ -516,7 +530,7 @@
   padding: 10px 20px;
   border-radius: 6px;
   border: none;
-  background-color: #1a365d;
+  background-color: #7e3065;
   color: #fff;
   cursor: pointer;
   font-weight: 500;
@@ -588,16 +602,27 @@
 }
 
 @keyframes stroke-checkmark {
-  100% { stroke-dashoffset: 0; }
+  100% {
+    stroke-dashoffset: 0;
+  }
 }
 
 @keyframes fill-checkmark {
-  100% { box-shadow: inset 0px 0px 0px 30px rgba(46, 125, 50, 0.1); }
+  100% {
+    box-shadow: inset 0px 0px 0px 30px rgba(46, 125, 50, 0.1);
+  }
 }
 
 @keyframes scale-checkmark {
-  0%, 100% { transform: none; }
-  50% { transform: scale3d(1.1, 1.1, 1); }
+
+  0%,
+  100% {
+    transform: none;
+  }
+
+  50% {
+    transform: scale3d(1.1, 1.1, 1);
+  }
 }
 
 /* User Submitted Review Box */
@@ -673,12 +698,12 @@
   justify-content: center;
   align-items: center;
   color: #94a3b8;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
   transition: all 0.3s;
 }
 
 .stepper-step.active .stepper-icon {
-  background-color: #0F2D5C;
+  background-color: #7e3065;
   color: white;
   box-shadow: 0 4px 10px rgba(15, 45, 92, 0.2);
 }
@@ -692,7 +717,7 @@
 }
 
 .stepper-step.active .stepper-label {
-  color: #0F2D5C;
+  color: #7e3065;
 }
 
 .stepper-line {
@@ -705,8 +730,5 @@
 }
 
 .stepper-line.active {
-  background-color: #0F2D5C;
+  background-color: #7e3065;
 }
-
-
-

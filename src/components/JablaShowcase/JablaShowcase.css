@@ -79,7 +79,7 @@
 
 .jabla-name {
   font-size: 14px;
-  color: #1a365d;
+  color: #7e3065;
   margin: 0 0 8px 0;
   line-height: 1.4;
   font-weight: 400;
@@ -93,7 +93,7 @@
 
 .jabla-price {
   font-size: 15px;
-  color: #1a365d;
+  color: #7e3065;
   font-family: 'Times New Roman', Times, serif;
   margin-bottom: 12px;
 }
@@ -103,8 +103,8 @@
   padding: 10px 0;
   margin-top: 12px;
   background-color: transparent;
-  color: #1a365d;
-  border: 1px solid #1a365d;
+  color: #7e3065;
+  border: 1px solid #7e3065;
   border-radius: 0;
   font-size: 16px;
   cursor: pointer;
@@ -113,12 +113,12 @@
 }
 
 .jabla-select-btn:hover {
-  background-color: #1a365d;
+  background-color: #7e3065;
   color: white;
 }
 
 .jabla-view-all-btn {
-  background-color: #1a365d;
+  background-color: #7e3065;
   /* Match maruthan purple */
   color: white;
   border: none;
@@ -131,7 +131,7 @@
 }
 
 .jabla-view-all-btn:hover {
-  background-color: #1a365d;
+  background-color: #7e3065;
 }
 
 @media (max-width: 768px) {

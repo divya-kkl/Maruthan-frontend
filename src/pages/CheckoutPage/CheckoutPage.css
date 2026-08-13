@@ -108,7 +108,7 @@
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #1a365d;
+  border-color: #7e3065;
   box-shadow: 0 0 0 3px rgba(138, 43, 143, 0.1);
 }
 
@@ -142,15 +142,15 @@
 }
 
 .payment-option.selected {
-  border-color: #1a365d;
+  border-color: #7e3065;
   background: rgba(138, 43, 143, 0.03);
-  box-shadow: 0 0 0 1px #1a365d;
+  box-shadow: 0 0 0 1px #7e3065;
 }
 
 .payment-option input[type="radio"] {
   margin-top: 4px;
   margin-right: 12px;
-  accent-color: #1a365d;
+  accent-color: #7e3065;
   width: 18px;
   height: 18px;
 }
@@ -321,7 +321,7 @@
 .place-order-btn {
   width: 100%;
   padding: 16px;
-  background-color: #1a365d;
+  background-color: #7e3065;
   color: white;
   border: none;
   border-radius: 8px;
@@ -336,13 +336,14 @@
 }
 
 .place-order-btn:hover:not(:disabled) {
-  background-color: #1a365d;
+  background-color: #7e3065;
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(138, 43, 143, 0.3);
 }
 
 .place-order-btn:disabled {
-  background-color: #7588a3;
+  background-color: #7e3065;
+  opacity: 0.7;
   cursor: not-allowed;
 }
 
@@ -391,7 +392,7 @@
 }
 
 .checkout-empty button {
-  background-color: #1a365d;
+  background-color: #7e3065;
   color: white;
   border: none;
   padding: 12px 24px;
@@ -403,7 +404,7 @@
 }
 
 .checkout-empty button:hover {
-  background-color: #1a365d;
+  background-color: #7e3065;
 }
 
 /* Responsive */
@@ -505,14 +506,14 @@
 }
 
 .address-option.selected {
-  border-color: #1a365d;
+  border-color: #7e3065;
   background: rgba(138, 43, 143, 0.03);
-  box-shadow: 0 0 0 1px #1a365d;
+  box-shadow: 0 0 0 1px #7e3065;
 }
 
 .address-option input[type="radio"] {
   margin-top: 4px;
-  accent-color: #1a365d;
+  accent-color: #7e3065;
   width: 18px;
   height: 18px;
 }
@@ -537,7 +538,7 @@
 
 .address-option.selected .address-type {
   background: rgba(138, 43, 143, 0.1);
-  color: #1a365d;
+  color: #7e3065;
 }
 
 .address-name {

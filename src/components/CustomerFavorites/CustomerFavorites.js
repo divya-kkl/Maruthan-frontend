@@ -6,11 +6,10 @@ import { fetchProductsByTag } from '../../redux/Slice/tagProductsSlice';
 import { FaInstagram, FaHeart } from 'react-icons/fa';
 
 const CustomerFavorites = () => {
-  const { status: productStatus } = useSelector((state) => state.product);
-  const { productsByTag, status: tagStatus } = useSelector((state) => state.tagProducts);
-  const loading = (productStatus === 'loading' || productStatus === 'idle') && tagStatus !== 'succeeded';
 
+  const { productsByTag, status: tagStatus } = useSelector((state) => state.tagProducts);
   const taggedProducts = productsByTag['SHOP TERRACOTTA JEWELLERY'] || [];
+  const loading = taggedProducts.length === 0 && (tagStatus === 'loading' || tagStatus === 'idle');
   const uniqueProductsMap = new Map();
   taggedProducts.forEach(p => {
     if (!uniqueProductsMap.has(p.id)) uniqueProductsMap.set(p.id, p);

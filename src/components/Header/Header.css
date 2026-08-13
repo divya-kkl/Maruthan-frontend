@@ -68,7 +68,7 @@
   height: 2px;
   bottom: -6px;
   left: 0;
-  background-color: #0F2D5C;
+  background-color: #7e3065;
   transition: width 0.5s ease-in-out;
 }
 
@@ -79,7 +79,8 @@
 
 .nav-item a:hover,
 .nav-item a.active {
-  color: #0F2D5C; /* Purple hover to match theme */
+  color: #7e3065;
+  /* Purple hover to match theme */
 }
 
 .nav-item a.active {
@@ -114,7 +115,7 @@
 }
 
 .icon-btn:hover {
-  color: #0F2D5C;
+  color: #7e3065;
 }
 
 .cart-btn {
@@ -125,7 +126,7 @@
   position: absolute;
   top: -6px;
   right: -8px;
-  background-color: #0F2D5C;
+  background-color: #7e3065;
   color: white;
   font-size: 10px;
   font-weight: bold;
@@ -193,7 +194,7 @@
     top: 100%;
     left: 0;
     width: 100%;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
     z-index: 1000;
     box-sizing: border-box;
   }
@@ -221,7 +222,7 @@
   }
 
   .mobile-nav-item a.active {
-    color: #0F2D5C;
+    color: #7e3065;
     font-weight: 700;
   }
 }
@@ -246,6 +247,7 @@
   0% {
     background-position: 200% 0;
   }
+
   100% {
     background-position: -200% 0;
   }

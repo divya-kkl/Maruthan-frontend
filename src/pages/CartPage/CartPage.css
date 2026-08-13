@@ -20,7 +20,7 @@
 }
 
 .cart-breadcrumb span:hover {
-  color: #1a365d;
+  color: #7e3065;
 }
 
 .cart-page-title {
@@ -39,11 +39,11 @@
 }
 
 .cart-timer-banner {
-  background-color: #d1c0f3;
-  color: #555;
+  background-color: rgba(126, 48, 101, 0.1);
+  color: #7e3065;
   text-align: center;
   padding: 15px;
-  border: 1px dashed #d8bfd8;
+  border: 1px dashed rgba(126, 48, 101, 0.4);
   margin-bottom: 40px;
   font-size: 15px;
 }
@@ -54,7 +54,7 @@
 }
 
 .continue-shopping-btn {
-  background-color: #1a365d;
+  background-color: #7e3065;
   color: white;
   border: none;
   padding: 12px 25px;
@@ -78,7 +78,7 @@
   display: grid;
   grid-template-columns: 3fr 1fr 1fr 1fr;
   padding-bottom: 15px;
-  border-bottom: 2px solid #1a365d;
+  border-bottom: 2px solid #7e3065;
   font-weight: bold;
   color: #333;
 }
@@ -187,7 +187,7 @@
 .order-note-block textarea {
   width: 100%;
   height: 100px;
-  border: 1px solid #1a365d;
+  border: 1px solid #7e3065;
   background-color: transparent;
   padding: 10px;
   font-family: 'Times New Roman', Times, serif;
@@ -208,14 +208,14 @@
 .form-group select {
   width: 100%;
   padding: 10px;
-  border: 1px solid #1a365d;
+  border: 1px solid #7e3065;
   background-color: transparent;
   font-family: 'Times New Roman', Times, serif;
   color: #333;
 }
 
 .cart-summary-block {
-  border-top: 2px solid #1a365d;
+  border-top: 2px solid #7e3065;
   padding-top: 20px;
 }
 
@@ -241,7 +241,7 @@
 
 .checkout-btn {
   width: 100%;
-  background-color: #1a365d;
+  background-color: #7e3065;
   color: white;
   border: none;
   padding: 15px;
@@ -323,12 +323,12 @@
 
 .coupon-input:focus {
   outline: none;
-  border-color: #1a365d;
+  border-color: #7e3065;
   background-color: #fff;
 }
 
 .coupon-apply-btn {
-  background-color: #1a365d;
+  background-color: #7e3065;
   color: white;
   border: none;
   padding: 0 25px;
@@ -342,7 +342,7 @@
 }
 
 .coupon-apply-btn:hover:not(:disabled) {
-  background-color: #122643;
+  background-color: #5c1f49;
 }
 
 .coupon-apply-btn:disabled {

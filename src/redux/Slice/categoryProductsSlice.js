@@ -41,6 +41,10 @@ const GET_PRODUCTS_BY_CATEGORY = gql`
         brands { name count }
         stock { inStock outOfStock }
         price { min max }
+        dynamicFilters {
+          name
+          options { name count }
+        }
       }
       totalCount
     }
@@ -83,6 +87,10 @@ const GET_PRODUCTS_BY_TAG = gql`
         brands { name count }
         stock { inStock outOfStock }
         price { min max }
+        dynamicFilters {
+          name
+          options { name count }
+        }
       }
       totalCount
     }
@@ -135,7 +143,7 @@ export const fetchCategoryProducts = createAsyncThunk(
 const initialState = {
   products: [],
   filterData: {
-    sizes: [], colors: [], brands: [], stock: { inStock: 0, outOfStock: 0 }, price: { min: 0, max: 0 }
+    sizes: [], colors: [], brands: [], stock: { inStock: 0, outOfStock: 0 }, price: { min: 0, max: 0 }, dynamicFilters: []
   },
   loading: false,
   loadingMore: false,

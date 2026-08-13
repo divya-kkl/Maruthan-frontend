@@ -66,9 +66,9 @@
   top: 40%;
   transform: translateY(-50%);
   background-color: white;
-  border: 1px solid #1a365d;
+  border: 1px solid #7e3065;
   /* Dark blue border */
-  color: #1a365d;
+  color: #7e3065;
   /* Dark blue arrow */
   width: 45px;
   height: 45px;
@@ -92,7 +92,7 @@
 }
 
 .carousel-arrow:hover {
-  background-color: #1a365d;
+  background-color: #7e3065;
   /* Dark blue background on hover */
   color: white;
 }
@@ -120,7 +120,7 @@
   position: absolute;
   top: 10px;
   left: 10px;
-  background-color: #1a365d;
+  background-color: #7e3065;
   /* Dark blue badge */
   color: white;
   padding: 4px 12px;
@@ -178,9 +178,9 @@
 
 .carousel-select-btn {
   background: white;
-  color: #1a365d;
+  color: #7e3065;
   /* Dark blue text */
-  border: 1px solid #1a365d;
+  border: 1px solid #7e3065;
   /* Dark blue border */
   padding: 10px 0;
   font-size: 16px;
@@ -191,7 +191,7 @@
 }
 
 .carousel-select-btn:hover {
-  background: #1a365d;
+  background: #7e3065;
   color: white;
 }
 
@@ -202,7 +202,7 @@
 }
 
 .carousel-view-all-btn {
-  background-color: #1a365d;
+  background-color: #7e3065;
   color: white;
   border: none;
   padding: 12px 45px;

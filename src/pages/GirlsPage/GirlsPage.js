@@ -9,7 +9,7 @@ import { isNew } from '../../redux/Slice/productDetailsSlice';
 const GirlsPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  
+
   const {
     products,
     loading,
@@ -252,15 +252,15 @@ const GirlsPage = () => {
                   You've viewed {Math.min(products.length, totalCount)} of {totalCount} result{totalCount !== 1 ? 's' : ''}
                 </p>
                 <div style={{ width: '250px', height: '2px', backgroundColor: '#e0e0e0', marginBottom: '25px', position: 'relative' }}>
-                  <div style={{ position: 'absolute', top: 0, left: 0, height: '100%', backgroundColor: '#1a365d', width: `${Math.min(100, (products.length / (totalCount || 1)) * 100)}%`, transition: 'width 0.3s ease' }}></div>
+                  <div style={{ position: 'absolute', top: 0, left: 0, height: '100%', backgroundColor: '#7e3065', width: `${Math.min(100, (products.length / (totalCount || 1)) * 100)}%`, transition: 'width 0.3s ease' }}></div>
                 </div>
-                
+
                 {hasMore && (
-                  <button 
+                  <button
                     style={{
                       width: '180px',
                       height: '50px',
-                      backgroundColor: '#1a365d',
+                      backgroundColor: '#7e3065',
                       color: '#fff',
                       display: 'flex',
                       justifyContent: 'center',
@@ -283,7 +283,7 @@ const GirlsPage = () => {
                 )}
               </div>
             )}
-            
+
             {/* Invisible div for IntersectionObserver, kept outside condition to ensure ref is attached */}
             <div ref={loadMoreRef} style={{ height: '20px', width: '100%' }}></div>
           </div>

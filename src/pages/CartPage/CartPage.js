@@ -135,20 +135,20 @@ const CartPage = () => {
                     }}
                     placeholder="Enter coupon code"
                     disabled={!!coupon}
-                    style={coupon ? { borderColor: '#1a365d', backgroundColor: 'transparent', color: '#000' } : {}}
+                    style={coupon ? { borderColor: '#7e3065', backgroundColor: 'transparent', color: '#000' } : {}}
                   />
                   <button 
                     className="coupon-apply-btn"
                     onClick={handleApplyCoupon}
                     disabled={loading || !!coupon || (!coupon && !couponInput.trim())}
-                    style={coupon ? { backgroundColor: 'rgba(26, 54, 93, 0.15)', color: '#000', opacity: 1 } : {}}
+                    style={coupon ? { backgroundColor: 'rgba(126, 48, 101, 0.15)', color: '#000', opacity: 1 } : {}}
                   >
                     {loading ? 'APPLYING...' : (coupon ? 'APPLIED' : 'APPLY')}
                   </button>
                 </div>
                 {couponError && !coupon && <p className="coupon-error-text">{couponError}</p>}
                 {coupon && (
-                  <div className="coupon-applied-text" style={{ marginTop: '10px', color: '#1a365d' }}>
+                  <div className="coupon-applied-text" style={{ marginTop: '10px', color: '#7e3065' }}>
                     Coupon Applied: {coupon.code}
                   </div>
                 )}

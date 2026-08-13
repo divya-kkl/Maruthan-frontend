@@ -65,7 +65,7 @@ const AboutUsPage = () => {
           <div className="about-feature-card">
             <div className="about-feature-icon-wrapper">
               <svg viewBox="0 0 24 24" className="about-feature-icon">
-                <circle cx="12" cy="12" r="11" fill="#1a365d" />
+                <circle cx="12" cy="12" r="11" fill="#7e3065" />
                 <path d="M9.5 15.5L5 11l-1.5 1.5L9.5 18.5 20.5 7.5 19 6L9.5 15.5z" fill="#fff" />
               </svg>
             </div>
@@ -76,7 +76,7 @@ const AboutUsPage = () => {
           <div className="about-feature-card">
             <div className="about-feature-icon-wrapper">
               <svg viewBox="0 0 24 24" className="about-feature-icon">
-                <rect x="4" y="3" width="16" height="18" rx="2" ry="2" fill="#1a365d" />
+                <rect x="4" y="3" width="16" height="18" rx="2" ry="2" fill="#7e3065" />
                 <rect x="7" y="7" width="10" height="2.5" fill="#fff" />
                 <rect x="7" y="11.5" width="10" height="2.5" fill="#fff" />
                 <rect x="7" y="16" width="7" height="2.5" fill="#fff" />

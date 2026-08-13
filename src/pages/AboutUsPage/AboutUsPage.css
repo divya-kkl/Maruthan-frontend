@@ -1,5 +1,6 @@
 .about-page {
-  background-color: #fdfdf9; /* Light cream/off-white background */
+  background-color: #fdfdf9;
+  /* Light cream/off-white background */
   min-height: 80vh;
   padding: 10px 20px 50px;
   display: flex;
@@ -70,7 +71,8 @@
 }
 
 .about-highlight {
-  color: #1a365d; /* purple color matching the screenshot */
+  color: #7e3065;
+  /* purple color matching the screenshot */
   font-weight: bold;
 }
 
@@ -85,7 +87,8 @@
 .about-heart-icon-container {
   width: 70px;
   height: 70px;
-  background-color: #e2e8f0; /* light blue circle */
+  background-color: #e2e8f0;
+  /* light blue circle */
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -96,7 +99,8 @@
 .about-heart-icon {
   width: 32px;
   height: 32px;
-  color: #1a365d; /* dark purple heart */
+  color: #7e3065;
+  /* dark purple heart */
 }
 
 .about-features-container {
@@ -115,7 +119,7 @@
   padding: 30px 20px;
   width: 320px;
   text-align: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
 }
 
 .about-feature-icon-wrapper {
@@ -127,7 +131,8 @@
 .about-feature-icon {
   width: 50px;
   height: 50px;
-  color: #1a365d; /* purple */
+  color: #7e3065;
+  /* purple */
 }
 
 .about-feature-title {
@@ -170,7 +175,7 @@
   left: 50%;
   transform: translateX(-50%);
   width: 2px;
-  background-color: #1a365d;
+  background-color: #7e3065;
 }
 
 .about-timeline-item {
@@ -192,19 +197,22 @@
   box-sizing: border-box;
   font-family: Georgia, 'Times New Roman', Times, serif;
   font-size: 36px;
-  color: #1a365d;
-  margin-top: 10px; /* adjust to align with title */
+  color: #7e3065;
+  margin-top: 10px;
+  /* adjust to align with title */
 }
 
 .about-timeline-dot {
   width: 20px;
   height: 20px;
-  background-color: #1a365d;
-  border: 4px solid #f9a826; /* golden yellow */
+  background-color: #7e3065;
+  border: 4px solid #f9a826;
+  /* golden yellow */
   border-radius: 50%;
   position: absolute;
   left: 50%;
-  top: 28px; /* adjust to align with year/title */
+  top: 28px;
+  /* adjust to align with year/title */
   transform: translate(-50%, -50%);
   z-index: 1;
 }
@@ -216,7 +224,7 @@
   background-color: #fff;
   padding: 25px 30px;
   border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
 .about-timeline-title {

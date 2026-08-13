@@ -58,7 +58,8 @@
 
 .store-city {
   font-size: 14px;
-  color: #1a365d; /* Dark blue */
+  color: #7e3065;
+  /* Dark blue */
   margin: 0 0 15px 0;
 }
 
@@ -88,7 +89,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #1a365d; /* Dark blue background */
+  background-color: #7e3065;
+  /* Dark blue background */
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -108,4 +110,8 @@
   font-size: 13px;
 }
 
-@media (max-width: 768px) { .our-stores-section { padding: 20px 15px !important; } }
+@media (max-width: 768px) {
+  .our-stores-section {
+    padding: 20px 15px !important;
+  }
+}

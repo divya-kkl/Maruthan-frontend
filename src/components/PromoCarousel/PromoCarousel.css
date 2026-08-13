@@ -8,8 +8,8 @@
 .promo-header-bar {
   width: 100%;
   height: 50px;
-  background-color: #0c2b5e;
-  /* Dark blue matching the buttons */
+  background-color: #7e3065;
+  /* Dark pink matching the theme */
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -122,8 +122,8 @@
 }
 
 .promo-shop-btn {
-  background-color: #0c2b5e;
-  /* Dark blue matching the View All button */
+  background-color: #7e3065;
+  /* Dark pink matching the theme */
   color: white;
   border: none;
   padding: 8px 20px;
@@ -137,8 +137,8 @@
 }
 
 .promo-shop-btn:hover {
-  background-color: #071938;
-  /* Darker blue on hover */
+  background-color: #5d2249;
+  /* Darker pink on hover */
 }
 
 @media (max-width: 1200px) {
@@ -154,7 +154,7 @@
 }
 
 .promo-view-all-btn {
-  background-color: #0c2b5e;
+  background-color: #7e3065;
   color: white;
   border: none;
   padding: 12px 40px;
@@ -166,7 +166,7 @@
 }
 
 .promo-view-all-btn:hover {
-  background-color: #071938;
+  background-color: #5d2249;
 }
 
 @media (max-width: 768px) {

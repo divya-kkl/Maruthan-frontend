@@ -1,5 +1,6 @@
 .privacy-page {
-  background-color: #fdfdf9; /* Light cream/off-white background matching site */
+  background-color: #fdfdf9;
+  /* Light cream/off-white background matching site */
   min-height: 80vh;
   padding: 30px 20px 50px;
   display: flex;
@@ -39,7 +40,7 @@
 }
 
 .privacy-intro-text a {
-  color: #1a365d;
+  color: #7e3065;
   text-decoration: underline;
 }
 
@@ -79,6 +80,6 @@
 }
 
 .privacy-contact-info a {
-  color: #1a365d;
+  color: #7e3065;
   text-decoration: underline;
 }

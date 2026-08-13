@@ -47,17 +47,15 @@ const CarouselCard = ({ product, openQuickView }) => {
 const ProductCarousel = () => {
   const dispatch = useDispatch();
 
-  const { status: productStatus } = useSelector((state) => state.product);
+
   const { productsByTag, status: tagStatus } = useSelector((state) => state.tagProducts);
   const { banner } = useSelector((state) => state.banner);
 
   const scrollContainerRef = useRef(null);
   const navigate = useNavigate();
 
-  const loading = (productStatus === 'loading' || productStatus === 'idle') && tagStatus !== 'succeeded';
-
-
   const taggedProducts = productsByTag['NEW ARRIVALS'] || [];
+  const loading = taggedProducts.length === 0 && (tagStatus === 'loading' || tagStatus === 'idle');
 
   const combinedProducts = [...taggedProducts];
   const uniqueProductsMap = new Map();

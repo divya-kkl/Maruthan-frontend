@@ -10,7 +10,7 @@ const CategoryPage = ({ type = 'category' }) => {
   const activeCode = type === 'tag' ? tagCode : categoryCode;
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  
+
   const {
     products,
     filterData,
@@ -33,7 +33,8 @@ const CategoryPage = ({ type = 'category' }) => {
     brands: [],
     colors: [],
     stock: [],
-    price: { min: '', max: '' }
+    price: { min: '', max: '' },
+    dynamicFilters: {}
   });
 
   // Local string state for price inputs (so user can clear '0' and type freely)
@@ -56,11 +57,12 @@ const CategoryPage = ({ type = 'category' }) => {
     }));
   };
 
+
   const handleFilterChange = (type, value) => {
     setPage(1);
     setActiveFilters(prev => {
       const currentList = prev[type];
-      
+
       if (type === 'colors') {
         if (currentList.includes(value)) {
           return { ...prev, [type]: [] };
@@ -74,6 +76,20 @@ const CategoryPage = ({ type = 'category' }) => {
       } else {
         return { ...prev, [type]: [...currentList, value] };
       }
+    });
+  };
+
+  const handleDynamicFilterChange = (filterName, value) => {
+    setPage(1);
+    setActiveFilters(prev => {
+      const currentDynamic = { ...prev.dynamicFilters };
+      const currentList = currentDynamic[filterName] || [];
+      if (currentList.includes(value)) {
+        currentDynamic[filterName] = currentList.filter(item => item !== value);
+      } else {
+        currentDynamic[filterName] = [...currentList, value];
+      }
+      return { ...prev, dynamicFilters: currentDynamic };
     });
   };
 
@@ -110,6 +126,13 @@ const CategoryPage = ({ type = 'category' }) => {
   useEffect(() => {
     const filters = JSON.parse(activeFiltersKey);
 
+    const dynamicApiFilters = Object.keys(filters.dynamicFilters || {}).map(name => {
+      return {
+        name,
+        values: filters.dynamicFilters[name]
+      };
+    }).filter(f => f.values.length > 0);
+
     const apiFilters = {
       sizes: filters.sizes.length > 0 ? filters.sizes : null,
       brands: filters.brands.length > 0 ? filters.brands : null,
@@ -118,7 +141,8 @@ const CategoryPage = ({ type = 'category' }) => {
       price: (filters.price.min !== '' || filters.price.max !== '') ? {
         min: filters.price.min !== '' ? Number(filters.price.min) : 0,
         max: filters.price.max !== '' ? Number(filters.price.max) : 999999
-      } : null
+      } : null,
+      dynamicFilters: dynamicApiFilters.length > 0 ? dynamicApiFilters : null
     };
 
     if (activeCode) {
@@ -134,14 +158,14 @@ const CategoryPage = ({ type = 'category' }) => {
     }
   }, [activeCode, type, sort, activeFiltersKey, page, dispatch, itemsPerPage]);
 
-  
+
   useEffect(() => {
     return () => {
       dispatch(resetCategoryProducts());
     };
   }, [dispatch]);
 
-  
+
   useEffect(() => {
     window.scrollTo(0, 0); // Reset scroll position when page loads/reloads
     const handleInitialScroll = () => {
@@ -182,13 +206,15 @@ const CategoryPage = ({ type = 'category' }) => {
   const formattedName = activeCode ? activeCode.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ') : '';
   const prefixTitle = type === 'tag' ? 'Tag_' : 'Best sellers_';
 
-  const hasActiveFilters = 
+  const hasActiveDynamicFilters = Object.values(activeFilters.dynamicFilters || {}).some(arr => arr.length > 0);
+  const hasActiveFilters =
     activeFilters.sizes.length > 0 ||
     activeFilters.brands.length > 0 ||
     activeFilters.colors.length > 0 ||
     activeFilters.stock.length > 0 ||
     (activeFilters.price.min !== '' && Number(activeFilters.price.min) > 0) ||
-    (activeFilters.price.max !== '' && filterData.price.max > 0 && Number(activeFilters.price.max) < filterData.price.max);
+    (activeFilters.price.max !== '' && filterData.price.max > 0 && Number(activeFilters.price.max) < filterData.price.max) ||
+    hasActiveDynamicFilters;
 
   const filteredProducts = products;
 
@@ -251,22 +277,31 @@ const CategoryPage = ({ type = 'category' }) => {
               </div>
               {expandedFilters.moreFilters && (
                 <div className="filter-content">
-                  <div className="filter-checkbox-list">
-                    {filterData.brands.map((brand) => (
-                      <label className="filter-checkbox-item" key={brand.name}>
-                        <input
-                          type="checkbox"
-                          checked={activeFilters.brands.includes(brand.name)}
-                          onChange={() => handleFilterChange('brands', brand.name)}
-                        />
-                        {brand.name} ({brand.count})
-                      </label>
-                    ))}
-                    {filterData.brands.length === 0 && <span className="filter-text-item">No filters available</span>}
-                  </div>
+                  {filterData.dynamicFilters && filterData.dynamicFilters.length > 0 ? (
+                    filterData.dynamicFilters.map((df) => (
+                      <div key={df.name} style={{ marginBottom: '15px' }}>
+                        <div style={{ fontWeight: '600', marginBottom: '8px', fontSize: '14px', color: '#333' }}>{df.name}</div>
+                        <div className="filter-checkbox-list">
+                          {df.options.map((opt) => (
+                            <label className="filter-checkbox-item" key={opt.name}>
+                              <input
+                                type="checkbox"
+                                checked={(activeFilters.dynamicFilters[df.name] || []).includes(opt.name)}
+                                onChange={() => handleDynamicFilterChange(df.name, opt.name)}
+                              />
+                              {opt.name} ({opt.count})
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <span className="filter-text-item">No filters available</span>
+                  )}
                 </div>
               )}
             </div>
+
 
             <div className={`filter-group ${expandedFilters.colour ? 'expanded' : ''}`}>
               <div className="filter-header" onClick={() => toggleFilter('colour')}>
@@ -298,15 +333,16 @@ const CategoryPage = ({ type = 'category' }) => {
                       const styleProp = bgColor.includes('gradient') ? { background: bgColor } : { backgroundColor: bgColor };
 
                       return (
-                      <div
-                        className={`color-swatch-wrapper ${activeFilters.colors.includes(color.name) ? 'selected' : ''}`}
-                        key={color.name}
-                        title={`${color.name} (${color.count})`}
-                        onClick={() => handleFilterChange('colors', color.name)}
-                      >
-                        <div className="color-swatch" style={{ ...styleProp, border: '1px solid #ccc' }}></div>
-                      </div>
-                    )})}
+                        <div
+                          className={`color-swatch-wrapper ${activeFilters.colors.includes(color.name) ? 'selected' : ''}`}
+                          key={color.name}
+                          title={`${color.name} (${color.count})`}
+                          onClick={() => handleFilterChange('colors', color.name)}
+                        >
+                          <div className="color-swatch" style={{ ...styleProp, border: '1px solid #ccc' }}></div>
+                        </div>
+                      )
+                    })}
                     {filterData.colors.length === 0 && <span className="filter-text-item">No colors available</span>}
                   </div>
                 </div>
@@ -433,7 +469,7 @@ const CategoryPage = ({ type = 'category' }) => {
             <div className="results-count">
               There are {totalCount || 0} results in total
             </div>
-            <button 
+            <button
               className="mobile-filter-toggle-btn"
               onClick={() => setIsMobileFilterOpen(true)}
             >
@@ -442,7 +478,7 @@ const CategoryPage = ({ type = 'category' }) => {
             </button>
             <div className="sort-by-wrapper">
               <span>Sort by:</span>
-              <select className="sort-by-select" value={sort} onChange={(e) => {setSort(e.target.value); setPage(1);}}>
+              <select className="sort-by-select" value={sort} onChange={(e) => { setSort(e.target.value); setPage(1); }}>
                 <option value="features">Features</option>
                 {/* <option value="most-relevant">Most relevant</option>
                 <option value="bestselling">Best selling</option> */}
@@ -504,15 +540,16 @@ const CategoryPage = ({ type = 'category' }) => {
                     <div className="empty-icon">🔍</div>
                     <h2>No products found</h2>
                     <p>We couldn't find any products matching your selected filters. Try clearing them or adjusting your budget!</p>
-                    <button 
-                      className="continue-shopping-btn" 
+                    <button
+                      className="continue-shopping-btn"
                       onClick={() => {
                         setActiveFilters({
                           sizes: [],
                           brands: [],
                           colors: [],
                           stock: [],
-                          price: { min: 0, max: filterData.price.max }
+                          price: { min: 0, max: filterData.price.max },
+                          dynamicFilters: {}
                         });
                         setPriceInputMin('0');
                         setPriceInputMax(String(filterData.price.max));
@@ -531,20 +568,20 @@ const CategoryPage = ({ type = 'category' }) => {
                   </>
                 )}
               </div>
-            ) }
+            )}
 
             {/* Shimmer loading for next pages */}
             {loadingMore && [...Array(4)].map((_, index) => (
               <div className="category-card shimmer-card" key={`shimmer-${index}`}>
                 <div className="shimmer-image"></div>
-                <div className="category-info" style={{width: '100%'}}>
+                <div className="category-info" style={{ width: '100%' }}>
                   <div className="shimmer-text title"></div>
                   <div className="shimmer-text price"></div>
                   <div className="shimmer-button"></div>
                 </div>
               </div>
             ))}
-            
+
             {/* Loading Indicator matching maruthan style */}
             {(!loading || page > 1) && products.length > 0 && (
               <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '30px 0', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -552,15 +589,15 @@ const CategoryPage = ({ type = 'category' }) => {
                   You've viewed {Math.min(products.length, totalCount)} of {totalCount} result{totalCount !== 1 ? 's' : ''}
                 </p>
                 <div style={{ width: '250px', height: '2px', backgroundColor: '#e0e0e0', marginBottom: '25px', position: 'relative' }}>
-                  <div style={{ position: 'absolute', top: 0, left: 0, height: '100%', backgroundColor: '#1a365d', width: `${Math.min(100, (products.length / (totalCount || 1)) * 100)}%`, transition: 'width 0.3s ease' }}></div>
+                  <div style={{ position: 'absolute', top: 0, left: 0, height: '100%', backgroundColor: '#7e3065', width: `${Math.min(100, (products.length / (totalCount || 1)) * 100)}%`, transition: 'width 0.3s ease' }}></div>
                 </div>
-                
+
                 {hasMore && (
-                  <button 
+                  <button
                     style={{
                       width: '180px',
                       height: '50px',
-                      backgroundColor: '#1a365d',
+                      backgroundColor: '#7e3065',
                       color: '#fff',
                       display: 'flex',
                       justifyContent: 'center',
