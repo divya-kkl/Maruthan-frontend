@@ -26,9 +26,11 @@ import WhatsAppFloat from './components/WhatsAppFloat/WhatsAppFloat';
 
 import OurStoresPage from './pages/OurStoresPage/OurStoresPage';
 import ProductPage from './pages/ProductPage/ProductPage';
+import WishlistPage from './pages/WishlistPage/WishlistPage';
 import QuickViewModal from './components/QuickViewModal/QuickViewModal';
 import { closeQuickView } from './redux/Slice/tagProductsSlice';
 import { fetchCart } from './redux/Slice/cartSlice';
+import { fetchWishlist } from './redux/Slice/wishlistSlice';
 
 
 const ScrollToTop = () => {
@@ -96,9 +98,10 @@ function App() {
   useEffect(() => {
     if (user && user.id) {
       dispatch(fetchCart(user.id));
+      dispatch(fetchWishlist(user.id));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     let initialPixelRatio = parseFloat(sessionStorage.getItem('initialPixelRatio'));
@@ -176,6 +179,7 @@ function App() {
               <Route path="/categories/:categoryCode" element={<CategoryPageWrapper type="category" />} />
               <Route path="/tags/:tagCode" element={<CategoryPageWrapper type="tag" />} />
               <Route path="/stores" element={<OurStoresPage />} />
+              <Route path="/wishlist" element={<WishlistPage />} />
               <Route path="/login" element={<SignInWrapper />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/order-status" element={<OrderStatusPage />} />

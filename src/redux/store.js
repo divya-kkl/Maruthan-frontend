@@ -16,6 +16,7 @@ import checkoutReducer from './Slice/checkoutSlice';
 import productDetailsReducer from './Slice/productDetailsSlice';
 import reviewReducer from './Slice/reviewSlice';
 import tagProductsReducer from './Slice/tagProductsSlice';
+import wishlistReducer from './Slice/wishlistSlice';
 
 export const store = configureStore({
   reducer: {
@@ -36,5 +37,6 @@ export const store = configureStore({
     productDetails: productDetailsReducer,
     reviews: reviewReducer,
     tagProducts: tagProductsReducer,
+    wishlist: wishlistReducer,
   },
 });

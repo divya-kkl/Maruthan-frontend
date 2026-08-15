@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FiSearch, FiUser, FiShoppingBag, FiMenu, FiX } from 'react-icons/fi';
+import { FiSearch, FiUser, FiShoppingBag, FiMenu, FiX, FiHeart } from 'react-icons/fi';
 import './Header.css';
 
 import { MdKeyboardArrowDown } from 'react-icons/md';
@@ -14,6 +14,7 @@ const Header = () => {
   const { categories, loading } = useSelector((state) => state.category)
   const { cartItems } = useSelector((state) => state.cart);
   const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+  const wishlistItems = useSelector((state) => state.wishlist?.items || []);
   const navigate = useNavigate();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -81,6 +82,10 @@ const Header = () => {
             }
           }}>
             <FiUser />
+          </button>
+          <button className="icon-btn cart-btn" aria-label="Wishlist" onClick={() => navigate('/wishlist')}>
+            <FiHeart className="header-icon" />
+            <span className="cart-badge">{wishlistItems.length}</span>
           </button>
           <button className="icon-btn cart-btn" aria-label="Shopping Cart" onClick={() => navigate('/cart')}>
             <FiShoppingBag className="header-icon" />

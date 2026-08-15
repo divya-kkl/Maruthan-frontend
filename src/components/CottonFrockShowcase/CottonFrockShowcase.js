@@ -5,11 +5,15 @@ import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
 import { fetchProductsByTag, openQuickView as openGlobalQuickView } from '../../redux/Slice/tagProductsSlice';
 import { isNew } from '../../redux/Slice/productDetailsSlice';
 import { useNavigate } from 'react-router-dom';
+import { FaHeart, FaRegHeart } from 'react-icons/fa';
+import { addToWishlistThunk, removeFromWishlistThunk } from '../../redux/Slice/wishlistSlice';
 
 const CottonFrockShowcase = () => {
   const dispatch = useDispatch();
   const { status: productStatus } = useSelector((state) => state.product);
   const { productsByTag, status: tagStatus } = useSelector((state) => state.tagProducts);
+  const user = useSelector((state) => state.user?.user);
+  const wishlistItems = useSelector((state) => state.wishlist?.items || []);
 
   const loading = (productStatus === 'loading' || productStatus === 'idle' || productStatus === 'idel') && tagStatus !== 'succeeded';
 
@@ -26,6 +30,27 @@ const CottonFrockShowcase = () => {
 
   const products = Array.from(uniqueProductsMap.values()).slice(0, 5);
   const navigate = useNavigate();
+
+  const handleWishlistClick = (e, productId) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const userId = user?.id || user?._id;
+    if (!userId) {
+      alert("Please login to add items to your wishlist.");
+      navigate('/login');
+      return;
+    }
+    
+    if (wishlistItems.includes(productId)) {
+      dispatch(removeFromWishlistThunk({ userId, productId }))
+        .unwrap()
+        .catch((err) => alert("Error removing from wishlist: " + err));
+    } else {
+      dispatch(addToWishlistThunk({ userId, productId }))
+        .unwrap()
+        .catch((err) => alert("Error adding to wishlist: " + err));
+    }
+  };
   const openQuickView = (product) => { dispatch(openGlobalQuickView(product)); };
 
   useEffect(() => {
@@ -78,6 +103,17 @@ const CottonFrockShowcase = () => {
                   {isNew(product.createdAt) && (
                     <span className="new-badge">NEW</span>
                   )}
+                  <button 
+                    onClick={(e) => handleWishlistClick(e, product.id)} 
+                    style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(255, 255, 255, 0.9)', border: 'none', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 10, boxShadow: '0 2px 5px rgba(0,0,0,0.1)' }}
+                    title={wishlistItems.includes(product.id) ? "Remove from Wishlist" : "Add to Wishlist"}
+                  >
+                    {wishlistItems.includes(product.id) ? (
+                      <FaHeart color="red" size={18} />
+                    ) : (
+                      <FaRegHeart color="gray" size={18} />
+                    )}
+                  </button>
                   <img
                     src={product.images && product.images.length > 0 ? product.images[0] : '/images/placeholder.png'}
                     alt={product.name}
