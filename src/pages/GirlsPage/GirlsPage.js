@@ -2,7 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import './GirlsPage.css';
+import { FaHeart, FaRegHeart } from 'react-icons/fa';
+import { FiInfo } from 'react-icons/fi';
 import { fetchCategoryProducts, resetCategoryProducts } from '../../redux/Slice/categoryProductsSlice';
+import { addToWishlistThunk, removeFromWishlistThunk } from '../../redux/Slice/wishlistSlice';
 import { openQuickView as openGlobalQuickView } from '../../redux/Slice/tagProductsSlice';
 import { isNew } from '../../redux/Slice/productDetailsSlice';
 
@@ -11,12 +14,46 @@ const GirlsPage = () => {
   const dispatch = useDispatch();
 
   const {
-    products,
+    products = [],
     loading,
     loadingMore,
     hasMore,
     totalCount,
   } = useSelector((state) => state.categoryProducts);
+
+  const user = useSelector((state) => state.user?.user);
+  const wishlistItems = useSelector((state) => state.wishlist?.items || []);
+  const [wishlistToast, setWishlistToast] = useState({ show: false, message: '' });
+
+  const showToast = (message) => {
+    setWishlistToast({ show: true, message });
+    setTimeout(() => {
+      setWishlistToast({ show: false, message: '' });
+    }, 3000);
+  };
+
+  const handleWishlistClick = (e, productId) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const userId = user?.id || user?._id;
+    if (!userId) {
+      alert("Please login to add items to your wishlist.");
+      navigate('/login');
+      return;
+    }
+    
+    if (wishlistItems.includes(productId)) {
+      dispatch(removeFromWishlistThunk({ userId, productId }))
+        .unwrap()
+        .then(() => showToast("Product removed from your Wishlist"))
+        .catch((err) => alert("Error removing from wishlist: " + err));
+    } else {
+      dispatch(addToWishlistThunk({ userId, productId }))
+        .unwrap()
+        .then(() => showToast("Product saved in your Wishlist"))
+        .catch((err) => alert("Error adding to wishlist: " + err));
+    }
+  };
 
   const [page, setPage] = useState(1);
   const [hasScrolled, setHasScrolled] = useState(false);
@@ -48,16 +85,14 @@ const GirlsPage = () => {
     }));
   }, [page, dispatch, itemsPerPage]);
 
-  // Clean up products when leaving the page
   useEffect(() => {
     return () => {
       dispatch(resetCategoryProducts());
     };
   }, [dispatch]);
 
-  // Detect first user scroll to prevent instant loading on very large monitors
   useEffect(() => {
-    window.scrollTo(0, 0); // Reset scroll position when page loads/reloads
+    window.scrollTo(0, 0); 
     const handleInitialScroll = () => {
       setHasScrolled(true);
       window.removeEventListener('scroll', handleInitialScroll);
@@ -94,7 +129,16 @@ const GirlsPage = () => {
   };
 
   return (
-    <div className="category-page-container">
+    <>
+      {wishlistToast.show && (
+        <div className="wishlist-toast-notification">
+          <div className="wishlist-toast-icon">
+            <FiInfo />
+          </div>
+          <span>{wishlistToast.message}</span>
+        </div>
+      )}
+      <div className="category-page-container">
 
       <div className="category-breadcrumbs">
         <Link to="/">Home</Link> - Best sellers_Girls
@@ -203,6 +247,17 @@ const GirlsPage = () => {
                     {isNew(product.createdAt) && (
                       <span className="new-badge">NEW</span>
                     )}
+                    <button 
+                      onClick={(e) => handleWishlistClick(e, product.id)} 
+                      style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(255, 255, 255, 0.9)', border: 'none', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 10, boxShadow: '0 2px 5px rgba(0,0,0,0.1)' }}
+                      title={wishlistItems.includes(product.id) ? "Remove from Wishlist" : "Add to Wishlist"}
+                    >
+                      {wishlistItems.includes(product.id) ? (
+                        <FaHeart color="red" size={18} />
+                      ) : (
+                        <FaRegHeart color="gray" size={18} />
+                      )}
+                    </button>
                     <img
                       src={product.images && product.images.length > 0 ? product.images[0] : '/images/placeholder.png'}
                       alt={product.name}
@@ -245,7 +300,6 @@ const GirlsPage = () => {
               </div>
             ))}
 
-            {/* Loading Indicator matching maruthan style */}
             {(!loading || page > 1) && products.length > 0 && (
               <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '30px 0', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <p style={{ color: '#555', fontSize: '14px', marginBottom: '10px' }}>
@@ -284,7 +338,6 @@ const GirlsPage = () => {
               </div>
             )}
 
-            {/* Invisible div for IntersectionObserver, kept outside condition to ensure ref is attached */}
             <div ref={loadMoreRef} style={{ height: '20px', width: '100%' }}></div>
           </div>
 
@@ -292,8 +345,8 @@ const GirlsPage = () => {
       </div>
 
     </div>
+    </>
   );
 };
-
 
 export default GirlsPage;

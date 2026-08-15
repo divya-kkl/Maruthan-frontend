@@ -1,16 +1,39 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './ProductCarousel.css';
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { FaChevronLeft, FaChevronRight, FaHeart, FaRegHeart } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchBanner } from '../../redux/Slice/bannerSlice';
 import { fetchProducts } from '../../redux/Slice/productShowcasesSlice';
 import { fetchProductsByTag, openQuickView as openGlobalQuickView } from '../../redux/Slice/tagProductsSlice';
 import { isNew } from '../../redux/Slice/productDetailsSlice';
+import { addToWishlistThunk, removeFromWishlistThunk } from '../../redux/Slice/wishlistSlice';
 
-const CarouselCard = ({ product, openQuickView }) => {
+const CarouselCard = ({ product, openQuickView, user, wishlistItems, dispatch }) => {
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
+
+  const handleWishlistClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const userId = user?.id || user?._id;
+    if (!userId) {
+      alert("Please login to add items to your wishlist.");
+      navigate('/login');
+      return;
+    }
+    
+    if (wishlistItems.includes(product.id)) {
+      dispatch(removeFromWishlistThunk({ userId, productId: product.id }))
+        .unwrap()
+        .catch((err) => alert("Error removing from wishlist: " + err));
+    } else {
+      dispatch(addToWishlistThunk({ userId, productId: product.id }))
+        .unwrap()
+        .catch((err) => alert("Error adding to wishlist: " + err));
+    }
+  };
+
   const displayImage = product.images && product.images.length > 0
     ? (isHovered && product.images.length > 1 ? product.images[1] : product.images[0])
     : '/images/placeholder.png';
@@ -25,6 +48,17 @@ const CarouselCard = ({ product, openQuickView }) => {
         {isNew(product.createdAt) && (
           <span className="new-badge">NEW</span>
         )}
+        <button 
+          onClick={handleWishlistClick} 
+          style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(255, 255, 255, 0.9)', border: 'none', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 10, boxShadow: '0 2px 5px rgba(0,0,0,0.1)' }}
+          title={wishlistItems.includes(product.id) ? "Remove from Wishlist" : "Add to Wishlist"}
+        >
+          {wishlistItems.includes(product.id) ? (
+            <FaHeart color="red" size={18} />
+          ) : (
+            <FaRegHeart color="gray" size={18} />
+          )}
+        </button>
         <img
           src={displayImage}
           alt={product.name}
@@ -47,9 +81,10 @@ const CarouselCard = ({ product, openQuickView }) => {
 const ProductCarousel = () => {
   const dispatch = useDispatch();
 
-
   const { productsByTag, status: tagStatus } = useSelector((state) => state.tagProducts);
   const { banner } = useSelector((state) => state.banner);
+  const user = useSelector((state) => state.user?.user);
+  const wishlistItems = useSelector((state) => state.wishlist?.items || []);
 
   const scrollContainerRef = useRef(null);
   const navigate = useNavigate();
@@ -151,7 +186,14 @@ const ProductCarousel = () => {
                 ))
               ) : products.length > 0 ? (
                 products.map((product) => (
-                  <CarouselCard key={product.id} product={product} openQuickView={openQuickView} />
+                  <CarouselCard 
+                    key={product.id} 
+                    product={product} 
+                    openQuickView={openQuickView} 
+                    user={user} 
+                    wishlistItems={wishlistItems} 
+                    dispatch={dispatch} 
+                  />
                 ))
               ) : (
                 <p>No products found.</p>
